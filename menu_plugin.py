@@ -99,23 +99,31 @@ class MenuPlugin:
                 if sceneFiles.count > 0 and sel > 0 and sel <= sceneFiles.count then
                 (
                     local sceneToLoad = sceneFiles[sel]
-                    print ("Chargement de la scène: " + sceneToLoad)
+                    print ("Tentative de chargement: " + sceneToLoad)
 
                     -- Demander confirmation avant de charger
-                    local confirmLoad = queryBox ("Charger la scène:\n" + (filenameFromPath sceneToLoad) + "\n\nVoulez-vous sauvegarder la scène actuelle ?") title:"Charger scène"
+                    local confirmLoad = yesNoCancelBox ("Charger la scène:\n" + (filenameFromPath sceneToLoad) + "\n\nVoulez-vous sauvegarder la scène actuelle ?") title:"Charger scène"
 
                     if confirmLoad == #yes then
                     (
+                        print "Sauvegarde puis chargement..."
                         -- Sauvegarder puis charger
-                        if saveMaxFile (maxFilePath + maxFileName) then
-                            loadMaxFile sceneToLoad
+                        if maxFileName != "" then
+                            saveMaxFile (maxFilePath + maxFileName)
+                        loadMaxFile sceneToLoad
+                        print ("Scène chargée: " + sceneToLoad)
                     )
                     else if confirmLoad == #no then
                     (
+                        print "Chargement sans sauvegarde..."
                         -- Charger sans sauvegarder
                         loadMaxFile sceneToLoad
+                        print ("Scène chargée: " + sceneToLoad)
                     )
-                    -- Si #cancel, ne rien faire
+                    else
+                    (
+                        print "Chargement annulé"
+                    )
                 )
             )
 
