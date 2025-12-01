@@ -94,26 +94,28 @@ class MenuPlugin:
                     textureFolderPath = folderPath
                     print ("Dossier textures sélectionné: " + textureFolderPath)
 
-                    -- Vérifier si le dossier est déjà dans les chemins de recherche
+                    -- Vérifier si le dossier est déjà dans les External File Paths
+                    local currentPaths = pathConfig.getCurrentPathList #Bitmap
                     local pathExists = false
-                    for i = 1 to mapPaths.count() do
+
+                    for p in currentPaths do
                     (
-                        if (mapPaths.get i) == textureFolderPath then
+                        if (toLower p) == (toLower textureFolderPath) then
                         (
                             pathExists = true
                             exit
                         )
                     )
 
-                    -- Ajouter le dossier s'il n'existe pas déjà
+                    -- Ajouter le dossier aux External File Paths s'il n'existe pas déjà
                     if not pathExists then
                     (
-                        mapPaths.add textureFolderPath
-                        print "Dossier ajouté aux chemins de recherche des textures"
+                        pathConfig.appendSessionPath #Bitmap textureFolderPath
+                        print "Dossier ajouté aux External File Paths (Bitmap) pour cette session"
                     )
                     else
                     (
-                        print "Ce dossier est déjà dans les chemins de recherche"
+                        print "Ce dossier est déjà dans les External File Paths"
                     )
                 )
             )
