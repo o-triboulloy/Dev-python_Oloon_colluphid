@@ -23,27 +23,29 @@ class MenuPlugin:
 
         # Création du rollout (fenêtre) avec MaxScript
         rollout_code = """
-        rollout CustomToolWindow "U-Rtool" width:206 height:356
+        rollout CustomToolWindow "U-Rtool" width:206 height:391
         (
-            -- Variable globale pour stocker le chemin du dossier scènes
+            -- Variables globales
             local sceneFolderPath = ""
             local sceneFiles = #()
+            local textureFolderPath = ""
 
             -- Image en haut (ImgTag pour éviter le liseré)
             ImgTag titleImage pos:[12,10] width:182 height:66 bitmap:(openBitMap (getDir #userScripts + "\\TITRE_interface.jpg"))
 
-            -- Trois boutons
+            -- Boutons
             button btn1 "Dossier scène" pos:[10,86] width:186 height:30
-            button btn2 "Bouton 2" pos:[10,121] width:186 height:30
-            button btn3 "Bouton 3" pos:[10,156] width:186 height:30
+            button btn2a "Dossier textures" pos:[10,121] width:186 height:30
+            button btn2b "Reload textures" pos:[10,156] width:186 height:30
+            button btn3 "Bouton 3" pos:[10,191] width:186 height:30
 
             -- Menu déroulant Scènes
-            label lblScenes "Scènes:" pos:[10,196] width:186
-            dropdownList ddScenes "" pos:[10,211] width:186 items:#()
+            label lblScenes "Scènes:" pos:[10,231] width:186
+            dropdownList ddScenes "" pos:[10,246] width:186 items:#()
 
             -- Menu déroulant Opérations
-            label lblOperations "Opérations:" pos:[10,241] width:186
-            dropdownList ddOperations "" pos:[10,256] width:186 items:#("Opération 1", "Opération 2", "Opération 3")
+            label lblOperations "Opérations:" pos:[10,276] width:186
+            dropdownList ddOperations "" pos:[10,291] width:186 items:#("Opération 1", "Opération 2", "Opération 3")
 
             -- Événement au chargement pour gérer l'image manquante
             on CustomToolWindow open do
@@ -83,9 +85,51 @@ class MenuPlugin:
                 )
             )
 
-            on btn2 pressed do
+            -- Bouton 2a: Choisir le dossier des textures
+            on btn2a pressed do
             (
-                print "Bouton 2 cliqué"
+                local folderPath = getSavePath caption:"Choisir le dossier des textures" initialDir:textureFolderPath
+                if folderPath != undefined then
+                (
+                    textureFolderPath = folderPath
+                    print ("Dossier textures sélectionné: " + textureFolderPath)
+
+                    -- Définir le dossier comme chemin de recherche pour les bitmaps
+                    if (findItem mapPaths.getPathList() textureFolderPath) == 0 then
+                    (
+                        mapPaths.add textureFolderPath
+                        print "Dossier ajouté aux chemins de recherche des textures"
+                    )
+                )
+            )
+
+            -- Bouton 2b: Recharger toutes les textures
+            on btn2b pressed do
+            (
+                print "Rechargement de toutes les textures..."
+
+                -- Parcourir tous les matériaux de la scène
+                local reloadCount = 0
+                for mat in sceneMaterials do
+                (
+                    -- Recharger les textures du matériau
+                    if (classOf mat) == StandardMaterial or (classOf mat) == VRayMtl or (classOf mat) == PhysicalMaterial then
+                    (
+                        -- Parcourir les slots de texture
+                        for i = 1 to (getNumSubTexmaps mat) do
+                        (
+                            local tex = getSubTexmap mat i
+                            if tex != undefined and (classOf tex) == Bitmaptexture then
+                            (
+                                tex.reload()
+                                reloadCount += 1
+                            )
+                        )
+                    )
+                )
+
+                print (reloadCount as string + " texture(s) rechargée(s)")
+                messageBox (reloadCount as string + " texture(s) rechargée(s)") title:"Reload Textures"
             )
 
             on btn3 pressed do
