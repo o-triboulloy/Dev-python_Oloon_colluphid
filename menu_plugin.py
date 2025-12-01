@@ -34,7 +34,7 @@ class MenuPlugin:
             ImgTag titleImage pos:[12,10] width:182 height:66 bitmap:(openBitMap (getDir #userScripts + "\\TITRE_interface.jpg"))
 
             -- Boutons
-            button btn1 "Dossier scène" pos:[10,86] width:186 height:30
+            button btn1 "Dossier scènes" pos:[10,86] width:186 height:30
             button btn2a "Dossier textures" pos:[10,121] width:186 height:30
             button btn2b "Reload textures" pos:[10,156] width:186 height:30
             button btn3 "Bouton 3" pos:[10,191] width:186 height:30
@@ -79,7 +79,7 @@ class MenuPlugin:
                     ddScenes.items = sceneNames
 
                     if sceneNames.count > 0 then
-                        print (sceneNames.count as string + " scène(s) trouvée(s)")
+                        print (sceneNames.count as string + " scènes trouvées")
                     else
                         print "Aucune scène .max trouvée dans ce dossier"
                 )
