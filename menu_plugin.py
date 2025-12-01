@@ -94,28 +94,15 @@ class MenuPlugin:
                     textureFolderPath = folderPath
                     print ("Dossier textures sélectionné: " + textureFolderPath)
 
-                    -- Vérifier si le dossier est déjà dans les External File Paths
-                    local currentPaths = pathConfig.getCurrentPathList #Bitmap
-                    local pathExists = false
-
-                    for p in currentPaths do
+                    -- Ajouter le dossier aux External File Paths pour cette session
+                    try
                     (
-                        if (toLower p) == (toLower textureFolderPath) then
-                        (
-                            pathExists = true
-                            exit
-                        )
-                    )
-
-                    -- Ajouter le dossier aux External File Paths s'il n'existe pas déjà
-                    if not pathExists then
-                    (
-                        pathConfig.appendSessionPath #Bitmap textureFolderPath
+                        pathConfig.appendSessionPath #bitmap textureFolderPath
                         print "Dossier ajouté aux External File Paths (Bitmap) pour cette session"
                     )
-                    else
+                    catch
                     (
-                        print "Ce dossier est déjà dans les External File Paths"
+                        print "Erreur lors de l'ajout du dossier aux External File Paths"
                     )
                 )
             )
