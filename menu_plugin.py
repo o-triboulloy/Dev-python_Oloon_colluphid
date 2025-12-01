@@ -25,17 +25,21 @@ class MenuPlugin:
         rollout_code = """
         rollout CustomToolWindow "U-Rtool" width:206 height:356
         (
+            -- Variable globale pour stocker le chemin du dossier scènes
+            local sceneFolderPath = ""
+            local sceneFiles = #()
+
             -- Image en haut (ImgTag pour éviter le liseré)
             ImgTag titleImage pos:[12,10] width:182 height:66 bitmap:(openBitMap (getDir #userScripts + "\\TITRE_interface.jpg"))
 
             -- Trois boutons
-            button btn1 "Bouton 1" pos:[10,86] width:186 height:30
+            button btn1 "Dossier scène" pos:[10,86] width:186 height:30
             button btn2 "Bouton 2" pos:[10,121] width:186 height:30
             button btn3 "Bouton 3" pos:[10,156] width:186 height:30
 
             -- Menu déroulant Scènes
             label lblScenes "Scènes:" pos:[10,196] width:186
-            dropdownList ddScenes "" pos:[10,211] width:186 items:#("Scène 1", "Scène 2", "Scène 3")
+            dropdownList ddScenes "" pos:[10,211] width:186 items:#()
 
             -- Menu déroulant Opérations
             label lblOperations "Opérations:" pos:[10,241] width:186
@@ -50,10 +54,33 @@ class MenuPlugin:
                 )
             )
 
-            -- Événements des boutons (vides pour le moment)
+            -- Bouton 1: Choisir le dossier des scènes
             on btn1 pressed do
             (
-                print "Bouton 1 cliqué"
+                local folderPath = getSavePath caption:"Choisir le dossier des scènes" initialDir:sceneFolderPath
+                if folderPath != undefined then
+                (
+                    sceneFolderPath = folderPath
+                    print ("Dossier sélectionné: " + sceneFolderPath)
+
+                    -- Lister les fichiers .max dans le dossier
+                    sceneFiles = getFiles (sceneFolderPath + "\\*.max")
+
+                    -- Extraire juste les noms de fichiers (sans le chemin complet)
+                    local sceneNames = #()
+                    for sceneFile in sceneFiles do
+                    (
+                        append sceneNames (filenameFromPath sceneFile)
+                    )
+
+                    -- Mettre à jour le menu déroulant
+                    ddScenes.items = sceneNames
+
+                    if sceneNames.count > 0 then
+                        print (sceneNames.count as string + " scène(s) trouvée(s)")
+                    else
+                        print "Aucune scène .max trouvée dans ce dossier"
+                )
             )
 
             on btn2 pressed do
@@ -69,7 +96,27 @@ class MenuPlugin:
             -- Événement menu déroulant Scènes
             on ddScenes selected sel do
             (
-                print ("Scène sélectionnée: " + ddScenes.items[sel])
+                if sceneFiles.count > 0 and sel > 0 and sel <= sceneFiles.count then
+                (
+                    local sceneToLoad = sceneFiles[sel]
+                    print ("Chargement de la scène: " + sceneToLoad)
+
+                    -- Demander confirmation avant de charger
+                    local confirmLoad = queryBox ("Charger la scène:\n" + (filenameFromPath sceneToLoad) + "\n\nVoulez-vous sauvegarder la scène actuelle ?") title:"Charger scène"
+
+                    if confirmLoad == #yes then
+                    (
+                        -- Sauvegarder puis charger
+                        if saveMaxFile (maxFilePath + maxFileName) then
+                            loadMaxFile sceneToLoad
+                    )
+                    else if confirmLoad == #no then
+                    (
+                        -- Charger sans sauvegarder
+                        loadMaxFile sceneToLoad
+                    )
+                    -- Si #cancel, ne rien faire
+                )
             )
 
             -- Événement menu déroulant Opérations
