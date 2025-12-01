@@ -25,8 +25,8 @@ class MenuPlugin:
         rollout_code = """
         rollout CustomToolWindow "U-Rtool" width:206 height:350
         (
-            -- Image en haut
-            bitmap titleBitmap pos:[10,10] width:186 height:60 fileName:(getDir #userScripts + "\\TITRE_interface.jpg")
+            -- Image en haut (ImgTag pour éviter le liseré)
+            ImgTag titleImage pos:[10,10] width:186 height:60 bitmap:(openBitMap (getDir #userScripts + "\\TITRE_interface.jpg"))
 
             -- Trois boutons
             button btn1 "Bouton 1" pos:[10,80] width:186 height:30
@@ -44,7 +44,7 @@ class MenuPlugin:
             -- Événement au chargement pour gérer l'image manquante
             on CustomToolWindow open do
             (
-                if titleBitmap.bitmap == undefined then
+                if titleImage.bitmap == undefined then
                 (
                     print "Image TITRE_interface.jpg non trouvée dans le dossier des scripts"
                 )
