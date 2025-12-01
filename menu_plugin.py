@@ -94,11 +94,26 @@ class MenuPlugin:
                     textureFolderPath = folderPath
                     print ("Dossier textures sélectionné: " + textureFolderPath)
 
-                    -- Définir le dossier comme chemin de recherche pour les bitmaps
-                    if (findItem mapPaths.getPathList() textureFolderPath) == 0 then
+                    -- Vérifier si le dossier est déjà dans les chemins de recherche
+                    local pathExists = false
+                    for i = 1 to mapPaths.count() do
+                    (
+                        if (mapPaths.get i) == textureFolderPath then
+                        (
+                            pathExists = true
+                            exit
+                        )
+                    )
+
+                    -- Ajouter le dossier s'il n'existe pas déjà
+                    if not pathExists then
                     (
                         mapPaths.add textureFolderPath
                         print "Dossier ajouté aux chemins de recherche des textures"
+                    )
+                    else
+                    (
+                        print "Ce dossier est déjà dans les chemins de recherche"
                     )
                 )
             )
