@@ -23,23 +23,23 @@ class MenuPlugin:
 
         # Création du rollout (fenêtre) avec MaxScript
         rollout_code = """
-        rollout CustomToolWindow "Mes Outils" width:182 height:350
+        rollout CustomToolWindow "U-Rtool" width:206 height:350
         (
             -- Image en haut
-            bitmap titleBitmap pos:[10,10] width:162 height:60 fileName:(getDir #userScripts + "\\TITRE_interface.jpg")
+            bitmap titleBitmap pos:[10,10] width:186 height:60 fileName:(getDir #userScripts + "\\TITRE_interface.jpg")
 
             -- Trois boutons
-            button btn1 "Bouton 1" pos:[10,80] width:162 height:30
-            button btn2 "Bouton 2" pos:[10,115] width:162 height:30
-            button btn3 "Bouton 3" pos:[10,150] width:162 height:30
+            button btn1 "Bouton 1" pos:[10,80] width:186 height:30
+            button btn2 "Bouton 2" pos:[10,115] width:186 height:30
+            button btn3 "Bouton 3" pos:[10,150] width:186 height:30
 
             -- Menu déroulant Scènes
-            label lblScenes "Scènes:" pos:[10,190] width:162
-            dropdownList ddScenes "" pos:[10,205] width:162 items:#("Scène 1", "Scène 2", "Scène 3")
+            label lblScenes "Scènes:" pos:[10,190] width:186
+            dropdownList ddScenes "" pos:[10,205] width:186 items:#("Scène 1", "Scène 2", "Scène 3")
 
             -- Menu déroulant Opérations
-            label lblOperations "Opérations:" pos:[10,235] width:162
-            dropdownList ddOperations "" pos:[10,250] width:162 items:#("Opération 1", "Opération 2", "Opération 3")
+            label lblOperations "Opérations:" pos:[10,235] width:186
+            dropdownList ddOperations "" pos:[10,250] width:186 items:#("Opération 1", "Opération 2", "Opération 3")
 
             -- Événement au chargement pour gérer l'image manquante
             on CustomToolWindow open do
