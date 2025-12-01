@@ -17,17 +17,38 @@ class MenuPlugin:
         self.dialog = None
 
     def create_ui(self):
-        """Crée l'interface utilisateur avec 3 boutons"""
+        """Crée l'interface utilisateur avec image, 3 boutons et 2 menus déroulants"""
         if rt is None:
             return
 
         # Création du rollout (fenêtre) avec MaxScript
         rollout_code = """
-        rollout CustomToolWindow "Mes Outils" width:100 height:250
+        rollout CustomToolWindow "Mes Outils" width:182 height:350
         (
-            button btn1 "Bouton 1" pos:[10,10] width:80 height:30
-            button btn2 "Bouton 2" pos:[10,50] width:80 height:30
-            button btn3 "Bouton 3" pos:[10,90] width:80 height:30
+            -- Image en haut
+            bitmap titleBitmap pos:[10,10] width:162 height:60 fileName:(getDir #userScripts + "\\TITRE_interface.jpg")
+
+            -- Trois boutons
+            button btn1 "Bouton 1" pos:[10,80] width:162 height:30
+            button btn2 "Bouton 2" pos:[10,115] width:162 height:30
+            button btn3 "Bouton 3" pos:[10,150] width:162 height:30
+
+            -- Menu déroulant Scènes
+            label lblScenes "Scènes:" pos:[10,190] width:162
+            dropdownList ddScenes "" pos:[10,205] width:162 items:#("Scène 1", "Scène 2", "Scène 3")
+
+            -- Menu déroulant Opérations
+            label lblOperations "Opérations:" pos:[10,235] width:162
+            dropdownList ddOperations "" pos:[10,250] width:162 items:#("Opération 1", "Opération 2", "Opération 3")
+
+            -- Événement au chargement pour gérer l'image manquante
+            on CustomToolWindow open do
+            (
+                if titleBitmap.bitmap == undefined then
+                (
+                    print "Image TITRE_interface.jpg non trouvée dans le dossier des scripts"
+                )
+            )
 
             -- Événements des boutons (vides pour le moment)
             on btn1 pressed do
@@ -43,6 +64,18 @@ class MenuPlugin:
             on btn3 pressed do
             (
                 print "Bouton 3 cliqué"
+            )
+
+            -- Événement menu déroulant Scènes
+            on ddScenes selected sel do
+            (
+                print ("Scène sélectionnée: " + ddScenes.items[sel])
+            )
+
+            -- Événement menu déroulant Opérations
+            on ddOperations selected sel do
+            (
+                print ("Opération sélectionnée: " + ddOperations.items[sel])
             )
         )
         """
