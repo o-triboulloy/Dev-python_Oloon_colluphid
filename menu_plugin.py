@@ -44,30 +44,28 @@ class MenuPlugin:
                     setINISetting iniFile "Paths" "RenderFolder" renderFolderPath
 
                     -- Sauvegarder les checkboxes Série 01
-                    if chk01_std != undefined then setINISetting iniFile "Serie01" "Standard" (chk01_std.checked as string)
-                    if chk01_hd != undefined then setINISetting iniFile "Serie01" "HD" (chk01_hd.checked as string)
-                    if chk01_det != undefined then setINISetting iniFile "Serie01" "Detourage" (chk01_det.checked as string)
+                    setINISetting iniFile "Serie01" "Standard" (chk01_std.checked as string)
+                    setINISetting iniFile "Serie01" "HD" (chk01_hd.checked as string)
+                    setINISetting iniFile "Serie01" "Detourage" (chk01_det.checked as string)
 
                     -- Sauvegarder les checkboxes Série 02
-                    if chk02_std != undefined then setINISetting iniFile "Serie02" "Standard" (chk02_std.checked as string)
-                    if chk02_hd != undefined then setINISetting iniFile "Serie02" "HD" (chk02_hd.checked as string)
-                    if chk02_det != undefined then setINISetting iniFile "Serie02" "Detourage" (chk02_det.checked as string)
+                    setINISetting iniFile "Serie02" "Standard" (chk02_std.checked as string)
+                    setINISetting iniFile "Serie02" "HD" (chk02_hd.checked as string)
+                    setINISetting iniFile "Serie02" "Detourage" (chk02_det.checked as string)
 
                     -- Sauvegarder les checkboxes Série 03
-                    if chk03_std != undefined then setINISetting iniFile "Serie03" "Standard" (chk03_std.checked as string)
-                    if chk03_hd != undefined then setINISetting iniFile "Serie03" "HD" (chk03_hd.checked as string)
-                    if chk03_det != undefined then setINISetting iniFile "Serie03" "Detourage" (chk03_det.checked as string)
+                    setINISetting iniFile "Serie03" "Standard" (chk03_std.checked as string)
+                    setINISetting iniFile "Serie03" "HD" (chk03_hd.checked as string)
+                    setINISetting iniFile "Serie03" "Detourage" (chk03_det.checked as string)
 
                     -- Sauvegarder les checkboxes Série 04
-                    if chk04_std != undefined then setINISetting iniFile "Serie04" "Standard" (chk04_std.checked as string)
-                    if chk04_hd != undefined then setINISetting iniFile "Serie04" "HD" (chk04_hd.checked as string)
-                    if chk04_det != undefined then setINISetting iniFile "Serie04" "Detourage" (chk04_det.checked as string)
-
-                    print "Paramètres sauvegardés"
+                    setINISetting iniFile "Serie04" "Standard" (chk04_std.checked as string)
+                    setINISetting iniFile "Serie04" "HD" (chk04_hd.checked as string)
+                    setINISetting iniFile "Serie04" "Detourage" (chk04_det.checked as string)
                 )
                 catch
                 (
-                    print "Erreur lors de la sauvegarde des paramètres"
+                    -- Ignorer les erreurs silencieusement
                 )
             )
 
@@ -300,40 +298,64 @@ class MenuPlugin:
             on chk01_std changed state do
             (
                 if not isLoading and state == true then chk01_hd.checked = false
+                if not isLoading then saveSettings()
             )
             on chk01_hd changed state do
             (
                 if not isLoading and state == true then chk01_std.checked = false
+                if not isLoading then saveSettings()
+            )
+            on chk01_det changed state do
+            (
+                if not isLoading then saveSettings()
             )
 
             -- Événements checkboxes Série 02 (mutuellement exclusifs)
             on chk02_std changed state do
             (
                 if not isLoading and state == true then chk02_hd.checked = false
+                if not isLoading then saveSettings()
             )
             on chk02_hd changed state do
             (
                 if not isLoading and state == true then chk02_std.checked = false
+                if not isLoading then saveSettings()
+            )
+            on chk02_det changed state do
+            (
+                if not isLoading then saveSettings()
             )
 
             -- Événements checkboxes Série 03 (mutuellement exclusifs)
             on chk03_std changed state do
             (
                 if not isLoading and state == true then chk03_hd.checked = false
+                if not isLoading then saveSettings()
             )
             on chk03_hd changed state do
             (
                 if not isLoading and state == true then chk03_std.checked = false
+                if not isLoading then saveSettings()
+            )
+            on chk03_det changed state do
+            (
+                if not isLoading then saveSettings()
             )
 
             -- Événements checkboxes Série 04 (mutuellement exclusifs)
             on chk04_std changed state do
             (
                 if not isLoading and state == true then chk04_hd.checked = false
+                if not isLoading then saveSettings()
             )
             on chk04_hd changed state do
             (
                 if not isLoading and state == true then chk04_std.checked = false
+                if not isLoading then saveSettings()
+            )
+            on chk04_det changed state do
+            (
+                if not isLoading then saveSettings()
             )
 
         )
