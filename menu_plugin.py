@@ -36,36 +36,47 @@ class MenuPlugin:
             -- Fonction pour sauvegarder les paramètres
             fn saveSettings =
             (
+                print "=== Début de la sauvegarde ==="
                 try
                 (
                     -- Sauvegarder les chemins
+                    print ("Sauvegarde des chemins...")
                     setINISetting iniFile "Paths" "SceneFolder" sceneFolderPath
                     setINISetting iniFile "Paths" "TextureFolder" textureFolderPath
                     setINISetting iniFile "Paths" "RenderFolder" renderFolderPath
+                    print ("Chemins sauvegardés OK")
 
                     -- Sauvegarder les checkboxes Série 01
+                    print ("Sauvegarde Série 01...")
+                    print ("  chk01_std.checked = " + (chk01_std.checked as string))
                     setINISetting iniFile "Serie01" "Standard" (chk01_std.checked as string)
                     setINISetting iniFile "Serie01" "HD" (chk01_hd.checked as string)
                     setINISetting iniFile "Serie01" "Detourage" (chk01_det.checked as string)
 
                     -- Sauvegarder les checkboxes Série 02
+                    print ("Sauvegarde Série 02...")
                     setINISetting iniFile "Serie02" "Standard" (chk02_std.checked as string)
                     setINISetting iniFile "Serie02" "HD" (chk02_hd.checked as string)
                     setINISetting iniFile "Serie02" "Detourage" (chk02_det.checked as string)
 
                     -- Sauvegarder les checkboxes Série 03
+                    print ("Sauvegarde Série 03...")
                     setINISetting iniFile "Serie03" "Standard" (chk03_std.checked as string)
                     setINISetting iniFile "Serie03" "HD" (chk03_hd.checked as string)
                     setINISetting iniFile "Serie03" "Detourage" (chk03_det.checked as string)
 
                     -- Sauvegarder les checkboxes Série 04
+                    print ("Sauvegarde Série 04...")
                     setINISetting iniFile "Serie04" "Standard" (chk04_std.checked as string)
                     setINISetting iniFile "Serie04" "HD" (chk04_hd.checked as string)
                     setINISetting iniFile "Serie04" "Detourage" (chk04_det.checked as string)
+
+                    print ("=== Sauvegarde terminée avec succès ===")
+                    print ("Fichier INI: " + iniFile)
                 )
-                catch
+                catch e
                 (
-                    -- Ignorer les erreurs silencieusement
+                    print ("ERREUR lors de la sauvegarde: " + e as string)
                 )
             )
 
@@ -185,10 +196,10 @@ class MenuPlugin:
                 loadSettings()
             )
 
-            -- Événement à la fermeture pour sauvegarder les paramètres
+            -- Événement à la fermeture
             on CustomToolWindow close do
             (
-                saveSettings()
+                print "Fermeture de l'interface"
             )
 
             -- Bouton 1: Choisir le dossier des scènes
