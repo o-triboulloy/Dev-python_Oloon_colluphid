@@ -23,12 +23,13 @@ class MenuPlugin:
 
         # Création du rollout (fenêtre) avec MaxScript
         rollout_code = """
-        rollout CustomToolWindow "U-Rtool" width:206 height:391
+        rollout CustomToolWindow "U-Rtool" width:206 height:550
         (
             -- Variables globales
             local sceneFolderPath = ""
             local sceneFiles = #()
             local textureFolderPath = ""
+            local renderFolderPath = ""
 
             -- Image en haut (ImgTag pour éviter le liseré)
             ImgTag titleImage pos:[12,10] width:182 height:66 bitmap:(openBitMap (getDir #userScripts + "\\TITRE_interface.jpg"))
@@ -36,16 +37,23 @@ class MenuPlugin:
             -- Boutons
             button btn1 "Dossier scènes" pos:[10,86] width:186 height:30
             button btn2a "Dossier textures" pos:[10,121] width:186 height:30
-            button btn2b "Reload textures" pos:[10,156] width:186 height:30
-            button btn3 "Bouton 3" pos:[10,191] width:186 height:30
+            button btn2b "Dossier Rendu" pos:[10,156] width:186 height:30
 
             -- Menu déroulant Scènes
-            label lblScenes "Scènes:" pos:[10,231] width:186
-            dropdownList ddScenes "" pos:[10,246] width:186 items:#()
+            label lblScenes "Scènes:" pos:[10,196] width:186
+            dropdownList ddScenes "" pos:[10,211] width:186 items:#()
 
-            -- Menu déroulant Opérations
-            label lblOperations "Opérations:" pos:[10,276] width:186
-            dropdownList ddOperations "" pos:[10,291] width:186 items:#("Opération 1", "Opération 2", "Opération 3")
+            -- Rendus Série 01
+            groupBox grpRendu01 "Rendus Série 01" pos:[10,256] width:186 height:60
+
+            -- Rendus Série 02
+            groupBox grpRendu02 "Rendus Série 02" pos:[10,326] width:186 height:60
+
+            -- Rendus Série 03
+            groupBox grpRendu03 "Rendus Série 03" pos:[10,396] width:186 height:60
+
+            -- Rendus Série 04
+            groupBox grpRendu04 "Rendus Série 04" pos:[10,466] width:186 height:60
 
             -- Événement au chargement pour gérer l'image manquante
             on CustomToolWindow open do
@@ -107,38 +115,15 @@ class MenuPlugin:
                 )
             )
 
-            -- Bouton 2b: Recharger toutes les textures
+            -- Bouton 2b: Choisir le dossier de rendu
             on btn2b pressed do
             (
-                print "Rechargement de toutes les textures..."
-
-                -- Parcourir tous les matériaux de la scène
-                local reloadCount = 0
-                for mat in sceneMaterials do
+                local folderPath = getSavePath caption:"Choisir le dossier de rendu" initialDir:renderFolderPath
+                if folderPath != undefined then
                 (
-                    -- Recharger les textures du matériau
-                    if (classOf mat) == StandardMaterial or (classOf mat) == VRayMtl or (classOf mat) == PhysicalMaterial then
-                    (
-                        -- Parcourir les slots de texture
-                        for i = 1 to (getNumSubTexmaps mat) do
-                        (
-                            local tex = getSubTexmap mat i
-                            if tex != undefined and (classOf tex) == Bitmaptexture then
-                            (
-                                tex.reload()
-                                reloadCount += 1
-                            )
-                        )
-                    )
+                    renderFolderPath = folderPath
+                    print ("Dossier de rendu sélectionné: " + renderFolderPath)
                 )
-
-                print (reloadCount as string + " texture(s) rechargée(s)")
-                messageBox (reloadCount as string + " texture(s) rechargée(s)") title:"Reload Textures"
-            )
-
-            on btn3 pressed do
-            (
-                print "Bouton 3 cliqué"
             )
 
             -- Événement menu déroulant Scènes
@@ -175,11 +160,6 @@ class MenuPlugin:
                 )
             )
 
-            -- Événement menu déroulant Opérations
-            on ddOperations selected sel do
-            (
-                print ("Opération sélectionnée: " + ddOperations.items[sel])
-            )
         )
         """
 
