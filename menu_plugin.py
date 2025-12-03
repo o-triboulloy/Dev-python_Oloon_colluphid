@@ -23,7 +23,7 @@ class MenuPlugin:
 
         # Création du rollout (fenêtre) avec MaxScript
         rollout_code = """
-        rollout CustomToolWindow "U-Rtool" width:206 height:590
+        rollout CustomToolWindow "U-Rtool" width:206 height:680
         (
             -- Variables globales
             local sceneFolderPath = ""
@@ -67,12 +67,29 @@ class MenuPlugin:
             checkbox chk04_hd "Rendu HD" pos:[20,545] width:160
             checkbox chk04_det "Détourage" pos:[20,562] width:160
 
-            -- Événement au chargement pour gérer l'image manquante
+            -- Section Lancer les rendus
+            groupBox grpLancer "Lancer" pos:[10,596] width:186 height:80
+            button btnLogo "" pos:[20,615] width:64 height:64 toolTip:"Lancer les rendus"
+            label lblLancerRendus "Lancer\nles rendus" pos:[95,630] width:90 height:40 align:#left
+
+            -- Événement au chargement pour gérer les images
             on CustomToolWindow open do
             (
                 if titleImage.bitmap == undefined then
                 (
                     print "Image TITRE_interface.jpg non trouvée dans le dossier des scripts"
+                )
+
+                -- Charger l'image du logo dans le bouton
+                local logoPath = getDir #userScripts + "\\Logo-Urt.jpg"
+                local logoBitmap = openBitMap logoPath
+                if logoBitmap != undefined then
+                (
+                    btnLogo.images = #(logoBitmap, undefined, 1, 1, 1, 1, 1)
+                )
+                else
+                (
+                    print "Image Logo-Urt.jpg non trouvée dans le dossier des scripts"
                 )
             )
 
@@ -136,6 +153,13 @@ class MenuPlugin:
                     renderFolderPath = folderPath
                     print ("Dossier de rendu sélectionné: " + renderFolderPath)
                 )
+            )
+
+            -- Bouton Logo: Lancer les rendus
+            on btnLogo pressed do
+            (
+                print "Lancement des rendus..."
+                -- Logique de rendu à implémenter
             )
 
             -- Événement menu déroulant Scènes
