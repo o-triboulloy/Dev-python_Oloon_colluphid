@@ -23,7 +23,7 @@ class MenuPlugin:
 
         # Création du rollout (fenêtre) avec MaxScript
         rollout_code = """
-        rollout CustomToolWindow "U-Rtool" width:206 height:550
+        rollout CustomToolWindow "U-Rtool" width:206 height:590
         (
             -- Variables globales
             local sceneFolderPath = ""
@@ -44,16 +44,28 @@ class MenuPlugin:
             dropdownList ddScenes "" pos:[10,211] width:186 items:#()
 
             -- Rendus Série 01
-            groupBox grpRendu01 "Rendus Série 01" pos:[10,256] width:186 height:60
+            groupBox grpRendu01 "Rendus Série 01" pos:[10,256] width:186 height:75
+            checkbox chk01_std "Rendu standard" pos:[20,273] width:160
+            checkbox chk01_hd "Rendu HD" pos:[20,290] width:160
+            checkbox chk01_det "Détourage" pos:[20,307] width:160
 
             -- Rendus Série 02
-            groupBox grpRendu02 "Rendus Série 02" pos:[10,326] width:186 height:60
+            groupBox grpRendu02 "Rendus Série 02" pos:[10,341] width:186 height:75
+            checkbox chk02_std "Rendu standard" pos:[20,358] width:160
+            checkbox chk02_hd "Rendu HD" pos:[20,375] width:160
+            checkbox chk02_det "Détourage" pos:[20,392] width:160
 
             -- Rendus Série 03
-            groupBox grpRendu03 "Rendus Série 03" pos:[10,396] width:186 height:60
+            groupBox grpRendu03 "Rendus Série 03" pos:[10,426] width:186 height:75
+            checkbox chk03_std "Rendu standard" pos:[20,443] width:160
+            checkbox chk03_hd "Rendu HD" pos:[20,460] width:160
+            checkbox chk03_det "Détourage" pos:[20,477] width:160
 
             -- Rendus Série 04
-            groupBox grpRendu04 "Rendus Série 04" pos:[10,466] width:186 height:60
+            groupBox grpRendu04 "Rendus Série 04" pos:[10,511] width:186 height:75
+            checkbox chk04_std "Rendu standard" pos:[20,528] width:160
+            checkbox chk04_hd "Rendu HD" pos:[20,545] width:160
+            checkbox chk04_det "Détourage" pos:[20,562] width:160
 
             -- Événement au chargement pour gérer l'image manquante
             on CustomToolWindow open do
