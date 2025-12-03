@@ -256,6 +256,9 @@ class MenuPlugin:
             -- Bouton Logo: Lancer les rendus
             on btnLogo pressed do
             (
+                -- Sauvegarder la configuration avant de lancer les rendus
+                saveSettings()
+
                 print "Lancement des rendus..."
                 -- Logique de rendu à implémenter
             )
@@ -298,64 +301,40 @@ class MenuPlugin:
             on chk01_std changed state do
             (
                 if not isLoading and state == true then chk01_hd.checked = false
-                if not isLoading then saveSettings()
             )
             on chk01_hd changed state do
             (
                 if not isLoading and state == true then chk01_std.checked = false
-                if not isLoading then saveSettings()
-            )
-            on chk01_det changed state do
-            (
-                if not isLoading then saveSettings()
             )
 
             -- Événements checkboxes Série 02 (mutuellement exclusifs)
             on chk02_std changed state do
             (
                 if not isLoading and state == true then chk02_hd.checked = false
-                if not isLoading then saveSettings()
             )
             on chk02_hd changed state do
             (
                 if not isLoading and state == true then chk02_std.checked = false
-                if not isLoading then saveSettings()
-            )
-            on chk02_det changed state do
-            (
-                if not isLoading then saveSettings()
             )
 
             -- Événements checkboxes Série 03 (mutuellement exclusifs)
             on chk03_std changed state do
             (
                 if not isLoading and state == true then chk03_hd.checked = false
-                if not isLoading then saveSettings()
             )
             on chk03_hd changed state do
             (
                 if not isLoading and state == true then chk03_std.checked = false
-                if not isLoading then saveSettings()
-            )
-            on chk03_det changed state do
-            (
-                if not isLoading then saveSettings()
             )
 
             -- Événements checkboxes Série 04 (mutuellement exclusifs)
             on chk04_std changed state do
             (
                 if not isLoading and state == true then chk04_hd.checked = false
-                if not isLoading then saveSettings()
             )
             on chk04_hd changed state do
             (
                 if not isLoading and state == true then chk04_std.checked = false
-                if not isLoading then saveSettings()
-            )
-            on chk04_det changed state do
-            (
-                if not isLoading then saveSettings()
             )
 
         )
