@@ -30,6 +30,86 @@ class MenuPlugin:
             local sceneFiles = #()
             local textureFolderPath = ""
             local renderFolderPath = ""
+            local iniFile = getDir #userScripts + "\\U-Rtool_settings.ini"
+
+            -- Fonction pour sauvegarder les paramètres
+            fn saveSettings =
+            (
+                -- Sauvegarder les chemins
+                setINISetting iniFile "Paths" "SceneFolder" sceneFolderPath
+                setINISetting iniFile "Paths" "TextureFolder" textureFolderPath
+                setINISetting iniFile "Paths" "RenderFolder" renderFolderPath
+
+                -- Sauvegarder les checkboxes Série 01
+                setINISetting iniFile "Serie01" "Standard" (chk01_std.checked as string)
+                setINISetting iniFile "Serie01" "HD" (chk01_hd.checked as string)
+                setINISetting iniFile "Serie01" "Detourage" (chk01_det.checked as string)
+
+                -- Sauvegarder les checkboxes Série 02
+                setINISetting iniFile "Serie02" "Standard" (chk02_std.checked as string)
+                setINISetting iniFile "Serie02" "HD" (chk02_hd.checked as string)
+                setINISetting iniFile "Serie02" "Detourage" (chk02_det.checked as string)
+
+                -- Sauvegarder les checkboxes Série 03
+                setINISetting iniFile "Serie03" "Standard" (chk03_std.checked as string)
+                setINISetting iniFile "Serie03" "HD" (chk03_hd.checked as string)
+                setINISetting iniFile "Serie03" "Detourage" (chk03_det.checked as string)
+
+                -- Sauvegarder les checkboxes Série 04
+                setINISetting iniFile "Serie04" "Standard" (chk04_std.checked as string)
+                setINISetting iniFile "Serie04" "HD" (chk04_hd.checked as string)
+                setINISetting iniFile "Serie04" "Detourage" (chk04_det.checked as string)
+
+                print "Paramètres sauvegardés"
+            )
+
+            -- Fonction pour charger les paramètres
+            fn loadSettings =
+            (
+                -- Charger les chemins
+                local loadedPath = getINISetting iniFile "Paths" "SceneFolder"
+                if loadedPath != "" then sceneFolderPath = loadedPath
+
+                loadedPath = getINISetting iniFile "Paths" "TextureFolder"
+                if loadedPath != "" then textureFolderPath = loadedPath
+
+                loadedPath = getINISetting iniFile "Paths" "RenderFolder"
+                if loadedPath != "" then renderFolderPath = loadedPath
+
+                -- Charger les checkboxes Série 01
+                local val = getINISetting iniFile "Serie01" "Standard"
+                if val != "" then chk01_std.checked = (val == "true")
+                val = getINISetting iniFile "Serie01" "HD"
+                if val != "" then chk01_hd.checked = (val == "true")
+                val = getINISetting iniFile "Serie01" "Detourage"
+                if val != "" then chk01_det.checked = (val == "true")
+
+                -- Charger les checkboxes Série 02
+                val = getINISetting iniFile "Serie02" "Standard"
+                if val != "" then chk02_std.checked = (val == "true")
+                val = getINISetting iniFile "Serie02" "HD"
+                if val != "" then chk02_hd.checked = (val == "true")
+                val = getINISetting iniFile "Serie02" "Detourage"
+                if val != "" then chk02_det.checked = (val == "true")
+
+                -- Charger les checkboxes Série 03
+                val = getINISetting iniFile "Serie03" "Standard"
+                if val != "" then chk03_std.checked = (val == "true")
+                val = getINISetting iniFile "Serie03" "HD"
+                if val != "" then chk03_hd.checked = (val == "true")
+                val = getINISetting iniFile "Serie03" "Detourage"
+                if val != "" then chk03_det.checked = (val == "true")
+
+                -- Charger les checkboxes Série 04
+                val = getINISetting iniFile "Serie04" "Standard"
+                if val != "" then chk04_std.checked = (val == "true")
+                val = getINISetting iniFile "Serie04" "HD"
+                if val != "" then chk04_hd.checked = (val == "true")
+                val = getINISetting iniFile "Serie04" "Detourage"
+                if val != "" then chk04_det.checked = (val == "true")
+
+                print "Paramètres chargés"
+            )
 
             -- Image en haut (ImgTag pour éviter le liseré)
             ImgTag titleImage pos:[12,10] width:182 height:66 bitmap:(openBitMap (getDir #userScripts + "\\TITRE_interface.jpg"))
@@ -72,7 +152,7 @@ class MenuPlugin:
             button btnLogo "" pos:[20,607] width:64 height:64 toolTip:"Lancer les rendus"
             label lblLancerRendus "          Lancer\n       les rendus" pos:[95,625] width:90 height:40 align:#center
 
-            -- Événement au chargement pour gérer les images
+            -- Événement au chargement pour gérer les images et charger les paramètres
             on CustomToolWindow open do
             (
                 if titleImage.bitmap == undefined then
@@ -91,6 +171,15 @@ class MenuPlugin:
                 (
                     print "Image Logo-Urt.jpg non trouvée dans le dossier des scripts"
                 )
+
+                -- Charger les paramètres sauvegardés
+                loadSettings()
+            )
+
+            -- Événement à la fermeture pour sauvegarder les paramètres
+            on CustomToolWindow close do
+            (
+                saveSettings()
             )
 
             -- Bouton 1: Choisir le dossier des scènes
