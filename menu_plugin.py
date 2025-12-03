@@ -35,32 +35,39 @@ class MenuPlugin:
             -- Fonction pour sauvegarder les paramètres
             fn saveSettings =
             (
-                -- Sauvegarder les chemins
-                setINISetting iniFile "Paths" "SceneFolder" sceneFolderPath
-                setINISetting iniFile "Paths" "TextureFolder" textureFolderPath
-                setINISetting iniFile "Paths" "RenderFolder" renderFolderPath
+                try
+                (
+                    -- Sauvegarder les chemins
+                    setINISetting iniFile "Paths" "SceneFolder" sceneFolderPath
+                    setINISetting iniFile "Paths" "TextureFolder" textureFolderPath
+                    setINISetting iniFile "Paths" "RenderFolder" renderFolderPath
 
-                -- Sauvegarder les checkboxes Série 01
-                setINISetting iniFile "Serie01" "Standard" (chk01_std.checked as string)
-                setINISetting iniFile "Serie01" "HD" (chk01_hd.checked as string)
-                setINISetting iniFile "Serie01" "Detourage" (chk01_det.checked as string)
+                    -- Sauvegarder les checkboxes Série 01
+                    if chk01_std != undefined then setINISetting iniFile "Serie01" "Standard" (chk01_std.checked as string)
+                    if chk01_hd != undefined then setINISetting iniFile "Serie01" "HD" (chk01_hd.checked as string)
+                    if chk01_det != undefined then setINISetting iniFile "Serie01" "Detourage" (chk01_det.checked as string)
 
-                -- Sauvegarder les checkboxes Série 02
-                setINISetting iniFile "Serie02" "Standard" (chk02_std.checked as string)
-                setINISetting iniFile "Serie02" "HD" (chk02_hd.checked as string)
-                setINISetting iniFile "Serie02" "Detourage" (chk02_det.checked as string)
+                    -- Sauvegarder les checkboxes Série 02
+                    if chk02_std != undefined then setINISetting iniFile "Serie02" "Standard" (chk02_std.checked as string)
+                    if chk02_hd != undefined then setINISetting iniFile "Serie02" "HD" (chk02_hd.checked as string)
+                    if chk02_det != undefined then setINISetting iniFile "Serie02" "Detourage" (chk02_det.checked as string)
 
-                -- Sauvegarder les checkboxes Série 03
-                setINISetting iniFile "Serie03" "Standard" (chk03_std.checked as string)
-                setINISetting iniFile "Serie03" "HD" (chk03_hd.checked as string)
-                setINISetting iniFile "Serie03" "Detourage" (chk03_det.checked as string)
+                    -- Sauvegarder les checkboxes Série 03
+                    if chk03_std != undefined then setINISetting iniFile "Serie03" "Standard" (chk03_std.checked as string)
+                    if chk03_hd != undefined then setINISetting iniFile "Serie03" "HD" (chk03_hd.checked as string)
+                    if chk03_det != undefined then setINISetting iniFile "Serie03" "Detourage" (chk03_det.checked as string)
 
-                -- Sauvegarder les checkboxes Série 04
-                setINISetting iniFile "Serie04" "Standard" (chk04_std.checked as string)
-                setINISetting iniFile "Serie04" "HD" (chk04_hd.checked as string)
-                setINISetting iniFile "Serie04" "Detourage" (chk04_det.checked as string)
+                    -- Sauvegarder les checkboxes Série 04
+                    if chk04_std != undefined then setINISetting iniFile "Serie04" "Standard" (chk04_std.checked as string)
+                    if chk04_hd != undefined then setINISetting iniFile "Serie04" "HD" (chk04_hd.checked as string)
+                    if chk04_det != undefined then setINISetting iniFile "Serie04" "Detourage" (chk04_det.checked as string)
 
-                print "Paramètres sauvegardés"
+                    print "Paramètres sauvegardés"
+                )
+                catch
+                (
+                    print "Erreur lors de la sauvegarde des paramètres"
+                )
             )
 
             -- Fonction pour charger les paramètres
