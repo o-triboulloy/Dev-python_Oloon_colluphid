@@ -70,7 +70,7 @@ class MenuPlugin:
             -- Section Lancer les rendus
             groupBox grpLancer "" pos:[10,596] width:186 height:80
             button btnLogo "" pos:[20,615] width:64 height:64 toolTip:"Lancer les rendus"
-            label lblLancerRendus "Lancer\nles rendus" pos:[95,627] width:90 height:40 align:#center
+            label lblLancerRendus "Lancer\nles rendus" pos:[95,607] width:90 height:40 align:#center
 
             -- Événement au chargement pour gérer les images
             on CustomToolWindow open do
