@@ -23,7 +23,7 @@ class MenuPlugin:
 
         # Création du rollout (fenêtre) avec MaxScript
         rollout_code = """
-        rollout CustomToolWindow "U-Rtool" width:206 height:680
+        rollout CustomToolWindow "U-Rtool" width:206 height:690
         (
             -- Variables globales
             local sceneFolderPath = ""
@@ -68,9 +68,9 @@ class MenuPlugin:
             checkbox chk04_det "Détourage" pos:[20,562] width:160
 
             -- Section Lancer les rendus
-            groupBox grpLancer "Lancer" pos:[10,596] width:186 height:80
+            groupBox grpLancer "" pos:[10,596] width:186 height:80
             button btnLogo "" pos:[20,615] width:64 height:64 toolTip:"Lancer les rendus"
-            label lblLancerRendus "Lancer\nles rendus" pos:[95,630] width:90 height:40 align:#left
+            label lblLancerRendus "Lancer\nles rendus" pos:[95,627] width:90 height:40 align:#center
 
             -- Événement au chargement pour gérer les images
             on CustomToolWindow open do
