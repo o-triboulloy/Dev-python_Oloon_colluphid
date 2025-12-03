@@ -31,6 +31,7 @@ class MenuPlugin:
             local textureFolderPath = ""
             local renderFolderPath = ""
             local iniFile = getDir #userScripts + "\\U-Rtool_settings.ini"
+            local isLoading = false  -- Flag pour éviter les conflits pendant le chargement
 
             -- Fonction pour sauvegarder les paramètres
             fn saveSettings =
@@ -73,6 +74,8 @@ class MenuPlugin:
             -- Fonction pour charger les paramètres
             fn loadSettings =
             (
+                isLoading = true  -- Désactiver les événements pendant le chargement
+
                 -- Charger les chemins
                 local loadedPath = getINISetting iniFile "Paths" "SceneFolder"
                 if loadedPath != "" then sceneFolderPath = loadedPath
@@ -115,6 +118,7 @@ class MenuPlugin:
                 val = getINISetting iniFile "Serie04" "Detourage"
                 if val != "" then chk04_det.checked = (val == "true")
 
+                isLoading = false  -- Réactiver les événements
                 print "Paramètres chargés"
             )
 
@@ -295,41 +299,41 @@ class MenuPlugin:
             -- Événements checkboxes Série 01 (mutuellement exclusifs)
             on chk01_std changed state do
             (
-                if state == true then chk01_hd.checked = false
+                if not isLoading and state == true then chk01_hd.checked = false
             )
             on chk01_hd changed state do
             (
-                if state == true then chk01_std.checked = false
+                if not isLoading and state == true then chk01_std.checked = false
             )
 
             -- Événements checkboxes Série 02 (mutuellement exclusifs)
             on chk02_std changed state do
             (
-                if state == true then chk02_hd.checked = false
+                if not isLoading and state == true then chk02_hd.checked = false
             )
             on chk02_hd changed state do
             (
-                if state == true then chk02_std.checked = false
+                if not isLoading and state == true then chk02_std.checked = false
             )
 
             -- Événements checkboxes Série 03 (mutuellement exclusifs)
             on chk03_std changed state do
             (
-                if state == true then chk03_hd.checked = false
+                if not isLoading and state == true then chk03_hd.checked = false
             )
             on chk03_hd changed state do
             (
-                if state == true then chk03_std.checked = false
+                if not isLoading and state == true then chk03_std.checked = false
             )
 
             -- Événements checkboxes Série 04 (mutuellement exclusifs)
             on chk04_std changed state do
             (
-                if state == true then chk04_hd.checked = false
+                if not isLoading and state == true then chk04_hd.checked = false
             )
             on chk04_hd changed state do
             (
-                if state == true then chk04_std.checked = false
+                if not isLoading and state == true then chk04_std.checked = false
             )
 
         )
