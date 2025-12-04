@@ -47,29 +47,44 @@ class MenuPlugin:
                     print ("Chemins sauvegardés OK")
 
                     -- Sauvegarder les checkboxes Série 01
-                    print ("Sauvegarde Série 01...")
-                    print ("  chk01_std.checked = " + (chk01_std.checked as string))
-                    setINISetting iniFile "Serie01" "Standard" (chk01_std.checked as string)
-                    setINISetting iniFile "Serie01" "HD" (chk01_hd.checked as string)
-                    setINISetting iniFile "Serie01" "Detourage" (chk01_det.checked as string)
+                    print ("Sauvegarde Config 01...")
+                    local val01_std = if chk01_std.checked then "true" else "false"
+                    local val01_hd = if chk01_hd.checked then "true" else "false"
+                    local val01_det = if chk01_det.checked then "true" else "false"
+                    print ("  Standard: " + val01_std + ", HD: " + val01_hd + ", Detourage: " + val01_det)
+                    setINISetting iniFile "Config01" "Standard" val01_std
+                    setINISetting iniFile "Config01" "HD" val01_hd
+                    setINISetting iniFile "Config01" "Detourage" val01_det
 
                     -- Sauvegarder les checkboxes Série 02
-                    print ("Sauvegarde Série 02...")
-                    setINISetting iniFile "Serie02" "Standard" (chk02_std.checked as string)
-                    setINISetting iniFile "Serie02" "HD" (chk02_hd.checked as string)
-                    setINISetting iniFile "Serie02" "Detourage" (chk02_det.checked as string)
+                    print ("Sauvegarde Config 02...")
+                    local val02_std = if chk02_std.checked then "true" else "false"
+                    local val02_hd = if chk02_hd.checked then "true" else "false"
+                    local val02_det = if chk02_det.checked then "true" else "false"
+                    print ("  Standard: " + val02_std + ", HD: " + val02_hd + ", Detourage: " + val02_det)
+                    setINISetting iniFile "Config02" "Standard" val02_std
+                    setINISetting iniFile "Config02" "HD" val02_hd
+                    setINISetting iniFile "Config02" "Detourage" val02_det
 
                     -- Sauvegarder les checkboxes Série 03
-                    print ("Sauvegarde Série 03...")
-                    setINISetting iniFile "Serie03" "Standard" (chk03_std.checked as string)
-                    setINISetting iniFile "Serie03" "HD" (chk03_hd.checked as string)
-                    setINISetting iniFile "Serie03" "Detourage" (chk03_det.checked as string)
+                    print ("Sauvegarde Config 03...")
+                    local val03_std = if chk03_std.checked then "true" else "false"
+                    local val03_hd = if chk03_hd.checked then "true" else "false"
+                    local val03_det = if chk03_det.checked then "true" else "false"
+                    print ("  Standard: " + val03_std + ", HD: " + val03_hd + ", Detourage: " + val03_det)
+                    setINISetting iniFile "Config03" "Standard" val03_std
+                    setINISetting iniFile "Config03" "HD" val03_hd
+                    setINISetting iniFile "Config03" "Detourage" val03_det
 
                     -- Sauvegarder les checkboxes Série 04
-                    print ("Sauvegarde Série 04...")
-                    setINISetting iniFile "Serie04" "Standard" (chk04_std.checked as string)
-                    setINISetting iniFile "Serie04" "HD" (chk04_hd.checked as string)
-                    setINISetting iniFile "Serie04" "Detourage" (chk04_det.checked as string)
+                    print ("Sauvegarde Config 04...")
+                    local val04_std = if chk04_std.checked then "true" else "false"
+                    local val04_hd = if chk04_hd.checked then "true" else "false"
+                    local val04_det = if chk04_det.checked then "true" else "false"
+                    print ("  Standard: " + val04_std + ", HD: " + val04_hd + ", Detourage: " + val04_det)
+                    setINISetting iniFile "Config04" "Standard" val04_std
+                    setINISetting iniFile "Config04" "HD" val04_hd
+                    setINISetting iniFile "Config04" "Detourage" val04_det
 
                     print ("=== Sauvegarde terminée avec succès ===")
                     print ("Fichier INI: " + iniFile)
@@ -95,36 +110,36 @@ class MenuPlugin:
                 loadedPath = getINISetting iniFile "Paths" "RenderFolder"
                 if loadedPath != "" then renderFolderPath = loadedPath
 
-                -- Charger les checkboxes Série 01
-                local val = getINISetting iniFile "Serie01" "Standard"
+                -- Charger les checkboxes Config 01
+                local val = getINISetting iniFile "Config01" "Standard"
                 if val != "" then chk01_std.checked = (val == "true")
-                val = getINISetting iniFile "Serie01" "HD"
+                val = getINISetting iniFile "Config01" "HD"
                 if val != "" then chk01_hd.checked = (val == "true")
-                val = getINISetting iniFile "Serie01" "Detourage"
+                val = getINISetting iniFile "Config01" "Detourage"
                 if val != "" then chk01_det.checked = (val == "true")
 
-                -- Charger les checkboxes Série 02
-                val = getINISetting iniFile "Serie02" "Standard"
+                -- Charger les checkboxes Config 02
+                val = getINISetting iniFile "Config02" "Standard"
                 if val != "" then chk02_std.checked = (val == "true")
-                val = getINISetting iniFile "Serie02" "HD"
+                val = getINISetting iniFile "Config02" "HD"
                 if val != "" then chk02_hd.checked = (val == "true")
-                val = getINISetting iniFile "Serie02" "Detourage"
+                val = getINISetting iniFile "Config02" "Detourage"
                 if val != "" then chk02_det.checked = (val == "true")
 
-                -- Charger les checkboxes Série 03
-                val = getINISetting iniFile "Serie03" "Standard"
+                -- Charger les checkboxes Config 03
+                val = getINISetting iniFile "Config03" "Standard"
                 if val != "" then chk03_std.checked = (val == "true")
-                val = getINISetting iniFile "Serie03" "HD"
+                val = getINISetting iniFile "Config03" "HD"
                 if val != "" then chk03_hd.checked = (val == "true")
-                val = getINISetting iniFile "Serie03" "Detourage"
+                val = getINISetting iniFile "Config03" "Detourage"
                 if val != "" then chk03_det.checked = (val == "true")
 
-                -- Charger les checkboxes Série 04
-                val = getINISetting iniFile "Serie04" "Standard"
+                -- Charger les checkboxes Config 04
+                val = getINISetting iniFile "Config04" "Standard"
                 if val != "" then chk04_std.checked = (val == "true")
-                val = getINISetting iniFile "Serie04" "HD"
+                val = getINISetting iniFile "Config04" "HD"
                 if val != "" then chk04_hd.checked = (val == "true")
-                val = getINISetting iniFile "Serie04" "Detourage"
+                val = getINISetting iniFile "Config04" "Detourage"
                 if val != "" then chk04_det.checked = (val == "true")
 
                 isLoading = false  -- Réactiver les événements
@@ -143,26 +158,26 @@ class MenuPlugin:
             label lblScenes "Scènes:" pos:[10,196] width:186
             dropdownList ddScenes "" pos:[10,211] width:186 items:#()
 
-            -- Rendus Série 01
-            groupBox grpRendu01 "Rendus Série 01" pos:[10,256] width:186 height:75
+            -- Rendus_Config01
+            groupBox grpRendu01 "Rendus_Config01" pos:[10,256] width:186 height:75
             checkbox chk01_std "Rendu standard" pos:[20,273] width:160
             checkbox chk01_hd "Rendu HD" pos:[20,290] width:160
             checkbox chk01_det "Détourage" pos:[20,307] width:160
 
-            -- Rendus Série 02
-            groupBox grpRendu02 "Rendus Série 02" pos:[10,341] width:186 height:75
+            -- Rendus_Config02
+            groupBox grpRendu02 "Rendus_Config02" pos:[10,341] width:186 height:75
             checkbox chk02_std "Rendu standard" pos:[20,358] width:160
             checkbox chk02_hd "Rendu HD" pos:[20,375] width:160
             checkbox chk02_det "Détourage" pos:[20,392] width:160
 
-            -- Rendus Série 03
-            groupBox grpRendu03 "Rendus Série 03" pos:[10,426] width:186 height:75
+            -- Rendus_Config03
+            groupBox grpRendu03 "Rendus_Config03" pos:[10,426] width:186 height:75
             checkbox chk03_std "Rendu standard" pos:[20,443] width:160
             checkbox chk03_hd "Rendu HD" pos:[20,460] width:160
             checkbox chk03_det "Détourage" pos:[20,477] width:160
 
-            -- Rendus Série 04
-            groupBox grpRendu04 "Rendus Série 04" pos:[10,511] width:186 height:75
+            -- Rendus_Config04
+            groupBox grpRendu04 "Rendus_Config04" pos:[10,511] width:186 height:75
             checkbox chk04_std "Rendu standard" pos:[20,528] width:160
             checkbox chk04_hd "Rendu HD" pos:[20,545] width:160
             checkbox chk04_det "Détourage" pos:[20,562] width:160
