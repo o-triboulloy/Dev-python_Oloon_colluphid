@@ -54,7 +54,7 @@ class MenuPlugin:
 
             -- Section Lancer les rendus
             groupBox grpLancer "" pos:[10,366] width:186 height:80
-            ImgTag btnLogo pos:[20,377] width:64 height:64 toolTip:"Lancer les rendus"
+            button btnLogo "" pos:[20,377] width:64 height:64 toolTip:"Lancer les rendus"
             label lblLancerRendus "          Lancer\n       les rendus" pos:[95,395] width:90 height:40 align:#center
 
             -- Événement au chargement pour gérer les images et charger les paramètres
@@ -65,18 +65,27 @@ class MenuPlugin:
                     print "Image TITRE_interface.jpg non trouvée dans le dossier des scripts"
                 )
 
-                -- Charger l'image du logo
-                local logoPath = getDir #userScripts + "\\Logo-Urt.jpg"
-                local img = openBitMap logoPath
+                -- Charger les 4 images du bouton logo
+                local scriptDir = getDir #userScripts
+                local imgNormal = openBitMap (scriptDir + "\\Logo-Urt-normal.jpg")
+                local imgHover = openBitMap (scriptDir + "\\Logo-Urt-hover.jpg")
+                local imgPressed = openBitMap (scriptDir + "\\Logo-Urt-pressed.jpg")
+                local imgDisabled = openBitMap (scriptDir + "\\Logo-Urt-disabled.jpg")
 
-                if img != undefined then
+                if imgNormal != undefined and imgHover != undefined and imgPressed != undefined and imgDisabled != undefined then
                 (
-                    btnLogo.bitmap = img
-                    print "Image du logo chargée"
+                    -- Format: #(bitmap1, bitmap2, bitmap3, bitmap4, enabledIdx, pressedIdx, disabledIdx, highlightIdx)
+                    -- enabledIdx=1 (normal), pressedIdx=3 (pressed), disabledIdx=4 (disabled), highlightIdx=2 (hover)
+                    btnLogo.images = #(imgNormal, imgHover, imgPressed, imgDisabled, 1, 3, 4, 2)
+                    print "Images du bouton logo chargées (4 états)"
                 )
                 else
                 (
-                    print "Image Logo-Urt.jpg non trouvée dans le dossier des scripts"
+                    print "ERREUR: Une ou plusieurs images du logo sont manquantes"
+                    if imgNormal == undefined then print "  - Logo-Urt-normal.jpg manquant"
+                    if imgHover == undefined then print "  - Logo-Urt-hover.jpg manquant"
+                    if imgPressed == undefined then print "  - Logo-Urt-pressed.jpg manquant"
+                    if imgDisabled == undefined then print "  - Logo-Urt-disabled.jpg manquant"
                 )
 
                 -- Charger les paramètres sauvegardés directement
@@ -187,7 +196,7 @@ class MenuPlugin:
             )
 
             -- Bouton Logo: Lancer les rendus
-            on btnLogo click do
+            on btnLogo pressed do
             (
                 -- Sauvegarder la configuration avant de lancer les rendus
                 print "=== SAUVEGARDE ==="
