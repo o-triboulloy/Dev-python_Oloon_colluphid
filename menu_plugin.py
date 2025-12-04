@@ -65,25 +65,19 @@ class MenuPlugin:
                     print "Image TITRE_interface.jpg non trouvée dans le dossier des scripts"
                 )
 
-                -- Charger les 3 images du bouton logo (MaxScript utilise format à 7 éléments)
+                -- Test: Charger UNE SEULE image pour diagnostiquer
                 local scriptDir = getDir #userScripts
-                local imgNormal = openBitMap (scriptDir + "\\Logo-Urt-normal.jpg")
-                local imgHover = openBitMap (scriptDir + "\\Logo-Urt-hover.jpg")
-                local imgPressed = openBitMap (scriptDir + "\\Logo-Urt-pressed.jpg")
+                local img = openBitMap (scriptDir + "\\Logo-Urt-normal.jpg")
 
-                if imgNormal != undefined and imgHover != undefined and imgPressed != undefined then
+                if img != undefined then
                 (
-                    -- Format 7 éléments: #(bitmap1, bitmap2, bitmap3, enabledIdx, pressedIdx, disabledIdx, highlightIdx)
-                    -- enabled=1 (normal), pressed=3 (pressed), disabled=3 (pressed), highlight=2 (hover)
-                    btnLogo.images = #(imgNormal, imgHover, imgPressed, 1, 3, 3, 2)
-                    print "Images du bouton logo chargées (3 états: normal, hover, pressed)"
+                    -- Format le plus simple: même image pour tous les états
+                    btnLogo.images = #(img, img, img, 1, 1, 1, 1)
+                    print "Image du bouton logo chargée (test format simple)"
                 )
                 else
                 (
-                    print "ERREUR: Une ou plusieurs images du logo sont manquantes"
-                    if imgNormal == undefined then print "  - Logo-Urt-normal.jpg manquant"
-                    if imgHover == undefined then print "  - Logo-Urt-hover.jpg manquant"
-                    if imgPressed == undefined then print "  - Logo-Urt-pressed.jpg manquant"
+                    print "ERREUR: Logo-Urt-normal.jpg manquant"
                 )
 
                 -- Charger les paramètres sauvegardés directement
