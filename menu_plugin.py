@@ -205,6 +205,13 @@ class MenuPlugin:
                     return false
                 )
 
+                -- Afficher tous les matériaux de la scène pour diagnostic
+                print "=== MATÉRIAUX DANS LA SCÈNE ==="
+                for mat in sceneMaterials do
+                (
+                    print ("  - " + mat.name + " (" + (classOf mat as string) + ")")
+                )
+
                 -- Trouver le matériau MAT_UNIKALO
                 local targetMat = undefined
                 for mat in sceneMaterials do
@@ -218,7 +225,11 @@ class MenuPlugin:
 
                 if targetMat == undefined then
                 (
-                    messageBox "Matériau 'MAT_UNIKALO' introuvable dans la scène." title:"Erreur"
+                    local errorMsg = "Matériau 'MAT_UNIKALO' introuvable dans la scène.\n\n"
+                    errorMsg += "Matériaux disponibles:\n"
+                    for mat in sceneMaterials do
+                        errorMsg += "  - " + mat.name + "\n"
+                    messageBox errorMsg title:"Erreur"
                     return false
                 )
 
