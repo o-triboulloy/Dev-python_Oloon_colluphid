@@ -102,10 +102,23 @@ class MenuPlugin:
             fn loadSettings =
             (
                 isLoading = true  -- Désactiver les événements pendant le chargement
+                print "=== CHARGEMENT ==="
 
                 -- Charger les chemins
                 local loadedPath = getINISetting iniFile "Paths" "SceneFolder"
-                if loadedPath != "" then sceneFolderPath = loadedPath
+                if loadedPath != "" then
+                (
+                    sceneFolderPath = loadedPath
+                    print ("Dossier scènes chargé: " + sceneFolderPath)
+
+                    -- Remplir le menu déroulant avec les scènes
+                    sceneFiles = getFiles (sceneFolderPath + "\\*.max")
+                    local sceneNames = #()
+                    for sceneFile in sceneFiles do
+                        append sceneNames (filenameFromPath sceneFile)
+                    ddScenes.items = sceneNames
+                    print ((sceneNames.count as string) + " scènes trouvées")
+                )
 
                 loadedPath = getINISetting iniFile "Paths" "TextureFolder"
                 if loadedPath != "" then textureFolderPath = loadedPath
@@ -113,14 +126,23 @@ class MenuPlugin:
                 loadedPath = getINISetting iniFile "Paths" "RenderFolder"
                 if loadedPath != "" then renderFolderPath = loadedPath
 
-                -- Charger les checkboxes avec protection
+                -- Charger les checkboxes avec protection et debug
                 try
                 (
+                    print "Chargement checkboxes..."
+
                     -- Config 01
                     local val = getINISetting iniFile "Config01" "Standard"
-                    if val != "" and chk01_std != undefined then chk01_std.checked = (val == "true")
+                    print ("Config01 Standard=" + val)
+                    if val != "" and chk01_std != undefined then
+                    (
+                        chk01_std.checked = (val == "true")
+                        print ("  -> chk01_std défini à " + (chk01_std.checked as string))
+                    )
+
                     val = getINISetting iniFile "Config01" "HD"
                     if val != "" and chk01_hd != undefined then chk01_hd.checked = (val == "true")
+
                     val = getINISetting iniFile "Config01" "Detourage"
                     if val != "" and chk01_det != undefined then chk01_det.checked = (val == "true")
 
@@ -148,14 +170,15 @@ class MenuPlugin:
                     val = getINISetting iniFile "Config04" "Detourage"
                     if val != "" and chk04_det != undefined then chk04_det.checked = (val == "true")
 
-                    print "Paramètres chargés"
+                    print "Checkboxes chargées"
                 )
-                catch
+                catch e
                 (
-                    print "Erreur lors du chargement des paramètres"
+                    print ("Erreur lors du chargement des checkboxes: " + (e as string))
                 )
 
                 isLoading = false  -- Réactiver les événements
+                print "=== CHARGEMENT TERMINÉ ==="
             )
 
             -- Image en haut (ImgTag pour éviter le liseré)
