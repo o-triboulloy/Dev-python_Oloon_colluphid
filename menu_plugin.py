@@ -65,19 +65,18 @@ class MenuPlugin:
                     print "Image TITRE_interface.jpg non trouvée dans le dossier des scripts"
                 )
 
-                -- Charger les 4 images du bouton logo
+                -- Charger les 3 images du bouton logo (MaxScript utilise format à 7 éléments)
                 local scriptDir = getDir #userScripts
                 local imgNormal = openBitMap (scriptDir + "\\Logo-Urt-normal.jpg")
                 local imgHover = openBitMap (scriptDir + "\\Logo-Urt-hover.jpg")
                 local imgPressed = openBitMap (scriptDir + "\\Logo-Urt-pressed.jpg")
-                local imgDisabled = openBitMap (scriptDir + "\\Logo-Urt-disabled.jpg")
 
-                if imgNormal != undefined and imgHover != undefined and imgPressed != undefined and imgDisabled != undefined then
+                if imgNormal != undefined and imgHover != undefined and imgPressed != undefined then
                 (
-                    -- Format: #(bitmap1, bitmap2, bitmap3, bitmap4, enabledIdx, pressedIdx, disabledIdx, highlightIdx)
-                    -- enabledIdx=1 (normal), pressedIdx=3 (pressed), disabledIdx=4 (disabled), highlightIdx=2 (hover)
-                    btnLogo.images = #(imgNormal, imgHover, imgPressed, imgDisabled, 1, 3, 4, 2)
-                    print "Images du bouton logo chargées (4 états)"
+                    -- Format 7 éléments: #(bitmap1, bitmap2, bitmap3, enabledIdx, pressedIdx, disabledIdx, highlightIdx)
+                    -- enabled=1 (normal), pressed=3 (pressed), disabled=3 (pressed), highlight=2 (hover)
+                    btnLogo.images = #(imgNormal, imgHover, imgPressed, 1, 3, 3, 2)
+                    print "Images du bouton logo chargées (3 états: normal, hover, pressed)"
                 )
                 else
                 (
@@ -85,7 +84,6 @@ class MenuPlugin:
                     if imgNormal == undefined then print "  - Logo-Urt-normal.jpg manquant"
                     if imgHover == undefined then print "  - Logo-Urt-hover.jpg manquant"
                     if imgPressed == undefined then print "  - Logo-Urt-pressed.jpg manquant"
-                    if imgDisabled == undefined then print "  - Logo-Urt-disabled.jpg manquant"
                 )
 
                 -- Charger les paramètres sauvegardés directement
