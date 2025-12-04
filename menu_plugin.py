@@ -301,18 +301,64 @@ class MenuPlugin:
 
                     print ("\n--- Texture: " + textureName + " ---")
 
-                    -- Charger la texture dans le matériau Arnold
+                    -- Charger la texture dans le matériau (Arnold ou Physical)
                     try
                     (
                         local newBitmap = Bitmaptexture fileName:textureFile
+                        local textureAssigned = false
+                        local matType = classOf targetMat as string
 
-                        -- Assigner à base_color_shader (Arnold Standard Surface)
-                        targetMat.base_color_shader = newBitmap
-                        print ("Texture assignée: " + textureName)
+                        -- Essayer Arnold Standard Surface
+                        if matType == "ai_standard_surface" then
+                        (
+                            try
+                            (
+                                targetMat.base_color_shader = newBitmap
+                                textureAssigned = true
+                                print ("Texture assignée à Arnold Standard Surface: " + textureName)
+                            )
+                            catch
+                            (
+                                print ("ERREUR: Échec assignation Arnold")
+                            )
+                        )
+                        -- Essayer Physical Material
+                        else if matType == "Physical_Material" or matType == "PhysicalMaterial" then
+                        (
+                            try
+                            (
+                                targetMat.base_color_map = newBitmap
+                                textureAssigned = true
+                                print ("Texture assignée à Physical Material: " + textureName)
+                            )
+                            catch
+                            (
+                                try
+                                (
+                                    targetMat.base_weight_color_map = newBitmap
+                                    textureAssigned = true
+                                    print ("Texture assignée à Physical Material (base_weight): " + textureName)
+                                )
+                                catch
+                                (
+                                    print ("ERREUR: Échec assignation Physical Material")
+                                )
+                            )
+                        )
+                        else
+                        (
+                            print ("AVERTISSEMENT: Type de matériau non supporté: " + matType)
+                        )
+
+                        if not textureAssigned then
+                        (
+                            print ("ERREUR: Impossible d'assigner la texture " + textureName)
+                            continue
+                        )
                     )
                     catch
                     (
-                        print ("ERREUR: Impossible de charger ou assigner la texture " + textureName)
+                        print ("ERREUR: Impossible de charger la texture " + textureName)
                         continue
                     )
 
