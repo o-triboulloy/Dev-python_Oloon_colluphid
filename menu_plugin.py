@@ -73,16 +73,13 @@ class MenuPlugin:
 
                 if logoBitmap != undefined and logoHoverBitmap != undefined then
                 (
-                    -- Tableau avec 4 bitmaps et 3 indices
-                    local imgArray = #(logoBitmap, logoHoverBitmap, logoBitmap, logoBitmap)
-                    btnLogo.images = imgArray
-                    -- Définir les indices: normal=1, hover=2, pressed=1
-                    btnLogo.image = 1
+                    -- Format: #(normal, hover, pressed, disabled, normalIdx, hoverIdx, pressedIdx)
+                    btnLogo.images = #(logoBitmap, logoHoverBitmap, logoBitmap, logoBitmap, 1, 2, 1)
                     print "Images du bouton chargées (normal + hover)"
                 )
                 else if logoBitmap != undefined then
                 (
-                    btnLogo.images = #(logoBitmap, logoBitmap, logoBitmap, logoBitmap)
+                    btnLogo.images = #(logoBitmap, logoBitmap, logoBitmap, logoBitmap, 1, 1, 1)
                     print "Image du bouton chargée (sans hover)"
                 )
                 else
