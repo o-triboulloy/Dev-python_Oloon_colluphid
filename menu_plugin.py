@@ -301,26 +301,18 @@ class MenuPlugin:
 
                     print ("\n--- Texture: " + textureName + " ---")
 
-                    -- Charger la texture dans le matériau
+                    -- Charger la texture dans le matériau Arnold
                     try
                     (
                         local newBitmap = Bitmaptexture fileName:textureFile
 
-                        -- Essayer d'assigner à base_color_map ou base_color
-                        try (targetMat.base_color_map = newBitmap) catch
-                        (
-                            try (targetMat.base_color = newBitmap) catch
-                            (
-                                print ("ERREUR: Impossible d'assigner la texture au matériau")
-                                continue
-                            )
-                        )
-
+                        -- Assigner à base_color_shader (Arnold Standard Surface)
+                        targetMat.base_color_shader = newBitmap
                         print ("Texture assignée: " + textureName)
                     )
                     catch
                     (
-                        print ("ERREUR: Impossible de charger la texture " + textureName)
+                        print ("ERREUR: Impossible de charger ou assigner la texture " + textureName)
                         continue
                     )
 
