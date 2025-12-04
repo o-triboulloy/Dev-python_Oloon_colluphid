@@ -189,8 +189,192 @@ class MenuPlugin:
                 setINISetting iniFile "OptionsRendu" "RenduHDDetoure" (if chkRenduHDDet.checked then "true" else "false")
 
                 print "=== Configuration sauvegardée ==="
-                print "Lancement des rendus..."
-                -- Logique de rendu à implémenter
+                print "=== LANCEMENT DES RENDUS ==="
+
+                -- Vérifications préalables
+                if textureFolderPath == "" or renderFolderPath == "" then
+                (
+                    messageBox "Veuillez sélectionner un dossier de textures ET un dossier de rendu avant de lancer les rendus." title:"Erreur"
+                    return false
+                )
+
+                -- Vérifier qu'au moins une option est cochée
+                if not chkRenduStd.checked and not chkRenduDet.checked and not chkRenduHD.checked and not chkRenduHDDet.checked then
+                (
+                    messageBox "Veuillez cocher au moins une option de rendu." title:"Erreur"
+                    return false
+                )
+
+                -- Trouver le matériau MAT_UNIKALO
+                local targetMat = undefined
+                for mat in sceneMaterials do
+                (
+                    if mat.name == "MAT_UNIKALO" then
+                    (
+                        targetMat = mat
+                        exit
+                    )
+                )
+
+                if targetMat == undefined then
+                (
+                    messageBox "Matériau 'MAT_UNIKALO' introuvable dans la scène." title:"Erreur"
+                    return false
+                )
+
+                print ("Matériau trouvé: " + targetMat.name)
+
+                -- Lister les textures du dossier
+                local textureFiles = getFiles (textureFolderPath + "\\*.jpg") + getFiles (textureFolderPath + "\\*.png") + getFiles (textureFolderPath + "\\*.tga")
+
+                if textureFiles.count == 0 then
+                (
+                    messageBox "Aucune texture trouvée dans le dossier sélectionné." title:"Erreur"
+                    return false
+                )
+
+                print (textureFiles.count as string + " textures trouvées")
+
+                -- Créer la structure de dossiers
+                local textureFolderName = filterString textureFolderPath "\\"
+                textureFolderName = textureFolderName[textureFolderName.count]
+                local baseRenderPath = renderFolderPath + "\\" + textureFolderName
+
+                -- Créer le dossier principal
+                makeDir baseRenderPath all:true
+
+                -- Créer les sous-dossiers selon les options cochées
+                local renderJobs = #()
+
+                if chkRenduStd.checked then
+                (
+                    local folderPath = baseRenderPath + "\\Rendus_standard"
+                    makeDir folderPath all:true
+                    append renderJobs #("standard", folderPath, 1200, 1200, "jpg", false)
+                    print ("Dossier créé: " + folderPath)
+                )
+
+                if chkRenduDet.checked then
+                (
+                    local folderPath = baseRenderPath + "\\Rendus_detoures"
+                    makeDir folderPath all:true
+                    append renderJobs #("detoure", folderPath, 1200, 1200, "png", true)
+                    print ("Dossier créé: " + folderPath)
+                )
+
+                if chkRenduHD.checked then
+                (
+                    local folderPath = baseRenderPath + "\\Rendus_HD"
+                    makeDir folderPath all:true
+                    append renderJobs #("HD", folderPath, 10000, 10000, "jpg", false)
+                    print ("Dossier créé: " + folderPath)
+                )
+
+                if chkRenduHDDet.checked then
+                (
+                    local folderPath = baseRenderPath + "\\Rendus_HD_detoures"
+                    makeDir folderPath all:true
+                    append renderJobs #("HD_detoure", folderPath, 10000, 10000, "png", true)
+                    print ("Dossier créé: " + folderPath)
+                )
+
+                -- Sauvegarder les paramètres de rendu actuels
+                local originalWidth = renderWidth
+                local originalHeight = renderHeight
+
+                -- Compter le nombre total de rendus
+                local totalRendus = textureFiles.count * renderJobs.count
+                local renduCourant = 0
+
+                print ("=== DÉBUT DES RENDUS (" + totalRendus as string + " rendus à effectuer) ===")
+
+                -- Boucle sur chaque texture
+                for textureFile in textureFiles do
+                (
+                    local textureName = filenameFromPath textureFile
+                    local textureBaseName = getFilenameFile textureFile
+
+                    print ("\n--- Texture: " + textureName + " ---")
+
+                    -- Charger la texture dans le matériau
+                    try
+                    (
+                        local newBitmap = Bitmaptexture fileName:textureFile
+
+                        -- Essayer d'assigner à base_color_map ou base_color
+                        try (targetMat.base_color_map = newBitmap) catch
+                        (
+                            try (targetMat.base_color = newBitmap) catch
+                            (
+                                print ("ERREUR: Impossible d'assigner la texture au matériau")
+                                continue
+                            )
+                        )
+
+                        print ("Texture assignée: " + textureName)
+                    )
+                    catch
+                    (
+                        print ("ERREUR: Impossible de charger la texture " + textureName)
+                        continue
+                    )
+
+                    -- Boucle sur chaque type de rendu
+                    for job in renderJobs do
+                    (
+                        local jobName = job[1]
+                        local jobFolder = job[2]
+                        local jobWidth = job[3]
+                        local jobHeight = job[4]
+                        local jobFormat = job[5]
+                        local jobAlpha = job[6]
+
+                        renduCourant += 1
+                        print ("  [" + renduCourant as string + "/" + totalRendus as string + "] Rendu " + jobName + "...")
+
+                        -- Configurer les paramètres de rendu
+                        renderWidth = jobWidth
+                        renderHeight = jobHeight
+
+                        -- Configurer Arnold pour l'alpha si nécessaire
+                        if jobAlpha then
+                        (
+                            -- Activer l'alpha dans Arnold
+                            try
+                            (
+                                renderers.current.beauty_aov_exr_enable_rgba = true
+                                print ("    Alpha activé pour rendu détouré")
+                            )
+                            catch
+                            (
+                                print ("    ATTENTION: Impossible d'activer l'alpha (vérifier que Arnold est le renderer actif)")
+                            )
+                        )
+
+                        -- Nom du fichier de sortie
+                        local outputFileName = "Rendu_" + jobName + "_" + textureBaseName + "." + jobFormat
+                        local outputPath = jobFolder + "\\" + outputFileName
+
+                        -- Lancer le rendu
+                        try
+                        (
+                            local renderedImage = render outputfile:outputPath
+                            print ("    OK: " + outputFileName)
+                        )
+                        catch
+                        (
+                            print ("    ERREUR lors du rendu: " + outputFileName)
+                        )
+                    )
+                )
+
+                -- Restaurer les paramètres originaux
+                renderWidth = originalWidth
+                renderHeight = originalHeight
+
+                print ("\n=== RENDUS TERMINÉS ===")
+                print (renduCourant as string + " rendus effectués")
+                messageBox ("Rendus terminés !\n\n" + renduCourant as string + " rendus effectués avec succès.") title:"Succès"
             )
 
             -- Événement menu déroulant Scènes
