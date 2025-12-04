@@ -73,13 +73,13 @@ class MenuPlugin:
 
                 if logoBitmap != undefined and logoHoverBitmap != undefined then
                 (
-                    -- Format: #(normal, hover, pressed, disabled, normalIdx, hoverIdx, pressedIdx)
-                    btnLogo.images = #(logoBitmap, logoHoverBitmap, logoBitmap, logoBitmap, 1, 2, 1)
+                    -- MaxScript utilise automatiquement: bitmap1=normal, bitmap2=hover, bitmap3=pressed, bitmap4=disabled
+                    btnLogo.images = #(logoBitmap, logoHoverBitmap, logoBitmap, logoBitmap)
                     print "Images du bouton chargées (normal + hover)"
                 )
                 else if logoBitmap != undefined then
                 (
-                    btnLogo.images = #(logoBitmap, logoBitmap, logoBitmap, logoBitmap, 1, 1, 1)
+                    btnLogo.images = #(logoBitmap, logoBitmap, logoBitmap, logoBitmap)
                     print "Image du bouton chargée (sans hover)"
                 )
                 else
