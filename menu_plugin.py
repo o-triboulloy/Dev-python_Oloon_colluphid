@@ -212,13 +212,15 @@ class MenuPlugin:
                     print ("  - " + mat.name + " (" + (classOf mat as string) + ")")
                 )
 
-                -- Trouver le matériau MAT_UNIKALO
+                -- Trouver le matériau MAT_UNIKALO (avec trim pour ignorer les espaces)
                 local targetMat = undefined
                 for mat in sceneMaterials do
                 (
-                    if mat.name == "MAT_UNIKALO" then
+                    local trimmedName = trimLeft (trimRight mat.name)
+                    if trimmedName == "MAT_UNIKALO" then
                     (
                         targetMat = mat
+                        print ("  >> Matériau cible trouvé: '" + mat.name + "'")
                         exit
                     )
                 )
