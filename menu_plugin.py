@@ -30,11 +30,11 @@ class MenuPlugin:
             local sceneFiles = #()
             local textureFolderPath = ""
             local renderFolderPath = ""
-            local iniFile = getDir #userScripts + "\\U-Rtool_settings.ini"
+            local iniFile = getDir #userScripts + "\\\\U-Rtool_settings.ini"
             local isLoading = false  -- Flag pour éviter les conflits pendant le chargement
 
             -- Image en haut (ImgTag pour éviter le liseré)
-            ImgTag titleImage pos:[12,10] width:182 height:66 bitmap:(openBitMap (getDir #userScripts + "\\TITRE_interface.jpg"))
+            ImgTag titleImage pos:[12,10] width:182 height:66 bitmap:(openBitMap (getDir #userScripts + "\\\\TITRE_interface.jpg"))
 
             -- Boutons
             button btn1 "Dossier scènes" pos:[10,86] width:186 height:30
@@ -74,7 +74,7 @@ class MenuPlugin:
                 (
                     sceneFolderPath = loadedPath
                     print ("Dossier scènes: " + sceneFolderPath)
-                    sceneFiles = getFiles (sceneFolderPath + "\\*.max")
+                    sceneFiles = getFiles (sceneFolderPath + "\\\\*.max")
                     local sceneNames = #()
                     for sceneFile in sceneFiles do
                         append sceneNames (filenameFromPath sceneFile)
@@ -119,7 +119,7 @@ class MenuPlugin:
                     print ("Dossier sélectionné: " + sceneFolderPath)
 
                     -- Lister les fichiers .max dans le dossier
-                    sceneFiles = getFiles (sceneFolderPath + "\\*.max")
+                    sceneFiles = getFiles (sceneFolderPath + "\\\\*.max")
 
                     -- Extraire juste les noms de fichiers (sans le chemin complet)
                     local sceneNames = #()
@@ -225,7 +225,7 @@ class MenuPlugin:
                 print ("Matériau trouvé: " + targetMat.name)
 
                 -- Lister les textures du dossier
-                local textureFiles = getFiles (textureFolderPath + "\\*.jpg") + getFiles (textureFolderPath + "\\*.png") + getFiles (textureFolderPath + "\\*.tga")
+                local textureFiles = getFiles (textureFolderPath + "\\\\*.jpg") + getFiles (textureFolderPath + "\\\\*.png") + getFiles (textureFolderPath + "\\\\*.tga")
 
                 if textureFiles.count == 0 then
                 (
@@ -236,9 +236,9 @@ class MenuPlugin:
                 print (textureFiles.count as string + " textures trouvées")
 
                 -- Créer la structure de dossiers
-                local textureFolderName = filterString textureFolderPath "\\"
+                local textureFolderName = filterString textureFolderPath "\\\\"
                 textureFolderName = textureFolderName[textureFolderName.count]
-                local baseRenderPath = renderFolderPath + "\\" + textureFolderName
+                local baseRenderPath = renderFolderPath + "\\\\" + textureFolderName
 
                 -- Créer le dossier principal
                 makeDir baseRenderPath all:true
@@ -248,7 +248,7 @@ class MenuPlugin:
 
                 if chkRenduStd.checked then
                 (
-                    local folderPath = baseRenderPath + "\\Rendus_standard"
+                    local folderPath = baseRenderPath + "\\\\Rendus_standard"
                     makeDir folderPath all:true
                     append renderJobs #("standard", folderPath, 1200, 1200, "jpg", false)
                     print ("Dossier créé: " + folderPath)
@@ -256,7 +256,7 @@ class MenuPlugin:
 
                 if chkRenduDet.checked then
                 (
-                    local folderPath = baseRenderPath + "\\Rendus_detoures"
+                    local folderPath = baseRenderPath + "\\\\Rendus_detoures"
                     makeDir folderPath all:true
                     append renderJobs #("detoure", folderPath, 1200, 1200, "png", true)
                     print ("Dossier créé: " + folderPath)
@@ -264,7 +264,7 @@ class MenuPlugin:
 
                 if chkRenduHD.checked then
                 (
-                    local folderPath = baseRenderPath + "\\Rendus_HD"
+                    local folderPath = baseRenderPath + "\\\\Rendus_HD"
                     makeDir folderPath all:true
                     append renderJobs #("HD", folderPath, 10000, 10000, "jpg", false)
                     print ("Dossier créé: " + folderPath)
@@ -272,7 +272,7 @@ class MenuPlugin:
 
                 if chkRenduHDDet.checked then
                 (
-                    local folderPath = baseRenderPath + "\\Rendus_HD_detoures"
+                    local folderPath = baseRenderPath + "\\\\Rendus_HD_detoures"
                     makeDir folderPath all:true
                     append renderJobs #("HD_detoure", folderPath, 10000, 10000, "png", true)
                     print ("Dossier créé: " + folderPath)
@@ -353,7 +353,7 @@ class MenuPlugin:
 
                         -- Nom du fichier de sortie
                         local outputFileName = "Rendu_" + jobName + "_" + textureBaseName + "." + jobFormat
-                        local outputPath = jobFolder + "\\" + outputFileName
+                        local outputPath = jobFolder + "\\\\" + outputFileName
 
                         -- Lancer le rendu
                         try
