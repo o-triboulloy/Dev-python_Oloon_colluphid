@@ -65,18 +65,18 @@ class MenuPlugin:
                     print "Image TITRE_interface.jpg non trouvée dans le dossier des scripts"
                 )
 
-                -- Charger l'image du logo avec transparence
-                local logoPath = getDir #userScripts + "\\Logo_Urt_alpha.png"
+                -- Charger l'image du logo
+                local logoPath = getDir #userScripts + "\\Logo-Urt.jpg"
                 local img = openBitMap logoPath
 
                 if img != undefined then
                 (
                     btnLogo.bitmap = img
-                    print "Image du logo chargée (avec alpha)"
+                    print "Image du logo chargée"
                 )
                 else
                 (
-                    print "Image Logo_Urt_alpha.png non trouvée dans le dossier des scripts"
+                    print "Image Logo-Urt.jpg non trouvée dans le dossier des scripts"
                 )
 
                 -- Charger les paramètres sauvegardés directement
