@@ -54,7 +54,7 @@ class MenuPlugin:
 
             -- Section Lancer les rendus
             groupBox grpLancer "" pos:[10,366] width:186 height:80
-            button btnLogo "" pos:[20,377] width:64 height:64 toolTip:"Lancer les rendus"
+            ImgTag btnLogo pos:[20,377] width:64 height:64 toolTip:"Lancer les rendus"
             label lblLancerRendus "          Lancer\n       les rendus" pos:[95,395] width:90 height:40 align:#center
 
             -- Événement au chargement pour gérer les images et charger les paramètres
@@ -71,9 +71,8 @@ class MenuPlugin:
 
                 if img != undefined then
                 (
-                    -- Format correct: tableau de bitmaps puis indices
-                    btnLogo.images = #(img, img, img, img)
-                    print "Image du bouton chargée (avec alpha)"
+                    btnLogo.bitmap = img
+                    print "Image du logo chargée (avec alpha)"
                 )
                 else
                 (
@@ -188,7 +187,7 @@ class MenuPlugin:
             )
 
             -- Bouton Logo: Lancer les rendus
-            on btnLogo pressed do
+            on btnLogo click do
             (
                 -- Sauvegarder la configuration avant de lancer les rendus
                 print "=== SAUVEGARDE ==="
