@@ -65,16 +65,25 @@ class MenuPlugin:
                     print "Image TITRE_interface.jpg non trouvée dans le dossier des scripts"
                 )
 
-                -- Charger l'image du logo dans le bouton
+                -- Charger les images du logo dans le bouton (normal et hover)
                 local logoPath = getDir #userScripts + "\\Logo-Urt.jpg"
+                local logoHoverPath = getDir #userScripts + "\\Logo-Urt_hover.jpg"
                 local logoBitmap = openBitMap logoPath
-                if logoBitmap != undefined then
+                local logoHoverBitmap = openBitMap logoHoverPath
+
+                if logoBitmap != undefined and logoHoverBitmap != undefined then
+                (
+                    btnLogo.images = #(logoBitmap, logoHoverBitmap, 1, 1, 1, 2, 1)
+                    print "Images du bouton chargées (normal + hover)"
+                )
+                else if logoBitmap != undefined then
                 (
                     btnLogo.images = #(logoBitmap, undefined, 1, 1, 1, 1, 1)
+                    print "Image du bouton chargée (sans hover)"
                 )
                 else
                 (
-                    print "Image Logo-Urt.jpg non trouvée dans le dossier des scripts"
+                    print "Images Logo-Urt.jpg non trouvées dans le dossier des scripts"
                 )
 
                 -- Charger les paramètres sauvegardés directement
