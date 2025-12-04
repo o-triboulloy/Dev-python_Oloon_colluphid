@@ -54,8 +54,7 @@ class MenuPlugin:
 
             -- Section Lancer les rendus
             groupBox grpLancer "" pos:[10,366] width:186 height:80
-            button btnLogo "" pos:[20,377] width:64 height:64 toolTip:"Lancer les rendus"
-            label lblLancerRendus "          Lancer\n       les rendus" pos:[95,395] width:90 height:40 align:#center
+            button btnLancer "Lancer les rendus" pos:[20,377] width:166 height:64
 
             -- Événement au chargement pour gérer les images et charger les paramètres
             on CustomToolWindow open do
@@ -63,21 +62,6 @@ class MenuPlugin:
                 if titleImage.bitmap == undefined then
                 (
                     print "Image TITRE_interface.jpg non trouvée dans le dossier des scripts"
-                )
-
-                -- Test: Charger UNE SEULE image pour diagnostiquer
-                local scriptDir = getDir #userScripts
-                local img = openBitMap (scriptDir + "\\Logo-Urt-normal.jpg")
-
-                if img != undefined then
-                (
-                    -- Format le plus simple: même image pour tous les états
-                    btnLogo.images = #(img, img, img, 1, 1, 1, 1)
-                    print "Image du bouton logo chargée (test format simple)"
-                )
-                else
-                (
-                    print "ERREUR: Logo-Urt-normal.jpg manquant"
                 )
 
                 -- Charger les paramètres sauvegardés directement
@@ -187,8 +171,8 @@ class MenuPlugin:
                 )
             )
 
-            -- Bouton Logo: Lancer les rendus
-            on btnLogo pressed do
+            -- Bouton: Lancer les rendus
+            on btnLancer pressed do
             (
                 -- Sauvegarder la configuration avant de lancer les rendus
                 print "=== SAUVEGARDE ==="
