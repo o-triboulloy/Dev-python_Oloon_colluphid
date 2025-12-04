@@ -33,161 +33,6 @@ class MenuPlugin:
             local iniFile = getDir #userScripts + "\\U-Rtool_settings.ini"
             local isLoading = false  -- Flag pour éviter les conflits pendant le chargement
 
-            -- Fonction pour sauvegarder les paramètres
-            fn saveSettings =
-            (
-                print "=== SAUVEGARDE ==="
-
-                -- Sauvegarder les chemins
-                setINISetting iniFile "Paths" "SceneFolder" sceneFolderPath
-                setINISetting iniFile "Paths" "TextureFolder" textureFolderPath
-                setINISetting iniFile "Paths" "RenderFolder" renderFolderPath
-
-                -- Sauvegarder Config01
-                try
-                (
-                    local val_std = if chk01_std.checked then "true" else "false"
-                    local val_hd = if chk01_hd.checked then "true" else "false"
-                    local val_det = if chk01_det.checked then "true" else "false"
-                    setINISetting iniFile "Config01" "Standard" val_std
-                    setINISetting iniFile "Config01" "HD" val_hd
-                    setINISetting iniFile "Config01" "Detourage" val_det
-                    print "Config01 sauvegardé"
-                )
-                catch (print "ERREUR Config01")
-
-                -- Sauvegarder Config02
-                try
-                (
-                    local val_std = if chk02_std.checked then "true" else "false"
-                    local val_hd = if chk02_hd.checked then "true" else "false"
-                    local val_det = if chk02_det.checked then "true" else "false"
-                    setINISetting iniFile "Config02" "Standard" val_std
-                    setINISetting iniFile "Config02" "HD" val_hd
-                    setINISetting iniFile "Config02" "Detourage" val_det
-                    print "Config02 sauvegardé"
-                )
-                catch (print "ERREUR Config02")
-
-                -- Sauvegarder Config03
-                try
-                (
-                    local val_std = if chk03_std.checked then "true" else "false"
-                    local val_hd = if chk03_hd.checked then "true" else "false"
-                    local val_det = if chk03_det.checked then "true" else "false"
-                    setINISetting iniFile "Config03" "Standard" val_std
-                    setINISetting iniFile "Config03" "HD" val_hd
-                    setINISetting iniFile "Config03" "Detourage" val_det
-                    print "Config03 sauvegardé"
-                )
-                catch (print "ERREUR Config03")
-
-                -- Sauvegarder Config04
-                try
-                (
-                    local val_std = if chk04_std.checked then "true" else "false"
-                    local val_hd = if chk04_hd.checked then "true" else "false"
-                    local val_det = if chk04_det.checked then "true" else "false"
-                    setINISetting iniFile "Config04" "Standard" val_std
-                    setINISetting iniFile "Config04" "HD" val_hd
-                    setINISetting iniFile "Config04" "Detourage" val_det
-                    print "Config04 sauvegardé"
-                )
-                catch (print "ERREUR Config04")
-
-                print "=== Sauvegarde terminée ==="
-            )
-
-            -- Fonction pour charger les paramètres
-            fn loadSettings =
-            (
-                isLoading = true  -- Désactiver les événements pendant le chargement
-                print "=== CHARGEMENT ==="
-
-                -- Charger les chemins
-                local loadedPath = getINISetting iniFile "Paths" "SceneFolder"
-                if loadedPath != "" then
-                (
-                    sceneFolderPath = loadedPath
-                    print ("Dossier scènes chargé: " + sceneFolderPath)
-
-                    -- Remplir le menu déroulant avec les scènes
-                    sceneFiles = getFiles (sceneFolderPath + "\\*.max")
-                    local sceneNames = #()
-                    for sceneFile in sceneFiles do
-                        append sceneNames (filenameFromPath sceneFile)
-
-                    -- Vérifier que ddScenes existe avant de l'utiliser
-                    if ddScenes != undefined then
-                    (
-                        ddScenes.items = sceneNames
-                        print ((sceneNames.count as string) + " scènes trouvées")
-                    )
-                    else
-                        print "ddScenes non initialisé, scènes chargées en mémoire uniquement"
-                )
-
-                loadedPath = getINISetting iniFile "Paths" "TextureFolder"
-                if loadedPath != "" then textureFolderPath = loadedPath
-
-                loadedPath = getINISetting iniFile "Paths" "RenderFolder"
-                if loadedPath != "" then renderFolderPath = loadedPath
-
-                -- Charger les checkboxes avec protection et debug
-                try
-                (
-                    print "Chargement checkboxes..."
-
-                    -- Config 01
-                    local val = getINISetting iniFile "Config01" "Standard"
-                    print ("Config01 Standard=" + val)
-                    if val != "" and chk01_std != undefined then
-                    (
-                        chk01_std.checked = (val == "true")
-                        print ("  -> chk01_std défini à " + (chk01_std.checked as string))
-                    )
-
-                    val = getINISetting iniFile "Config01" "HD"
-                    if val != "" and chk01_hd != undefined then chk01_hd.checked = (val == "true")
-
-                    val = getINISetting iniFile "Config01" "Detourage"
-                    if val != "" and chk01_det != undefined then chk01_det.checked = (val == "true")
-
-                    -- Config 02
-                    val = getINISetting iniFile "Config02" "Standard"
-                    if val != "" and chk02_std != undefined then chk02_std.checked = (val == "true")
-                    val = getINISetting iniFile "Config02" "HD"
-                    if val != "" and chk02_hd != undefined then chk02_hd.checked = (val == "true")
-                    val = getINISetting iniFile "Config02" "Detourage"
-                    if val != "" and chk02_det != undefined then chk02_det.checked = (val == "true")
-
-                    -- Config 03
-                    val = getINISetting iniFile "Config03" "Standard"
-                    if val != "" and chk03_std != undefined then chk03_std.checked = (val == "true")
-                    val = getINISetting iniFile "Config03" "HD"
-                    if val != "" and chk03_hd != undefined then chk03_hd.checked = (val == "true")
-                    val = getINISetting iniFile "Config03" "Detourage"
-                    if val != "" and chk03_det != undefined then chk03_det.checked = (val == "true")
-
-                    -- Config 04
-                    val = getINISetting iniFile "Config04" "Standard"
-                    if val != "" and chk04_std != undefined then chk04_std.checked = (val == "true")
-                    val = getINISetting iniFile "Config04" "HD"
-                    if val != "" and chk04_hd != undefined then chk04_hd.checked = (val == "true")
-                    val = getINISetting iniFile "Config04" "Detourage"
-                    if val != "" and chk04_det != undefined then chk04_det.checked = (val == "true")
-
-                    print "Checkboxes chargées"
-                )
-                catch e
-                (
-                    print ("Erreur lors du chargement des checkboxes: " + (e as string))
-                )
-
-                isLoading = false  -- Réactiver les événements
-                print "=== CHARGEMENT TERMINÉ ==="
-            )
-
             -- Image en haut (ImgTag pour éviter le liseré)
             ImgTag titleImage pos:[12,10] width:182 height:66 bitmap:(openBitMap (getDir #userScripts + "\\TITRE_interface.jpg"))
 
@@ -249,8 +94,65 @@ class MenuPlugin:
                     print "Image Logo-Urt.jpg non trouvée dans le dossier des scripts"
                 )
 
-                -- Charger les paramètres sauvegardés
-                loadSettings()
+                -- Charger les paramètres sauvegardés directement
+                isLoading = true
+                print "=== CHARGEMENT ==="
+
+                -- Charger le dossier scènes et remplir le menu
+                local loadedPath = getINISetting iniFile "Paths" "SceneFolder"
+                if loadedPath != "" then
+                (
+                    sceneFolderPath = loadedPath
+                    print ("Dossier scènes: " + sceneFolderPath)
+                    sceneFiles = getFiles (sceneFolderPath + "\\*.max")
+                    local sceneNames = #()
+                    for sceneFile in sceneFiles do
+                        append sceneNames (filenameFromPath sceneFile)
+                    ddScenes.items = sceneNames
+                    print ((sceneNames.count as string) + " scènes chargées")
+                )
+
+                -- Charger les autres chemins
+                loadedPath = getINISetting iniFile "Paths" "TextureFolder"
+                if loadedPath != "" then textureFolderPath = loadedPath
+
+                loadedPath = getINISetting iniFile "Paths" "RenderFolder"
+                if loadedPath != "" then renderFolderPath = loadedPath
+
+                -- Charger les checkboxes Config01
+                local val = getINISetting iniFile "Config01" "Standard"
+                if val == "true" then chk01_std.checked = true
+                val = getINISetting iniFile "Config01" "HD"
+                if val == "true" then chk01_hd.checked = true
+                val = getINISetting iniFile "Config01" "Detourage"
+                if val == "true" then chk01_det.checked = true
+
+                -- Charger les checkboxes Config02
+                val = getINISetting iniFile "Config02" "Standard"
+                if val == "true" then chk02_std.checked = true
+                val = getINISetting iniFile "Config02" "HD"
+                if val == "true" then chk02_hd.checked = true
+                val = getINISetting iniFile "Config02" "Detourage"
+                if val == "true" then chk02_det.checked = true
+
+                -- Charger les checkboxes Config03
+                val = getINISetting iniFile "Config03" "Standard"
+                if val == "true" then chk03_std.checked = true
+                val = getINISetting iniFile "Config03" "HD"
+                if val == "true" then chk03_hd.checked = true
+                val = getINISetting iniFile "Config03" "Detourage"
+                if val == "true" then chk03_det.checked = true
+
+                -- Charger les checkboxes Config04
+                val = getINISetting iniFile "Config04" "Standard"
+                if val == "true" then chk04_std.checked = true
+                val = getINISetting iniFile "Config04" "HD"
+                if val == "true" then chk04_hd.checked = true
+                val = getINISetting iniFile "Config04" "Detourage"
+                if val == "true" then chk04_det.checked = true
+
+                isLoading = false
+                print "=== CHARGEMENT TERMINÉ ==="
             )
 
             -- Événement à la fermeture
@@ -325,8 +227,34 @@ class MenuPlugin:
             on btnLogo pressed do
             (
                 -- Sauvegarder la configuration avant de lancer les rendus
-                saveSettings()
+                print "=== SAUVEGARDE ==="
 
+                -- Sauvegarder les chemins
+                setINISetting iniFile "Paths" "SceneFolder" sceneFolderPath
+                setINISetting iniFile "Paths" "TextureFolder" textureFolderPath
+                setINISetting iniFile "Paths" "RenderFolder" renderFolderPath
+
+                -- Sauvegarder Config01
+                setINISetting iniFile "Config01" "Standard" (if chk01_std.checked then "true" else "false")
+                setINISetting iniFile "Config01" "HD" (if chk01_hd.checked then "true" else "false")
+                setINISetting iniFile "Config01" "Detourage" (if chk01_det.checked then "true" else "false")
+
+                -- Sauvegarder Config02
+                setINISetting iniFile "Config02" "Standard" (if chk02_std.checked then "true" else "false")
+                setINISetting iniFile "Config02" "HD" (if chk02_hd.checked then "true" else "false")
+                setINISetting iniFile "Config02" "Detourage" (if chk02_det.checked then "true" else "false")
+
+                -- Sauvegarder Config03
+                setINISetting iniFile "Config03" "Standard" (if chk03_std.checked then "true" else "false")
+                setINISetting iniFile "Config03" "HD" (if chk03_hd.checked then "true" else "false")
+                setINISetting iniFile "Config03" "Detourage" (if chk03_det.checked then "true" else "false")
+
+                -- Sauvegarder Config04
+                setINISetting iniFile "Config04" "Standard" (if chk04_std.checked then "true" else "false")
+                setINISetting iniFile "Config04" "HD" (if chk04_hd.checked then "true" else "false")
+                setINISetting iniFile "Config04" "Detourage" (if chk04_det.checked then "true" else "false")
+
+                print "=== Configuration sauvegardée ==="
                 print "Lancement des rendus..."
                 -- Logique de rendu à implémenter
             )
