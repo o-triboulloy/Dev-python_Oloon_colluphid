@@ -116,8 +116,15 @@ class MenuPlugin:
                     local sceneNames = #()
                     for sceneFile in sceneFiles do
                         append sceneNames (filenameFromPath sceneFile)
-                    ddScenes.items = sceneNames
-                    print ((sceneNames.count as string) + " scènes trouvées")
+
+                    -- Vérifier que ddScenes existe avant de l'utiliser
+                    if ddScenes != undefined then
+                    (
+                        ddScenes.items = sceneNames
+                        print ((sceneNames.count as string) + " scènes trouvées")
+                    )
+                    else
+                        print "ddScenes non initialisé, scènes chargées en mémoire uniquement"
                 )
 
                 loadedPath = getINISetting iniFile "Paths" "TextureFolder"
