@@ -355,6 +355,10 @@ class MenuPlugin:
                             print ("ERREUR: Impossible d'assigner la texture " + textureName)
                             continue
                         )
+
+                        -- IMPORTANT: Forcer le rafraîchissement de la scène pour que la nouvelle texture soit prise en compte
+                        completeRedraw()
+                        gc light:true  -- Nettoyage léger de la mémoire pour forcer le rechargement
                     )
                     catch
                     (
