@@ -113,40 +113,49 @@ class MenuPlugin:
                 loadedPath = getINISetting iniFile "Paths" "RenderFolder"
                 if loadedPath != "" then renderFolderPath = loadedPath
 
-                -- Charger les checkboxes Config 01
-                local val = getINISetting iniFile "Config01" "Standard"
-                if val != "" then chk01_std.checked = (val == "true")
-                val = getINISetting iniFile "Config01" "HD"
-                if val != "" then chk01_hd.checked = (val == "true")
-                val = getINISetting iniFile "Config01" "Detourage"
-                if val != "" then chk01_det.checked = (val == "true")
+                -- Charger les checkboxes avec protection
+                try
+                (
+                    -- Config 01
+                    local val = getINISetting iniFile "Config01" "Standard"
+                    if val != "" and chk01_std != undefined then chk01_std.checked = (val == "true")
+                    val = getINISetting iniFile "Config01" "HD"
+                    if val != "" and chk01_hd != undefined then chk01_hd.checked = (val == "true")
+                    val = getINISetting iniFile "Config01" "Detourage"
+                    if val != "" and chk01_det != undefined then chk01_det.checked = (val == "true")
 
-                -- Charger les checkboxes Config 02
-                val = getINISetting iniFile "Config02" "Standard"
-                if val != "" then chk02_std.checked = (val == "true")
-                val = getINISetting iniFile "Config02" "HD"
-                if val != "" then chk02_hd.checked = (val == "true")
-                val = getINISetting iniFile "Config02" "Detourage"
-                if val != "" then chk02_det.checked = (val == "true")
+                    -- Config 02
+                    val = getINISetting iniFile "Config02" "Standard"
+                    if val != "" and chk02_std != undefined then chk02_std.checked = (val == "true")
+                    val = getINISetting iniFile "Config02" "HD"
+                    if val != "" and chk02_hd != undefined then chk02_hd.checked = (val == "true")
+                    val = getINISetting iniFile "Config02" "Detourage"
+                    if val != "" and chk02_det != undefined then chk02_det.checked = (val == "true")
 
-                -- Charger les checkboxes Config 03
-                val = getINISetting iniFile "Config03" "Standard"
-                if val != "" then chk03_std.checked = (val == "true")
-                val = getINISetting iniFile "Config03" "HD"
-                if val != "" then chk03_hd.checked = (val == "true")
-                val = getINISetting iniFile "Config03" "Detourage"
-                if val != "" then chk03_det.checked = (val == "true")
+                    -- Config 03
+                    val = getINISetting iniFile "Config03" "Standard"
+                    if val != "" and chk03_std != undefined then chk03_std.checked = (val == "true")
+                    val = getINISetting iniFile "Config03" "HD"
+                    if val != "" and chk03_hd != undefined then chk03_hd.checked = (val == "true")
+                    val = getINISetting iniFile "Config03" "Detourage"
+                    if val != "" and chk03_det != undefined then chk03_det.checked = (val == "true")
 
-                -- Charger les checkboxes Config 04
-                val = getINISetting iniFile "Config04" "Standard"
-                if val != "" then chk04_std.checked = (val == "true")
-                val = getINISetting iniFile "Config04" "HD"
-                if val != "" then chk04_hd.checked = (val == "true")
-                val = getINISetting iniFile "Config04" "Detourage"
-                if val != "" then chk04_det.checked = (val == "true")
+                    -- Config 04
+                    val = getINISetting iniFile "Config04" "Standard"
+                    if val != "" and chk04_std != undefined then chk04_std.checked = (val == "true")
+                    val = getINISetting iniFile "Config04" "HD"
+                    if val != "" and chk04_hd != undefined then chk04_hd.checked = (val == "true")
+                    val = getINISetting iniFile "Config04" "Detourage"
+                    if val != "" and chk04_det != undefined then chk04_det.checked = (val == "true")
+
+                    print "Paramètres chargés"
+                )
+                catch
+                (
+                    print "Erreur lors du chargement des paramètres"
+                )
 
                 isLoading = false  -- Réactiver les événements
-                print "Paramètres chargés"
             )
 
             -- Image en haut (ImgTag pour éviter le liseré)
