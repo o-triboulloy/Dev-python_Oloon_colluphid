@@ -67,12 +67,12 @@ class MenuPlugin:
 
                 -- Charger l'image du logo avec transparence
                 local logoPath = getDir #userScripts + "\\Logo_Urt_alpha.png"
-                local logoBitmap = openBitMap logoPath
+                local img = openBitMap logoPath
 
-                if logoBitmap != undefined then
+                if img != undefined then
                 (
-                    -- Utiliser .bitmap au lieu de .images (plus simple, MaxScript gère le hover automatiquement)
-                    btnLogo.bitmap = logoBitmap
+                    -- Format correct: tableau de bitmaps puis indices
+                    btnLogo.images = #(img, img, img, img)
                     print "Image du bouton chargée (avec alpha)"
                 )
                 else
