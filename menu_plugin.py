@@ -23,7 +23,7 @@ class MenuPlugin:
 
         # Création du rollout (fenêtre) avec MaxScript
         rollout_code = """
-        rollout CustomToolWindow "U-Rtool" width:206 height:690
+        rollout CustomToolWindow "U-Rtool" width:206 height:460
         (
             -- Variables globales
             local sceneFolderPath = ""
@@ -45,34 +45,17 @@ class MenuPlugin:
             label lblScenes "Scènes:" pos:[10,196] width:186
             dropdownList ddScenes "" pos:[10,211] width:186 items:#()
 
-            -- Rendus_Config01
-            groupBox grpRendu01 "Rendus_Config01" pos:[10,256] width:186 height:75
-            checkbox chk01_std "Rendu standard" pos:[20,273] width:160
-            checkbox chk01_hd "Rendu HD" pos:[20,290] width:160
-            checkbox chk01_det "Détourage" pos:[20,307] width:160
-
-            -- Rendus_Config02
-            groupBox grpRendu02 "Rendus_Config02" pos:[10,341] width:186 height:75
-            checkbox chk02_std "Rendu standard" pos:[20,358] width:160
-            checkbox chk02_hd "Rendu HD" pos:[20,375] width:160
-            checkbox chk02_det "Détourage" pos:[20,392] width:160
-
-            -- Rendus_Config03
-            groupBox grpRendu03 "Rendus_Config03" pos:[10,426] width:186 height:75
-            checkbox chk03_std "Rendu standard" pos:[20,443] width:160
-            checkbox chk03_hd "Rendu HD" pos:[20,460] width:160
-            checkbox chk03_det "Détourage" pos:[20,477] width:160
-
-            -- Rendus_Config04
-            groupBox grpRendu04 "Rendus_Config04" pos:[10,511] width:186 height:75
-            checkbox chk04_std "Rendu standard" pos:[20,528] width:160
-            checkbox chk04_hd "Rendu HD" pos:[20,545] width:160
-            checkbox chk04_det "Détourage" pos:[20,562] width:160
+            -- Options Rendus
+            groupBox grpRendu "Options Rendus" pos:[10,256] width:186 height:95
+            checkbox chkRenduStd "Rendus standard" pos:[20,273] width:160
+            checkbox chkRenduDet "Rendus détourés" pos:[20,290] width:160
+            checkbox chkRenduHD "Rendu HD" pos:[20,307] width:160
+            checkbox chkRenduHDDet "Rendu HD détourés" pos:[20,324] width:160
 
             -- Section Lancer les rendus
-            groupBox grpLancer "" pos:[10,596] width:186 height:80
-            button btnLogo "" pos:[20,607] width:64 height:64 toolTip:"Lancer les rendus"
-            label lblLancerRendus "          Lancer\n       les rendus" pos:[95,625] width:90 height:40 align:#center
+            groupBox grpLancer "" pos:[10,366] width:186 height:80
+            button btnLogo "" pos:[20,377] width:64 height:64 toolTip:"Lancer les rendus"
+            label lblLancerRendus "          Lancer\n       les rendus" pos:[95,395] width:90 height:40 align:#center
 
             -- Événement au chargement pour gérer les images et charger les paramètres
             on CustomToolWindow open do
@@ -119,37 +102,15 @@ class MenuPlugin:
                 loadedPath = getINISetting iniFile "Paths" "RenderFolder"
                 if loadedPath != "" then renderFolderPath = loadedPath
 
-                -- Charger les checkboxes Config01
-                local val = getINISetting iniFile "Config01" "Standard"
-                if val == "true" then chk01_std.checked = true
-                val = getINISetting iniFile "Config01" "HD"
-                if val == "true" then chk01_hd.checked = true
-                val = getINISetting iniFile "Config01" "Detourage"
-                if val == "true" then chk01_det.checked = true
-
-                -- Charger les checkboxes Config02
-                val = getINISetting iniFile "Config02" "Standard"
-                if val == "true" then chk02_std.checked = true
-                val = getINISetting iniFile "Config02" "HD"
-                if val == "true" then chk02_hd.checked = true
-                val = getINISetting iniFile "Config02" "Detourage"
-                if val == "true" then chk02_det.checked = true
-
-                -- Charger les checkboxes Config03
-                val = getINISetting iniFile "Config03" "Standard"
-                if val == "true" then chk03_std.checked = true
-                val = getINISetting iniFile "Config03" "HD"
-                if val == "true" then chk03_hd.checked = true
-                val = getINISetting iniFile "Config03" "Detourage"
-                if val == "true" then chk03_det.checked = true
-
-                -- Charger les checkboxes Config04
-                val = getINISetting iniFile "Config04" "Standard"
-                if val == "true" then chk04_std.checked = true
-                val = getINISetting iniFile "Config04" "HD"
-                if val == "true" then chk04_hd.checked = true
-                val = getINISetting iniFile "Config04" "Detourage"
-                if val == "true" then chk04_det.checked = true
+                -- Charger les options de rendu
+                local val = getINISetting iniFile "OptionsRendu" "RenduStandard"
+                if val == "true" then chkRenduStd.checked = true
+                val = getINISetting iniFile "OptionsRendu" "RenduDetoure"
+                if val == "true" then chkRenduDet.checked = true
+                val = getINISetting iniFile "OptionsRendu" "RenduHD"
+                if val == "true" then chkRenduHD.checked = true
+                val = getINISetting iniFile "OptionsRendu" "RenduHDDetoure"
+                if val == "true" then chkRenduHDDet.checked = true
 
                 isLoading = false
                 print "=== CHARGEMENT TERMINÉ ==="
@@ -234,25 +195,11 @@ class MenuPlugin:
                 setINISetting iniFile "Paths" "TextureFolder" textureFolderPath
                 setINISetting iniFile "Paths" "RenderFolder" renderFolderPath
 
-                -- Sauvegarder Config01
-                setINISetting iniFile "Config01" "Standard" (if chk01_std.checked then "true" else "false")
-                setINISetting iniFile "Config01" "HD" (if chk01_hd.checked then "true" else "false")
-                setINISetting iniFile "Config01" "Detourage" (if chk01_det.checked then "true" else "false")
-
-                -- Sauvegarder Config02
-                setINISetting iniFile "Config02" "Standard" (if chk02_std.checked then "true" else "false")
-                setINISetting iniFile "Config02" "HD" (if chk02_hd.checked then "true" else "false")
-                setINISetting iniFile "Config02" "Detourage" (if chk02_det.checked then "true" else "false")
-
-                -- Sauvegarder Config03
-                setINISetting iniFile "Config03" "Standard" (if chk03_std.checked then "true" else "false")
-                setINISetting iniFile "Config03" "HD" (if chk03_hd.checked then "true" else "false")
-                setINISetting iniFile "Config03" "Detourage" (if chk03_det.checked then "true" else "false")
-
-                -- Sauvegarder Config04
-                setINISetting iniFile "Config04" "Standard" (if chk04_std.checked then "true" else "false")
-                setINISetting iniFile "Config04" "HD" (if chk04_hd.checked then "true" else "false")
-                setINISetting iniFile "Config04" "Detourage" (if chk04_det.checked then "true" else "false")
+                -- Sauvegarder les options de rendu
+                setINISetting iniFile "OptionsRendu" "RenduStandard" (if chkRenduStd.checked then "true" else "false")
+                setINISetting iniFile "OptionsRendu" "RenduDetoure" (if chkRenduDet.checked then "true" else "false")
+                setINISetting iniFile "OptionsRendu" "RenduHD" (if chkRenduHD.checked then "true" else "false")
+                setINISetting iniFile "OptionsRendu" "RenduHDDetoure" (if chkRenduHDDet.checked then "true" else "false")
 
                 print "=== Configuration sauvegardée ==="
                 print "Lancement des rendus..."
@@ -291,46 +238,6 @@ class MenuPlugin:
                         print "Chargement annulé"
                     )
                 )
-            )
-
-            -- Événements checkboxes Série 01 (mutuellement exclusifs)
-            on chk01_std changed state do
-            (
-                if not isLoading and state == true then chk01_hd.checked = false
-            )
-            on chk01_hd changed state do
-            (
-                if not isLoading and state == true then chk01_std.checked = false
-            )
-
-            -- Événements checkboxes Série 02 (mutuellement exclusifs)
-            on chk02_std changed state do
-            (
-                if not isLoading and state == true then chk02_hd.checked = false
-            )
-            on chk02_hd changed state do
-            (
-                if not isLoading and state == true then chk02_std.checked = false
-            )
-
-            -- Événements checkboxes Série 03 (mutuellement exclusifs)
-            on chk03_std changed state do
-            (
-                if not isLoading and state == true then chk03_hd.checked = false
-            )
-            on chk03_hd changed state do
-            (
-                if not isLoading and state == true then chk03_std.checked = false
-            )
-
-            -- Événements checkboxes Série 04 (mutuellement exclusifs)
-            on chk04_std changed state do
-            (
-                if not isLoading and state == true then chk04_hd.checked = false
-            )
-            on chk04_hd changed state do
-            (
-                if not isLoading and state == true then chk04_std.checked = false
             )
 
         )
