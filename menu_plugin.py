@@ -223,6 +223,11 @@ class MenuPlugin:
                 )
 
                 print ("Matériau trouvé: " + targetMat.name)
+                print ("Type de matériau: " + (classOf targetMat as string))
+
+                -- Afficher toutes les propriétés du matériau pour diagnostic
+                print "=== PROPRIÉTÉS DU MATÉRIAU ==="
+                showProperties targetMat
 
                 -- Lister les textures du dossier
                 local textureFiles = getFiles (textureFolderPath + "\\\\*.jpg") + getFiles (textureFolderPath + "\\\\*.png") + getFiles (textureFolderPath + "\\\\*.tga")
