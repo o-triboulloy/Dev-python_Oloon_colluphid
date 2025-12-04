@@ -36,40 +36,66 @@ class MenuPlugin:
             -- Fonction pour sauvegarder les paramètres
             fn saveSettings =
             (
-                print "=== TEST SAUVEGARDE ==="
+                print "=== SAUVEGARDE ==="
 
                 -- Sauvegarder les chemins
                 setINISetting iniFile "Paths" "SceneFolder" sceneFolderPath
                 setINISetting iniFile "Paths" "TextureFolder" textureFolderPath
                 setINISetting iniFile "Paths" "RenderFolder" renderFolderPath
-                print "Chemins OK"
 
-                -- TEST avec valeurs fixes d'abord
-                print "Test écriture Config01..."
-                setINISetting iniFile "Config01" "Standard" "true"
-                setINISetting iniFile "Config01" "HD" "false"
-                setINISetting iniFile "Config01" "Detourage" "false"
-                print "Config01 écrit"
+                -- Sauvegarder Config01
+                try
+                (
+                    local val_std = if chk01_std.checked then "true" else "false"
+                    local val_hd = if chk01_hd.checked then "true" else "false"
+                    local val_det = if chk01_det.checked then "true" else "false"
+                    setINISetting iniFile "Config01" "Standard" val_std
+                    setINISetting iniFile "Config01" "HD" val_hd
+                    setINISetting iniFile "Config01" "Detourage" val_det
+                    print "Config01 sauvegardé"
+                )
+                catch (print "ERREUR Config01")
 
-                print "Test écriture Config02..."
-                setINISetting iniFile "Config02" "Standard" "false"
-                setINISetting iniFile "Config02" "HD" "true"
-                setINISetting iniFile "Config02" "Detourage" "true"
-                print "Config02 écrit"
+                -- Sauvegarder Config02
+                try
+                (
+                    local val_std = if chk02_std.checked then "true" else "false"
+                    local val_hd = if chk02_hd.checked then "true" else "false"
+                    local val_det = if chk02_det.checked then "true" else "false"
+                    setINISetting iniFile "Config02" "Standard" val_std
+                    setINISetting iniFile "Config02" "HD" val_hd
+                    setINISetting iniFile "Config02" "Detourage" val_det
+                    print "Config02 sauvegardé"
+                )
+                catch (print "ERREUR Config02")
 
-                print "Test écriture Config03..."
-                setINISetting iniFile "Config03" "Standard" "true"
-                setINISetting iniFile "Config03" "HD" "true"
-                setINISetting iniFile "Config03" "Detourage" "false"
-                print "Config03 écrit"
+                -- Sauvegarder Config03
+                try
+                (
+                    local val_std = if chk03_std.checked then "true" else "false"
+                    local val_hd = if chk03_hd.checked then "true" else "false"
+                    local val_det = if chk03_det.checked then "true" else "false"
+                    setINISetting iniFile "Config03" "Standard" val_std
+                    setINISetting iniFile "Config03" "HD" val_hd
+                    setINISetting iniFile "Config03" "Detourage" val_det
+                    print "Config03 sauvegardé"
+                )
+                catch (print "ERREUR Config03")
 
-                print "Test écriture Config04..."
-                setINISetting iniFile "Config04" "Standard" "false"
-                setINISetting iniFile "Config04" "HD" "false"
-                setINISetting iniFile "Config04" "Detourage" "true"
-                print "Config04 écrit"
+                -- Sauvegarder Config04
+                try
+                (
+                    local val_std = if chk04_std.checked then "true" else "false"
+                    local val_hd = if chk04_hd.checked then "true" else "false"
+                    local val_det = if chk04_det.checked then "true" else "false"
+                    setINISetting iniFile "Config04" "Standard" val_std
+                    setINISetting iniFile "Config04" "HD" val_hd
+                    setINISetting iniFile "Config04" "Detourage" val_det
+                    print "Config04 sauvegardé"
+                )
+                catch (print "ERREUR Config04")
 
-                print ("=== FIN TEST - Fichier: " + iniFile)
+                print "=== Sauvegarde terminée ==="
             )
 
             -- Fonction pour charger les paramètres
