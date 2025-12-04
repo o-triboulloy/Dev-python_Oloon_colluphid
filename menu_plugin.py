@@ -71,7 +71,8 @@ class MenuPlugin:
 
                 if logoBitmap != undefined then
                 (
-                    btnLogo.images = #(logoBitmap, logoBitmap, logoBitmap, logoBitmap, 1, 1, 1)
+                    -- Utiliser .bitmap au lieu de .images (plus simple, MaxScript gère le hover automatiquement)
+                    btnLogo.bitmap = logoBitmap
                     print "Image du bouton chargée (avec alpha)"
                 )
                 else
