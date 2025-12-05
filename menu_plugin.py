@@ -59,7 +59,7 @@ class MenuPlugin:
             button btnLancer "Lancer les\nrendus" pos:[20,412] width:166 height:54
 
             -- Section Progression
-            groupBox grpProgress "Progression" pos:[10,485] width:186 height:54
+            groupBox grpProgress "Progression totale" pos:[10,485] width:186 height:54
             label lblCurrentRender "" pos:[15,500] width:176 height:14 align:#left
             progressBar pbRender "" pos:[15,514] width:176 height:16 color:orange
             label lblRenderTime "" pos:[15,530] width:176 height:14 align:#left
