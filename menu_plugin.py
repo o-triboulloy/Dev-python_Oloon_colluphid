@@ -23,7 +23,7 @@ class MenuPlugin:
 
         # Création du rollout (fenêtre) avec MaxScript
         rollout_code = """
-        rollout CustomToolWindow "U-Rtool" width:206 height:540
+        rollout CustomToolWindow "U-Rtool" width:206 height:510
         (
             -- Variables globales
             local sceneFolderPath = ""
@@ -55,14 +55,14 @@ class MenuPlugin:
             dropdownList ddScenes "" pos:[10,346] width:186 items:#()
 
             -- Section Lancer les rendus
-            groupBox grpLancer "" pos:[10,401] width:186 height:74
-            button btnLancer "Lancer les\nrendus" pos:[20,412] width:166 height:54
+            groupBox grpLancer "" pos:[10,371] width:186 height:74
+            button btnLancer "Lancer les\nrendus" pos:[20,382] width:166 height:54
 
             -- Section Progression
-            groupBox grpProgress "Progression totale" pos:[10,485] width:186 height:54
-            label lblCurrentRender "" pos:[15,500] width:176 height:14 align:#left
-            progressBar pbRender "" pos:[15,514] width:176 height:16 color:orange
-            label lblRenderTime "" pos:[15,530] width:176 height:14 align:#left
+            groupBox grpProgress "Progression totale" pos:[10,455] width:186 height:54
+            label lblCurrentRender "" pos:[15,470] width:176 height:14 align:#left
+            progressBar pbRender "" pos:[15,484] width:176 height:16 color:orange
+            label lblRenderTime "" pos:[15,500] width:176 height:14 align:#left
 
             -- Événement au chargement pour gérer les images et charger les paramètres
             on CustomToolWindow open do
