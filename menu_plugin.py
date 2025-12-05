@@ -517,6 +517,7 @@ class MenuPlugin:
                                 print "\n!!! RENDU ANNULÉ PAR L'UTILISATEUR (ESC) - Fichier absent !!!"
                                 print "Arrêt de toute la série de rendus..."
                                 lblCurrentRender.text = "Annulé par utilisateur"
+                                renduCourant -= 1  -- Ne pas compter ce rendu annulé
                                 stopRendering = true
                                 exit
                             )
@@ -528,6 +529,7 @@ class MenuPlugin:
                                 print ("Taille du fichier: " + fileSize as string + " bytes (trop petit, minimum 50000)")
                                 print "Arrêt de toute la série de rendus..."
                                 lblCurrentRender.text = "Annulé par utilisateur"
+                                renduCourant -= 1  -- Ne pas compter ce rendu annulé
                                 stopRendering = true
                                 exit
                             )
