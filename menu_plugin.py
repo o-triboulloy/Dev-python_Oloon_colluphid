@@ -309,23 +309,16 @@ class MenuPlugin:
 
                 print ("=== DÉBUT DES RENDUS (" + totalRendus as string + " rendus à effectuer) ===")
 
-                -- Activer le frame buffer Arnold
+                -- Désactiver toutes les fenêtres de rendu pour batch automatique
+                rendShowVFB = false  -- Désactiver le VFB 3ds Max
                 try
                 (
-                    renderers.current.enable_render_view = true
-                    print "Arnold Render View activé"
+                    renderers.current.enable_render_view = false  -- Désactiver Arnold Render View
+                    print "Fenêtres de rendu désactivées (mode batch automatique)"
                 )
                 catch
                 (
-                    try
-                    (
-                        renderers.current.use_render_view = true
-                        print "Arnold Render View activé (use_render_view)"
-                    )
-                    catch
-                    (
-                        print "AVERTISSEMENT: Impossible d'activer Arnold Render View (vérifier qu'Arnold est le renderer actif)"
-                    )
+                    print "Note: Impossible de désactiver Arnold Render View"
                 )
 
                 -- Réinitialiser le flag stop au début
@@ -469,6 +462,7 @@ class MenuPlugin:
                 -- Restaurer les paramètres originaux
                 renderWidth = originalWidth
                 renderHeight = originalHeight
+                rendShowVFB = true  -- Réactiver le VFB pour les prochains rendus manuels
 
                 print ("\n=== RENDUS TERMINÉS ===")
                 print (renduCourant as string + " rendus effectués")
