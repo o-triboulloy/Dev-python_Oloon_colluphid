@@ -309,6 +309,25 @@ class MenuPlugin:
 
                 print ("=== DÉBUT DES RENDUS (" + totalRendus as string + " rendus à effectuer) ===")
 
+                -- Activer le frame buffer Arnold
+                try
+                (
+                    renderers.current.enable_render_view = true
+                    print "Arnold Render View activé"
+                )
+                catch
+                (
+                    try
+                    (
+                        renderers.current.use_render_view = true
+                        print "Arnold Render View activé (use_render_view)"
+                    )
+                    catch
+                    (
+                        print "AVERTISSEMENT: Impossible d'activer Arnold Render View (vérifier qu'Arnold est le renderer actif)"
+                    )
+                )
+
                 -- Réinitialiser le flag stop au début
                 stopRendering = false
 
@@ -419,15 +438,15 @@ class MenuPlugin:
                         -- Configurer la frame selon le type de rendu
                         if jobAlpha then
                         (
-                            -- Rendus détourés : frame 02 (avec matte shadow)
-                            sliderTime = 2f
-                            print ("    Frame: 02 (rendu détouré avec matte shadow)")
+                            -- Rendus détourés : frame 01 (avec matte shadow)
+                            sliderTime = 1f
+                            print ("    Frame: 01 (rendu détouré avec matte shadow)")
                         )
                         else
                         (
-                            -- Rendus normaux : frame 01
-                            sliderTime = 1f
-                            print ("    Frame: 01 (rendu normal)")
+                            -- Rendus normaux : frame 00
+                            sliderTime = 0f
+                            print ("    Frame: 00 (rendu normal)")
                         )
 
                         -- Nom du fichier de sortie
