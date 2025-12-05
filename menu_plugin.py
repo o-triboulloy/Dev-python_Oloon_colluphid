@@ -508,6 +508,17 @@ class MenuPlugin:
                         try
                         (
                             local renderedImage = render outputfile:outputPath vfb:off
+
+                            -- Vérifier si le rendu a été annulé par l'utilisateur (ESC)
+                            if renderedImage == undefined then
+                            (
+                                print "\n!!! RENDU ANNULÉ PAR L'UTILISATEUR (ESC) !!!"
+                                print "Arrêt de toute la série de rendus..."
+                                lblCurrentRender.text = "Annulé par utilisateur"
+                                stopRendering = true
+                                exit
+                            )
+
                             local endTime = timestamp()
                             local renderDuration = (endTime - startTime) / 1000.0  -- Convertir en secondes
 
@@ -586,8 +597,8 @@ class MenuPlugin:
                 lblCurrentRender.text = "Arrêt en cours..."
                 print "=== ARRÊT DES RENDUS DEMANDÉ ==="
                 print "Les rendus s'arrêteront après le rendu en cours."
-                print "Pour annuler le rendu en cours, appuyez sur la touche ESC."
-                messageBox "Les rendus s'arrêteront après le rendu en cours.\n\nPour annuler immédiatement, appuyez sur ESC." title:"Stop"
+                print "Pour annuler immédiatement : appuyez sur ESC (cela arrêtera toute la série)."
+                messageBox "Les rendus s'arrêteront après le rendu en cours.\n\nPour annuler immédiatement :\nAppuyez sur ESC → Arrête le rendu actuel ET toute la série" title:"Stop"
             )
 
             -- Bouton Reset : Remettre à zéro tous les chemins et checkboxes
