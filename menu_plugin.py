@@ -23,7 +23,7 @@ class MenuPlugin:
 
         # Création du rollout (fenêtre) avec MaxScript
         rollout_code = """
-        rollout CustomToolWindow "U-Rtool" width:206 height:520
+        rollout CustomToolWindow "U-Rtool" width:206 height:540
         (
             -- Variables globales
             local sceneFolderPath = ""
@@ -43,16 +43,16 @@ class MenuPlugin:
             button btn2b "Dossier Rendu" pos:[10,156] width:186 height:30
             button btnReset "Reset" pos:[10,191] width:186 height:30
 
-            -- Menu déroulant Scènes
-            label lblScenes "Scènes:" pos:[10,231] width:186
-            dropdownList ddScenes "" pos:[10,246] width:186 items:#()
-
             -- Options Rendus
-            groupBox grpRendu "Options Rendus" pos:[10,291] width:186 height:95
-            checkbox chkRenduStd "Rendus standard" pos:[20,308] width:160
-            checkbox chkRenduDet "Rendus détourés" pos:[20,325] width:160
-            checkbox chkRenduHD "Rendu HD" pos:[20,342] width:160
-            checkbox chkRenduHDDet "Rendu HD détourés" pos:[20,359] width:160
+            groupBox grpRendu "Options Rendus" pos:[10,226] width:186 height:95
+            checkbox chkRenduStd "Rendus standard" pos:[20,243] width:160
+            checkbox chkRenduDet "Rendus détourés" pos:[20,260] width:160
+            checkbox chkRenduHD "Rendu HD" pos:[20,277] width:160
+            checkbox chkRenduHDDet "Rendu HD détourés" pos:[20,294] width:160
+
+            -- Menu déroulant Scènes
+            label lblScenes "Scènes:" pos:[10,331] width:186
+            dropdownList ddScenes "" pos:[10,346] width:186 items:#()
 
             -- Section Lancer les rendus
             groupBox grpLancer "" pos:[10,401] width:186 height:74
