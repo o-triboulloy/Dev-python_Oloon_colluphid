@@ -32,6 +32,7 @@ class MenuPlugin:
             local renderFolderPath = ""
             local iniFile = getDir #userScripts + "\\\\U-Rtool_settings.ini"
             local isLoading = false  -- Flag pour éviter les conflits pendant le chargement
+            local stopRendering = false  -- Flag pour arrêter les rendus en cours
 
             -- Image en haut (ImgTag pour éviter le liseré)
             ImgTag titleImage pos:[12,10] width:182 height:66 bitmap:(openBitMap (getDir #userScripts + "\\\\TITRE_interface.jpg"))
@@ -54,7 +55,9 @@ class MenuPlugin:
 
             -- Section Lancer les rendus
             groupBox grpLancer "" pos:[10,366] width:186 height:80
-            button btnLancer "Lancer les rendus" pos:[20,377] width:166 height:64
+            button btnLancer "Lancer les\nrendus" pos:[20,377] width:83 height:64
+            button btnStop "Stop rendus" pos:[113,377] width:83 height:32
+            button btnReset "Reset" pos:[113,409] width:83 height:32
 
             -- Événement au chargement pour gérer les images et charger les paramètres
             on CustomToolWindow open do
@@ -306,9 +309,19 @@ class MenuPlugin:
 
                 print ("=== DÉBUT DES RENDUS (" + totalRendus as string + " rendus à effectuer) ===")
 
+                -- Réinitialiser le flag stop au début
+                stopRendering = false
+
                 -- Boucle sur chaque texture
                 for textureFile in textureFiles do
                 (
+                    -- Vérifier si l'arrêt a été demandé
+                    if stopRendering then
+                    (
+                        print "\n!!! ARRÊT DES RENDUS DEMANDÉ !!!"
+                        exit
+                    )
+
                     local textureName = filenameFromPath textureFile
                     local textureBaseName = getFilenameFile textureFile
 
@@ -382,6 +395,13 @@ class MenuPlugin:
                     -- Boucle sur chaque type de rendu
                     for job in renderJobs do
                     (
+                        -- Vérifier si l'arrêt a été demandé
+                        if stopRendering then
+                        (
+                            print "  >>> Arrêt demandé, sortie de la boucle de rendus"
+                            exit
+                        )
+
                         local jobName = job[1]
                         local jobFolder = job[2]
                         local jobWidth = job[3]
@@ -433,7 +453,60 @@ class MenuPlugin:
 
                 print ("\n=== RENDUS TERMINÉS ===")
                 print (renduCourant as string + " rendus effectués")
-                messageBox ("Rendus terminés !\n\n" + renduCourant as string + " rendus effectués avec succès.") title:"Succès"
+
+                -- Réinitialiser le flag stop
+                stopRendering = false
+
+                if renduCourant > 0 then
+                    messageBox ("Rendus terminés !\n\n" + renduCourant as string + " rendus effectués avec succès.") title:"Succès"
+                else
+                    messageBox "Aucun rendu effectué." title:"Information"
+            )
+
+            -- Bouton Stop : Arrêter les rendus en cours
+            on btnStop pressed do
+            (
+                stopRendering = true
+                print "=== ARRÊT DES RENDUS DEMANDÉ ==="
+                messageBox "Les rendus seront arrêtés après le rendu en cours." title:"Stop"
+            )
+
+            -- Bouton Reset : Remettre à zéro tous les chemins et checkboxes
+            on btnReset pressed do
+            (
+                local result = queryBox "Êtes-vous sûr de vouloir réinitialiser tous les chemins et options ?" title:"Confirmation Reset"
+
+                if result then
+                (
+                    -- Réinitialiser les chemins
+                    sceneFolderPath = ""
+                    textureFolderPath = ""
+                    renderFolderPath = ""
+                    sceneFiles = #()
+
+                    -- Vider le menu déroulant
+                    ddScenes.items = #()
+
+                    -- Décocher toutes les checkboxes
+                    chkRenduStd.checked = false
+                    chkRenduDet.checked = false
+                    chkRenduHD.checked = false
+                    chkRenduHDDet.checked = false
+
+                    -- Supprimer le fichier INI
+                    try
+                    (
+                        deleteFile iniFile
+                        print "Fichier de configuration supprimé"
+                    )
+                    catch
+                    (
+                        print "Aucun fichier de configuration à supprimer"
+                    )
+
+                    print "=== RÉINITIALISATION COMPLÈTE ==="
+                    messageBox "Tous les chemins et options ont été réinitialisés." title:"Reset effectué"
+                )
             )
 
             -- Événement menu déroulant Scènes
