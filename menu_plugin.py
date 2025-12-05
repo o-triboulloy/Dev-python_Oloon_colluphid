@@ -482,24 +482,14 @@ class MenuPlugin:
                     messageBox "Aucun rendu effectué." title:"Information"
             )
 
-            -- Bouton Stop : Arrêter les rendus immédiatement
+            -- Bouton Stop : Arrêter les rendus
             on btnStop pressed do
             (
                 stopRendering = true
-                print "=== ARRÊT IMMÉDIAT DES RENDUS ==="
-
-                -- Annuler le rendu en cours
-                try
-                (
-                    max cancel render
-                    print "Rendu en cours annulé"
-                )
-                catch
-                (
-                    print "Aucun rendu à annuler"
-                )
-
-                messageBox "Les rendus ont été arrêtés immédiatement." title:"Stop"
+                print "=== ARRÊT DES RENDUS DEMANDÉ ==="
+                print "Les rendus s'arrêteront après le rendu en cours."
+                print "Pour annuler le rendu en cours, appuyez sur la touche ESC."
+                messageBox "Les rendus s'arrêteront après le rendu en cours.\n\nPour annuler immédiatement, appuyez sur ESC." title:"Stop"
             )
 
             -- Bouton Reset : Remettre à zéro tous les chemins et checkboxes
