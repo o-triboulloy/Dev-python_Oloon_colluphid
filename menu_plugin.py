@@ -396,19 +396,18 @@ class MenuPlugin:
                         renderWidth = jobWidth
                         renderHeight = jobHeight
 
-                        -- Configurer Arnold pour l'alpha si nécessaire
+                        -- Configurer la frame selon le type de rendu
                         if jobAlpha then
                         (
-                            -- Activer l'alpha dans Arnold
-                            try
-                            (
-                                renderers.current.beauty_aov_exr_enable_rgba = true
-                                print ("    Alpha activé pour rendu détouré")
-                            )
-                            catch
-                            (
-                                print ("    ATTENTION: Impossible d'activer l'alpha (vérifier que Arnold est le renderer actif)")
-                            )
+                            -- Rendus détourés : frame 02 (avec matte shadow)
+                            sliderTime = 2f
+                            print ("    Frame: 02 (rendu détouré avec matte shadow)")
+                        )
+                        else
+                        (
+                            -- Rendus normaux : frame 01
+                            sliderTime = 1f
+                            print ("    Frame: 01 (rendu normal)")
                         )
 
                         -- Nom du fichier de sortie
