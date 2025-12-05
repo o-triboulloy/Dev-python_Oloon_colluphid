@@ -23,7 +23,7 @@ class MenuPlugin:
 
         # Création du rollout (fenêtre) avec MaxScript
         rollout_code = """
-        rollout CustomToolWindow "U-Rtool" width:206 height:460
+        rollout CustomToolWindow "U-Rtool" width:206 height:520
         (
             -- Variables globales
             local sceneFolderPath = ""
@@ -58,6 +58,12 @@ class MenuPlugin:
             button btnLancer "Lancer les\nrendus" pos:[20,377] width:83 height:64
             button btnStop "Stop rendus" pos:[113,377] width:83 height:32
             button btnReset "Reset" pos:[113,409] width:83 height:32
+
+            -- Section Progression
+            groupBox grpProgress "Progression" pos:[10,456] width:186 height:54
+            label lblCurrentRender "" pos:[15,471] width:176 height:14 align:#left
+            progressBar pbRender "" pos:[15,485] width:176 height:16 color:orange
+            label lblRenderTime "" pos:[15,501] width:176 height:14 align:#left
 
             -- Événement au chargement pour gérer les images et charger les paramètres
             on CustomToolWindow open do
@@ -307,6 +313,11 @@ class MenuPlugin:
                 local totalRendus = textureFiles.count * renderJobs.count
                 local renduCourant = 0
 
+                -- Initialiser la barre de progression
+                pbRender.value = 0
+                lblCurrentRender.text = "Préparation..."
+                lblRenderTime.text = ""
+
                 print ("=== DÉBUT DES RENDUS (" + totalRendus as string + " rendus à effectuer) ===")
 
                 -- Désactiver toutes les fenêtres de rendu pour batch automatique
@@ -425,6 +436,12 @@ class MenuPlugin:
                         renduCourant += 1
                         print ("  [" + renduCourant as string + "/" + totalRendus as string + "] Rendu " + jobName + "...")
 
+                        -- Mettre à jour la barre de progression et les labels
+                        local progressPercent = 100.0 * renduCourant / totalRendus
+                        pbRender.value = progressPercent as integer
+                        lblCurrentRender.text = textureBaseName + " - " + jobName + " (" + renduCourant as string + "/" + totalRendus as string + ")"
+                        windows.processPostedMessages()  -- Forcer la mise à jour de l'interface
+
                         -- Configurer les paramètres de rendu
                         renderWidth = jobWidth
                         renderHeight = jobHeight
@@ -448,14 +465,34 @@ class MenuPlugin:
                         local outputPath = jobFolder + "\\\\" + outputFileName
 
                         -- Lancer le rendu (vfb:off force le rendu sans fenêtre)
+                        local startTime = timestamp()
                         try
                         (
                             local renderedImage = render outputfile:outputPath vfb:off
-                            print ("    OK: " + outputFileName)
+                            local endTime = timestamp()
+                            local renderDuration = (endTime - startTime) / 1000.0  -- Convertir en secondes
+
+                            -- Afficher le temps de rendu
+                            local timeText = ""
+                            if renderDuration >= 60 then
+                            (
+                                local minutes = (renderDuration / 60) as integer
+                                local seconds = (mod renderDuration 60) as integer
+                                timeText = "Dernier rendu: " + minutes as string + "m " + seconds as string + "s"
+                            )
+                            else
+                            (
+                                timeText = "Dernier rendu: " + (renderDuration as integer) as string + "s"
+                            )
+                            lblRenderTime.text = timeText
+                            windows.processPostedMessages()
+
+                            print ("    OK: " + outputFileName + " (durée: " + timeText + ")")
                         )
                         catch
                         (
                             print ("    ERREUR lors du rendu: " + outputFileName)
+                            lblRenderTime.text = "Erreur lors du rendu"
                         )
                     )
                 )
@@ -467,6 +504,18 @@ class MenuPlugin:
 
                 print ("\n=== RENDUS TERMINÉS ===")
                 print (renduCourant as string + " rendus effectués")
+
+                -- Mettre à jour l'affichage de progression
+                if renduCourant > 0 then
+                (
+                    pbRender.value = 100
+                    lblCurrentRender.text = "Terminé ! " + renduCourant as string + " rendus effectués"
+                )
+                else
+                (
+                    pbRender.value = 0
+                    lblCurrentRender.text = "Aucun rendu effectué"
+                )
 
                 -- Réinitialiser le flag stop
                 stopRendering = false
@@ -481,6 +530,7 @@ class MenuPlugin:
             on btnStop pressed do
             (
                 stopRendering = true
+                lblCurrentRender.text = "Arrêt en cours..."
                 print "=== ARRÊT DES RENDUS DEMANDÉ ==="
                 print "Les rendus s'arrêteront après le rendu en cours."
                 print "Pour annuler le rendu en cours, appuyez sur la touche ESC."
@@ -508,6 +558,11 @@ class MenuPlugin:
                     chkRenduDet.checked = false
                     chkRenduHD.checked = false
                     chkRenduHDDet.checked = false
+
+                    -- Réinitialiser la barre de progression
+                    pbRender.value = 0
+                    lblCurrentRender.text = ""
+                    lblRenderTime.text = ""
 
                     -- Supprimer le fichier INI
                     try
