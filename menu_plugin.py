@@ -522,10 +522,10 @@ class MenuPlugin:
                             )
 
                             local fileSize = getFileSize outputPath
-                            if fileSize < 1000 then
+                            if fileSize < 50000 then  -- 50 KB minimum pour un rendu valide
                             (
                                 print "\n!!! RENDU ANNULÉ PAR L'UTILISATEUR (ESC) - Fichier invalide !!!"
-                                print ("Taille du fichier: " + fileSize as string + " bytes (trop petit)")
+                                print ("Taille du fichier: " + fileSize as string + " bytes (trop petit, minimum 50000)")
                                 print "Arrêt de toute la série de rendus..."
                                 lblCurrentRender.text = "Annulé par utilisateur"
                                 stopRendering = true
