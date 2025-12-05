@@ -202,12 +202,23 @@ class MenuPlugin:
 
                 -- Désactiver le bouton Lancer pendant l'exécution
                 btnLancer.enabled = false
-                windows.processPostedMessages()  -- Forcer la mise à jour de l'interface
+                btnStop.enabled = true
+                btnReset.enabled = false
+
+                -- Forcer plusieurs rafraîchissements pour être sûr que l'UI se met à jour
+                for i = 1 to 5 do
+                (
+                    windows.processPostedMessages()
+                    sleep 0.01
+                )
+                completeRedraw()
+                print ">>> Interface mise à jour, bouton désactivé"
 
                 -- Vérifications préalables
                 if textureFolderPath == "" or renderFolderPath == "" then
                 (
                     btnLancer.enabled = true
+                    btnReset.enabled = true
                     messageBox "Veuillez sélectionner un dossier de textures ET un dossier de rendu avant de lancer les rendus." title:"Erreur"
                     return false
                 )
@@ -216,6 +227,7 @@ class MenuPlugin:
                 if not chkRenduStd.checked and not chkRenduDet.checked and not chkRenduHD.checked and not chkRenduHDDet.checked then
                 (
                     btnLancer.enabled = true
+                    btnReset.enabled = true
                     messageBox "Veuillez cocher au moins une option de rendu." title:"Erreur"
                     return false
                 )
@@ -243,6 +255,7 @@ class MenuPlugin:
                 if targetMat == undefined then
                 (
                     btnLancer.enabled = true
+                    btnReset.enabled = true
                     local errorMsg = "Matériau 'MAT_UNIKALO' introuvable dans la scène.\n\n"
                     errorMsg += "Matériaux disponibles:\n"
                     for mat in sceneMaterials do
@@ -264,6 +277,7 @@ class MenuPlugin:
                 if textureFiles.count == 0 then
                 (
                     btnLancer.enabled = true
+                    btnReset.enabled = true
                     messageBox "Aucune texture trouvée dans le dossier sélectionné." title:"Erreur"
                     return false
                 )
@@ -355,12 +369,14 @@ class MenuPlugin:
                     )
 
                     -- Mettre à jour l'interface pour la rendre responsive
-                    windows.processPostedMessages()
+                    for i = 1 to 3 do windows.processPostedMessages()
+                    sleep 0.01
 
                     local textureName = filenameFromPath textureFile
                     local textureBaseName = getFilenameFile textureFile
 
                     print ("\n--- Texture: " + textureName + " ---")
+                    print ">>> UI refresh avant chargement texture"
 
                     -- Charger la texture dans le matériau (Arnold ou Physical)
                     try
@@ -439,7 +455,7 @@ class MenuPlugin:
                         )
 
                         -- Mettre à jour l'interface
-                        windows.processPostedMessages()
+                        for i = 1 to 3 do windows.processPostedMessages()
 
                         local jobName = job[1]
                         local jobFolder = job[2]
@@ -455,7 +471,15 @@ class MenuPlugin:
                         local progressPercent = 100.0 * renduCourant / totalRendus
                         pbRender.value = progressPercent as integer
                         lblCurrentRender.text = textureBaseName + " - " + jobName + " (" + renduCourant as string + "/" + totalRendus as string + ")"
-                        windows.processPostedMessages()  -- Forcer la mise à jour de l'interface
+
+                        -- Forcer plusieurs rafraîchissements UI avant le rendu
+                        for i = 1 to 5 do
+                        (
+                            windows.processPostedMessages()
+                            sleep 0.01
+                        )
+                        completeRedraw()
+                        print (">>> UI actualisée: " + lblCurrentRender.text)
 
                         -- Configurer les paramètres de rendu
                         renderWidth = jobWidth
@@ -500,9 +524,12 @@ class MenuPlugin:
                                 timeText = "Dernier rendu: " + (renderDuration as integer) as string + "s"
                             )
                             lblRenderTime.text = timeText
-                            windows.processPostedMessages()
+
+                            -- Rafraîchir l'UI après chaque rendu
+                            for i = 1 to 3 do windows.processPostedMessages()
 
                             print ("    OK: " + outputFileName + " (durée: " + timeText + ")")
+                            print (">>> Rendu " + renduCourant as string + "/" + totalRendus as string + " terminé, UI rafraîchie")
                         )
                         catch
                         (
@@ -536,9 +563,15 @@ class MenuPlugin:
                 -- Réinitialiser le flag stop
                 stopRendering = false
 
-                -- Réactiver le bouton Lancer
+                -- Réactiver les boutons
                 btnLancer.enabled = true
-                windows.processPostedMessages()
+                btnReset.enabled = true
+                for i = 1 to 5 do
+                (
+                    windows.processPostedMessages()
+                    sleep 0.01
+                )
+                print ">>> Rendus terminés, interface réactivée"
 
                 if renduCourant > 0 then
                     messageBox ("Rendus terminés !\n\n" + renduCourant as string + " rendus effectués avec succès.") title:"Succès"
