@@ -508,19 +508,29 @@ class MenuPlugin:
                         try
                         (
                             local renderedImage = render outputfile:outputPath vfb:off
+                            local endTime = timestamp()
+                            local renderDuration = (endTime - startTime) / 1000.0  -- Convertir en secondes
 
-                            -- Vérifier si le rendu a été annulé par l'utilisateur (ESC)
-                            if renderedImage == undefined then
+                            -- Vérifier si le rendu a été annulé (fichier absent ou invalide)
+                            if not (doesFileExist outputPath) then
                             (
-                                print "\n!!! RENDU ANNULÉ PAR L'UTILISATEUR (ESC) !!!"
+                                print "\n!!! RENDU ANNULÉ PAR L'UTILISATEUR (ESC) - Fichier absent !!!"
                                 print "Arrêt de toute la série de rendus..."
                                 lblCurrentRender.text = "Annulé par utilisateur"
                                 stopRendering = true
                                 exit
                             )
 
-                            local endTime = timestamp()
-                            local renderDuration = (endTime - startTime) / 1000.0  -- Convertir en secondes
+                            local fileSize = getFileSize outputPath
+                            if fileSize < 1000 then
+                            (
+                                print "\n!!! RENDU ANNULÉ PAR L'UTILISATEUR (ESC) - Fichier invalide !!!"
+                                print ("Taille du fichier: " + fileSize as string + " bytes (trop petit)")
+                                print "Arrêt de toute la série de rendus..."
+                                lblCurrentRender.text = "Annulé par utilisateur"
+                                stopRendering = true
+                                exit
+                            )
 
                             -- Afficher le temps de rendu
                             local timeText = ""
@@ -539,7 +549,7 @@ class MenuPlugin:
                             -- Rafraîchir l'UI après chaque rendu
                             for i = 1 to 3 do windows.processPostedMessages()
 
-                            print ("    OK: " + outputFileName + " (durée: " + timeText + ")")
+                            print ("    OK: " + outputFileName + " (durée: " + timeText + ", taille: " + fileSize as string + " bytes)")
                             print (">>> Rendu " + renduCourant as string + "/" + totalRendus as string + " terminé, UI rafraîchie")
                         )
                         catch
