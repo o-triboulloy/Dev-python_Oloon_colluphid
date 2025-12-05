@@ -314,11 +314,12 @@ class MenuPlugin:
                 try
                 (
                     renderers.current.enable_render_view = false  -- Désactiver Arnold Render View
+                    renderers.current.progressive_rendering = false  -- Désactiver le rendu progressif
                     print "Fenêtres de rendu désactivées (mode batch automatique)"
                 )
                 catch
                 (
-                    print "Note: Impossible de désactiver Arnold Render View"
+                    print "Note: Configuration Arnold appliquée avec certaines limitations"
                 )
 
                 -- Réinitialiser le flag stop au début
@@ -446,10 +447,10 @@ class MenuPlugin:
                         local outputFileName = "Rendu_" + jobName + "_" + textureBaseName + "." + jobFormat
                         local outputPath = jobFolder + "\\\\" + outputFileName
 
-                        -- Lancer le rendu
+                        -- Lancer le rendu (vfb:off force le rendu sans fenêtre)
                         try
                         (
-                            local renderedImage = render outputfile:outputPath
+                            local renderedImage = render outputfile:outputPath vfb:off
                             print ("    OK: " + outputFileName)
                         )
                         catch
