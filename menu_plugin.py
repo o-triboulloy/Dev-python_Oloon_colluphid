@@ -41,29 +41,28 @@ class MenuPlugin:
             button btn1 "Dossier scènes" pos:[10,86] width:186 height:30
             button btn2a "Dossier textures" pos:[10,121] width:186 height:30
             button btn2b "Dossier Rendu" pos:[10,156] width:186 height:30
+            button btnReset "Reset" pos:[10,191] width:186 height:30
 
             -- Menu déroulant Scènes
-            label lblScenes "Scènes:" pos:[10,196] width:186
-            dropdownList ddScenes "" pos:[10,211] width:186 items:#()
+            label lblScenes "Scènes:" pos:[10,231] width:186
+            dropdownList ddScenes "" pos:[10,246] width:186 items:#()
 
             -- Options Rendus
-            groupBox grpRendu "Options Rendus" pos:[10,256] width:186 height:95
-            checkbox chkRenduStd "Rendus standard" pos:[20,273] width:160
-            checkbox chkRenduDet "Rendus détourés" pos:[20,290] width:160
-            checkbox chkRenduHD "Rendu HD" pos:[20,307] width:160
-            checkbox chkRenduHDDet "Rendu HD détourés" pos:[20,324] width:160
+            groupBox grpRendu "Options Rendus" pos:[10,291] width:186 height:95
+            checkbox chkRenduStd "Rendus standard" pos:[20,308] width:160
+            checkbox chkRenduDet "Rendus détourés" pos:[20,325] width:160
+            checkbox chkRenduHD "Rendu HD" pos:[20,342] width:160
+            checkbox chkRenduHDDet "Rendu HD détourés" pos:[20,359] width:160
 
             -- Section Lancer les rendus
-            groupBox grpLancer "" pos:[10,366] width:186 height:80
-            button btnLancer "Lancer les\nrendus" pos:[20,377] width:83 height:64
-            button btnStop "Stop rendus" pos:[113,377] width:83 height:32
-            button btnReset "Reset" pos:[113,409] width:83 height:32
+            groupBox grpLancer "" pos:[10,401] width:186 height:74
+            button btnLancer "Lancer les\nrendus" pos:[20,412] width:166 height:54
 
             -- Section Progression
-            groupBox grpProgress "Progression" pos:[10,456] width:186 height:54
-            label lblCurrentRender "" pos:[15,471] width:176 height:14 align:#left
-            progressBar pbRender "" pos:[15,485] width:176 height:16 color:orange
-            label lblRenderTime "" pos:[15,501] width:176 height:14 align:#left
+            groupBox grpProgress "Progression" pos:[10,485] width:186 height:54
+            label lblCurrentRender "" pos:[15,500] width:176 height:14 align:#left
+            progressBar pbRender "" pos:[15,514] width:176 height:16 color:orange
+            label lblRenderTime "" pos:[15,530] width:176 height:14 align:#left
 
             -- Événement au chargement pour gérer les images et charger les paramètres
             on CustomToolWindow open do
@@ -200,9 +199,8 @@ class MenuPlugin:
                 print "=== Configuration sauvegardée ==="
                 print "=== LANCEMENT DES RENDUS ==="
 
-                -- Désactiver le bouton Lancer pendant l'exécution
+                -- Désactiver les boutons pendant l'exécution
                 btnLancer.enabled = false
-                btnStop.enabled = true
                 btnReset.enabled = false
 
                 -- Forcer plusieurs rafraîchissements pour être sûr que l'UI se met à jour
@@ -600,17 +598,6 @@ class MenuPlugin:
                     messageBox ("Rendus terminés !\n\n" + renduCourant as string + " rendus effectués avec succès.") title:"Succès"
                 else
                     messageBox "Aucun rendu effectué." title:"Information"
-            )
-
-            -- Bouton Stop : Arrêter les rendus
-            on btnStop pressed do
-            (
-                stopRendering = true
-                lblCurrentRender.text = "Arrêt en cours..."
-                print "=== ARRÊT DES RENDUS DEMANDÉ ==="
-                print "Les rendus s'arrêteront après le rendu en cours."
-                print "Pour annuler immédiatement : appuyez sur ESC (cela arrêtera toute la série)."
-                messageBox "Les rendus s'arrêteront après le rendu en cours.\n\nPour annuler immédiatement :\nAppuyez sur ESC → Arrête le rendu actuel ET toute la série" title:"Stop"
             )
 
             -- Bouton Reset : Remettre à zéro tous les chemins et checkboxes
