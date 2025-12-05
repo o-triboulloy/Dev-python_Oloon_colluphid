@@ -200,9 +200,14 @@ class MenuPlugin:
                 print "=== Configuration sauvegardée ==="
                 print "=== LANCEMENT DES RENDUS ==="
 
+                -- Désactiver le bouton Lancer pendant l'exécution
+                btnLancer.enabled = false
+                windows.processPostedMessages()  -- Forcer la mise à jour de l'interface
+
                 -- Vérifications préalables
                 if textureFolderPath == "" or renderFolderPath == "" then
                 (
+                    btnLancer.enabled = true
                     messageBox "Veuillez sélectionner un dossier de textures ET un dossier de rendu avant de lancer les rendus." title:"Erreur"
                     return false
                 )
@@ -210,6 +215,7 @@ class MenuPlugin:
                 -- Vérifier qu'au moins une option est cochée
                 if not chkRenduStd.checked and not chkRenduDet.checked and not chkRenduHD.checked and not chkRenduHDDet.checked then
                 (
+                    btnLancer.enabled = true
                     messageBox "Veuillez cocher au moins une option de rendu." title:"Erreur"
                     return false
                 )
@@ -236,6 +242,7 @@ class MenuPlugin:
 
                 if targetMat == undefined then
                 (
+                    btnLancer.enabled = true
                     local errorMsg = "Matériau 'MAT_UNIKALO' introuvable dans la scène.\n\n"
                     errorMsg += "Matériaux disponibles:\n"
                     for mat in sceneMaterials do
@@ -256,6 +263,7 @@ class MenuPlugin:
 
                 if textureFiles.count == 0 then
                 (
+                    btnLancer.enabled = true
                     messageBox "Aucune texture trouvée dans le dossier sélectionné." title:"Erreur"
                     return false
                 )
@@ -346,6 +354,9 @@ class MenuPlugin:
                         exit
                     )
 
+                    -- Mettre à jour l'interface pour la rendre responsive
+                    windows.processPostedMessages()
+
                     local textureName = filenameFromPath textureFile
                     local textureBaseName = getFilenameFile textureFile
 
@@ -409,6 +420,7 @@ class MenuPlugin:
                         -- IMPORTANT: Forcer le rafraîchissement de la scène pour que la nouvelle texture soit prise en compte
                         completeRedraw()
                         gc light:true  -- Nettoyage léger de la mémoire pour forcer le rechargement
+                        windows.processPostedMessages()  -- Mise à jour de l'interface
                     )
                     catch
                     (
@@ -425,6 +437,9 @@ class MenuPlugin:
                             print "  >>> Arrêt demandé, sortie de la boucle de rendus"
                             exit
                         )
+
+                        -- Mettre à jour l'interface
+                        windows.processPostedMessages()
 
                         local jobName = job[1]
                         local jobFolder = job[2]
@@ -493,6 +508,7 @@ class MenuPlugin:
                         (
                             print ("    ERREUR lors du rendu: " + outputFileName)
                             lblRenderTime.text = "Erreur lors du rendu"
+                            windows.processPostedMessages()
                         )
                     )
                 )
@@ -519,6 +535,10 @@ class MenuPlugin:
 
                 -- Réinitialiser le flag stop
                 stopRendering = false
+
+                -- Réactiver le bouton Lancer
+                btnLancer.enabled = true
+                windows.processPostedMessages()
 
                 if renduCourant > 0 then
                     messageBox ("Rendus terminés !\n\n" + renduCourant as string + " rendus effectués avec succès.") title:"Succès"
