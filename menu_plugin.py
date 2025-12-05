@@ -23,7 +23,7 @@ class MenuPlugin:
 
         # Création du rollout (fenêtre) avec MaxScript
         rollout_code = """
-        rollout CustomToolWindow "U-Rtool" width:206 height:510
+        rollout CustomToolWindow "U-Rtool" width:206 height:517
         (
             -- Variables globales
             local sceneFolderPath = ""
