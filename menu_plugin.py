@@ -540,11 +540,13 @@ class MenuPlugin:
                                 exit
                             )
 
+                            -- Calculer le seuil minimum dynamique basé sur la résolution
+                            local minFileSize = (jobWidth * jobHeight) / 30  -- Seuil adaptatif selon résolution
                             local fileSize = getFileSize outputPath
-                            if fileSize < 50000 then  -- 50 KB minimum pour un rendu valide
+                            if fileSize < minFileSize then
                             (
                                 print "\n!!! RENDU ANNULÉ PAR L'UTILISATEUR (ESC) - Fichier invalide !!!"
-                                print ("Taille du fichier: " + fileSize as string + " bytes (trop petit, minimum 50000)")
+                                print ("Taille du fichier: " + fileSize as string + " bytes (trop petit, minimum " + minFileSize as string + " pour " + jobWidth as string + "x" + jobHeight as string + ")")
                                 print "Arrêt de toute la série de rendus..."
                                 lblCurrentRender.text = "Annulé par utilisateur"
                                 renduCourant -= 1  -- Ne pas compter ce rendu annulé
