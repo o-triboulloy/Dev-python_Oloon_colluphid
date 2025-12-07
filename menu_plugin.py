@@ -305,7 +305,11 @@ class MenuPlugin:
                 -- Créer la structure de dossiers
                 local textureFolderName = filterString textureFolderPath "\\\\"
                 textureFolderName = textureFolderName[textureFolderName.count]
+                print ("DEBUG - Dossier textures: " + textureFolderPath)
+                print ("DEBUG - Nom extrait du dossier textures: " + textureFolderName)
+                print ("DEBUG - Dossier rendu de base: " + renderFolderPath)
                 local baseRenderPath = renderFolderPath + "\\\\" + textureFolderName
+                print ("DEBUG - Chemin rendu complet: " + baseRenderPath)
 
                 -- Créer le dossier principal
                 makeDir baseRenderPath all:true
