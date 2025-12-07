@@ -23,7 +23,7 @@ class MenuPlugin:
 
         # Création du rollout (fenêtre) avec MaxScript
         rollout_code = """
-        rollout CustomToolWindow "U-Rtool" width:206 height:517
+        rollout CustomToolWindow "U-Rtool" width:206 height:567
         (
             -- Variables globales
             local sceneFolderPath = ""
@@ -44,25 +44,29 @@ class MenuPlugin:
             button btnReset "Reset" pos:[10,191] width:186 height:30
 
             -- Options Rendus
-            groupBox grpRendu "Options Rendus" pos:[10,226] width:186 height:95
+            groupBox grpRendu "Options Rendus" pos:[10,226] width:186 height:145
             checkbox chkRenduStd "Rendus standard" pos:[20,243] width:160
-            checkbox chkRenduDet "Rendus détourés" pos:[20,260] width:160
-            checkbox chkRenduHD "Rendu HD" pos:[20,277] width:160
-            checkbox chkRenduHDDet "Rendu HD détourés" pos:[20,294] width:160
+            spinner spnWidthStd "Largeur:" pos:[30,258] width:145 height:16 range:[1,10000,1920] type:#integer fieldWidth:50
+            spinner spnHeightStd "Hauteur:" pos:[30,273] width:145 height:16 range:[1,10000,1080] type:#integer fieldWidth:50
+            checkbox chkRenduDet "Rendus détourés" pos:[20,293] width:160
+            checkbox chkRenduHD "Rendu HD" pos:[20,310] width:160
+            spinner spnWidthHD "Largeur:" pos:[30,325] width:145 height:16 range:[1,10000,3840] type:#integer fieldWidth:50
+            spinner spnHeightHD "Hauteur:" pos:[30,340] width:145 height:16 range:[1,10000,2160] type:#integer fieldWidth:50
+            checkbox chkRenduHDDet "Rendu HD détourés" pos:[20,360] width:160
 
             -- Menu déroulant Scènes
-            label lblScenes "Scènes:" pos:[10,331] width:186
-            dropdownList ddScenes "" pos:[10,346] width:186 items:#()
+            label lblScenes "Scènes:" pos:[10,381] width:186
+            dropdownList ddScenes "" pos:[10,396] width:186 items:#()
 
             -- Section Lancer les rendus
-            groupBox grpLancer "" pos:[10,371] width:186 height:74
-            button btnLancer "Lancer les\nrendus" pos:[20,382] width:166 height:54
+            groupBox grpLancer "" pos:[10,421] width:186 height:74
+            button btnLancer "Lancer les\nrendus" pos:[20,432] width:166 height:54
 
             -- Section Progression
-            groupBox grpProgress "Progression totale" pos:[10,455] width:186 height:54
-            label lblCurrentRender "" pos:[15,470] width:176 height:14 align:#left
-            progressBar pbRender "" pos:[15,484] width:176 height:16 color:orange
-            label lblRenderTime "" pos:[15,500] width:176 height:14 align:#left
+            groupBox grpProgress "Progression totale" pos:[10,505] width:186 height:54
+            label lblCurrentRender "" pos:[15,520] width:176 height:14 align:#left
+            progressBar pbRender "" pos:[15,534] width:176 height:16 color:orange
+            label lblRenderTime "" pos:[15,550] width:176 height:14 align:#left
 
             -- Événement au chargement pour gérer les images et charger les paramètres
             on CustomToolWindow open do
@@ -106,6 +110,16 @@ class MenuPlugin:
                 if val == "true" then chkRenduHD.checked = true
                 val = getINISetting iniFile "OptionsRendu" "RenduHDDetoure"
                 if val == "true" then chkRenduHDDet.checked = true
+
+                -- Charger les résolutions
+                val = getINISetting iniFile "Resolution" "WidthStd"
+                if val != "" then spnWidthStd.value = val as integer else spnWidthStd.value = 1920
+                val = getINISetting iniFile "Resolution" "HeightStd"
+                if val != "" then spnHeightStd.value = val as integer else spnHeightStd.value = 1080
+                val = getINISetting iniFile "Resolution" "WidthHD"
+                if val != "" then spnWidthHD.value = val as integer else spnWidthHD.value = 3840
+                val = getINISetting iniFile "Resolution" "HeightHD"
+                if val != "" then spnHeightHD.value = val as integer else spnHeightHD.value = 2160
 
                 isLoading = false
                 print "=== CHARGEMENT TERMINÉ ==="
@@ -195,6 +209,12 @@ class MenuPlugin:
                 setINISetting iniFile "OptionsRendu" "RenduDetoure" (if chkRenduDet.checked then "true" else "false")
                 setINISetting iniFile "OptionsRendu" "RenduHD" (if chkRenduHD.checked then "true" else "false")
                 setINISetting iniFile "OptionsRendu" "RenduHDDetoure" (if chkRenduHDDet.checked then "true" else "false")
+
+                -- Sauvegarder les résolutions
+                setINISetting iniFile "Resolution" "WidthStd" (spnWidthStd.value as string)
+                setINISetting iniFile "Resolution" "HeightStd" (spnHeightStd.value as string)
+                setINISetting iniFile "Resolution" "WidthHD" (spnWidthHD.value as string)
+                setINISetting iniFile "Resolution" "HeightHD" (spnHeightHD.value as string)
 
                 print "=== Configuration sauvegardée ==="
                 print "=== LANCEMENT DES RENDUS ==="
@@ -297,32 +317,32 @@ class MenuPlugin:
                 (
                     local folderPath = baseRenderPath + "\\\\Rendus_standard"
                     makeDir folderPath all:true
-                    append renderJobs #("standard", folderPath, 1200, 1200, "jpg", false)
-                    print ("Dossier créé: " + folderPath)
+                    append renderJobs #("standard", folderPath, spnWidthStd.value, spnHeightStd.value, "jpg", false)
+                    print ("Dossier créé: " + folderPath + " (Résolution: " + spnWidthStd.value as string + "x" + spnHeightStd.value as string + ")")
                 )
 
                 if chkRenduDet.checked then
                 (
                     local folderPath = baseRenderPath + "\\\\Rendus_detoures"
                     makeDir folderPath all:true
-                    append renderJobs #("detoure", folderPath, 1200, 1200, "png", true)
-                    print ("Dossier créé: " + folderPath)
+                    append renderJobs #("detoure", folderPath, spnWidthStd.value, spnHeightStd.value, "png", true)
+                    print ("Dossier créé: " + folderPath + " (Résolution: " + spnWidthStd.value as string + "x" + spnHeightStd.value as string + ")")
                 )
 
                 if chkRenduHD.checked then
                 (
                     local folderPath = baseRenderPath + "\\\\Rendus_HD"
                     makeDir folderPath all:true
-                    append renderJobs #("HD", folderPath, 10000, 10000, "jpg", false)
-                    print ("Dossier créé: " + folderPath)
+                    append renderJobs #("HD", folderPath, spnWidthHD.value, spnHeightHD.value, "jpg", false)
+                    print ("Dossier créé: " + folderPath + " (Résolution: " + spnWidthHD.value as string + "x" + spnHeightHD.value as string + ")")
                 )
 
                 if chkRenduHDDet.checked then
                 (
                     local folderPath = baseRenderPath + "\\\\Rendus_HD_detoures"
                     makeDir folderPath all:true
-                    append renderJobs #("HD_detoure", folderPath, 10000, 10000, "png", true)
-                    print ("Dossier créé: " + folderPath)
+                    append renderJobs #("HD_detoure", folderPath, spnWidthHD.value, spnHeightHD.value, "png", true)
+                    print ("Dossier créé: " + folderPath + " (Résolution: " + spnWidthHD.value as string + "x" + spnHeightHD.value as string + ")")
                 )
 
                 -- Sauvegarder les paramètres de rendu actuels
