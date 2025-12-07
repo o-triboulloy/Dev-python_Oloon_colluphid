@@ -305,11 +305,24 @@ class MenuPlugin:
                 -- Créer la structure de dossiers
                 local textureFolderName = filterString textureFolderPath "\\\\"
                 textureFolderName = textureFolderName[textureFolderName.count]
-                print ("DEBUG - Dossier textures: " + textureFolderPath)
-                print ("DEBUG - Nom extrait du dossier textures: " + textureFolderName)
-                print ("DEBUG - Dossier rendu de base: " + renderFolderPath)
-                local baseRenderPath = renderFolderPath + "\\\\" + textureFolderName
-                print ("DEBUG - Chemin rendu complet: " + baseRenderPath)
+
+                -- Vérifier si le chemin de rendu ne se termine pas déjà par le nom du dossier textures
+                local renderFolderParts = filterString renderFolderPath "\\\\"
+                local lastRenderFolderName = renderFolderParts[renderFolderParts.count]
+
+                local baseRenderPath = ""
+                if lastRenderFolderName == textureFolderName then
+                (
+                    -- Le dossier rendu se termine déjà par le nom du dossier textures, ne pas dupliquer
+                    baseRenderPath = renderFolderPath
+                    print ("INFO - Utilisation directe du dossier rendu: " + baseRenderPath)
+                )
+                else
+                (
+                    -- Ajouter le nom du dossier textures au chemin de rendu
+                    baseRenderPath = renderFolderPath + "\\\\" + textureFolderName
+                    print ("INFO - Création sous-dossier: " + baseRenderPath)
+                )
 
                 -- Créer le dossier principal
                 makeDir baseRenderPath all:true
