@@ -3,7 +3,7 @@
 
 macroScript OpenCustomTool
 category:"Custom Tools"
-buttonText:"Mes Outils"
+buttonText:"UNIKALO RenderTool"
 tooltip:"Ouvrir la fenêtre des outils personnalisés"
 (
     -- Chemin vers le script Python
@@ -25,17 +25,17 @@ tooltip:"Ouvrir la fenêtre des outils personnalisés"
 fn addCustomMenu =
 (
     local mainMenuBar = menuMan.getMainMenuBar()
-    local customMenu = menuMan.createMenu "Outils Perso"
+    local customMenu = menuMan.createMenu "Inostudio"
 
     local customAction = menuMan.createActionItem "OpenCustomTool" "Custom Tools"
     customMenu.addItem customAction 0
 
-    local customSubMenu = menuMan.createSubMenuItem "Outils Perso" customMenu
+    local customSubMenu = menuMan.createSubMenuItem "Inostudio" customMenu
     mainMenuBar.addItem customSubMenu -1
 
     menuMan.updateMenuBar()
 
-    print "Menu 'Outils Perso' ajouté avec succès!"
+    print "Menu 'Inostudio' ajouté avec succès!"
 )
 
 -- Exécuter l'installation
