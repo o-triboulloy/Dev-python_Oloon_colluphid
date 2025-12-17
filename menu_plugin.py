@@ -393,6 +393,13 @@ class MenuPlugin:
                 -- Réinitialiser le flag stop au début
                 stopRendering = false
 
+                -- Sauvegarder la texture originale du matériau
+                local originalTexture = targetMat.base_color_map
+                if originalTexture != undefined then
+                    print (">>> Texture originale sauvegardée: " + originalTexture.filename)
+                else
+                    print ">>> Aucune texture originale dans le matériau"
+
                 -- Boucle sur chaque texture
                 for textureFile in textureFiles do
                 (
@@ -611,6 +618,26 @@ class MenuPlugin:
                     (
                         print "Note: Impossible de libérer la texture de la mémoire"
                     )
+                )
+
+                -- Restaurer la texture originale du matériau
+                if originalTexture != undefined then
+                (
+                    try
+                    (
+                        targetMat.base_color_map = originalTexture
+                        completeRedraw()
+                        windows.processPostedMessages()
+                        print (">>> Texture originale restaurée: " + originalTexture.filename)
+                    )
+                    catch
+                    (
+                        print "Note: Impossible de restaurer la texture originale"
+                    )
+                )
+                else
+                (
+                    print ">>> Aucune texture à restaurer (matériau était vide)"
                 )
 
                 -- Restaurer les paramètres originaux
