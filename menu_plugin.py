@@ -598,6 +598,19 @@ class MenuPlugin:
                             windows.processPostedMessages()
                         )
                     )
+
+                    -- Libérer la mémoire de la texture après tous ses rendus
+                    try
+                    (
+                        targetMat.base_color_map = undefined
+                        freeSceneBitmaps()
+                        windows.processPostedMessages()
+                        print (">>> Texture libérée de la mémoire: " + textureBaseName)
+                    )
+                    catch
+                    (
+                        print "Note: Impossible de libérer la texture de la mémoire"
+                    )
                 )
 
                 -- Restaurer les paramètres originaux
