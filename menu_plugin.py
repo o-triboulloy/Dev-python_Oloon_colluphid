@@ -28,7 +28,7 @@ class MenuPlugin:
             -- Variables globales
             local sceneFolderPath = ""
             local sceneFiles = #()
-            local textureFolderPath = ""
+            local mapFolderPath = ""
             local renderFolderPath = ""
             local iniFile = getDir #userScripts + "\\\\U-Rtool_settings.ini"
             local isLoading = false  -- Flag pour éviter les conflits pendant le chargement
@@ -39,7 +39,7 @@ class MenuPlugin:
 
             -- Boutons
             button btn1 "Dossier scènes" pos:[10,86] width:186 height:30
-            button btn2a "Dossier textures" pos:[10,121] width:186 height:30
+            button btn2a "Dossier maps" pos:[10,121] width:186 height:30
             button btn2b "Dossier Rendu" pos:[10,156] width:186 height:30
             button btnReset "Reset" pos:[10,191] width:186 height:30
 
@@ -95,8 +95,8 @@ class MenuPlugin:
                 )
 
                 -- Charger les autres chemins
-                loadedPath = getINISetting iniFile "Paths" "TextureFolder"
-                if loadedPath != "" then textureFolderPath = loadedPath
+                loadedPath = getINISetting iniFile "Paths" "MapFolder"
+                if loadedPath != "" then mapFolderPath = loadedPath
 
                 loadedPath = getINISetting iniFile "Paths" "RenderFolder"
                 if loadedPath != "" then renderFolderPath = loadedPath
@@ -160,19 +160,19 @@ class MenuPlugin:
                 )
             )
 
-            -- Bouton 2a: Choisir le dossier des textures
+            -- Bouton 2a: Choisir le dossier des maps
             on btn2a pressed do
             (
-                local folderPath = getSavePath caption:"Choisir le dossier des textures" initialDir:textureFolderPath
+                local folderPath = getSavePath caption:"Choisir le dossier des maps" initialDir:mapFolderPath
                 if folderPath != undefined then
                 (
-                    textureFolderPath = folderPath
-                    print ("Dossier textures sélectionné: " + textureFolderPath)
+                    mapFolderPath = folderPath
+                    print ("Dossier maps sélectionné: " + mapFolderPath)
 
                     -- Ajouter le dossier aux External File Paths pour cette session
                     try
                     (
-                        pathConfig.appendSessionPath #bitmap textureFolderPath
+                        pathConfig.appendSessionPath #bitmap mapFolderPath
                         print "Dossier ajouté aux External File Paths (Bitmap) pour cette session"
                     )
                     catch
@@ -201,7 +201,7 @@ class MenuPlugin:
 
                 -- Sauvegarder les chemins
                 setINISetting iniFile "Paths" "SceneFolder" sceneFolderPath
-                setINISetting iniFile "Paths" "TextureFolder" textureFolderPath
+                setINISetting iniFile "Paths" "MapFolder" mapFolderPath
                 setINISetting iniFile "Paths" "RenderFolder" renderFolderPath
 
                 -- Sauvegarder les options de rendu
@@ -233,11 +233,11 @@ class MenuPlugin:
                 print ">>> Interface mise à jour, bouton désactivé"
 
                 -- Vérifications préalables
-                if textureFolderPath == "" or renderFolderPath == "" then
+                if mapFolderPath == "" or renderFolderPath == "" then
                 (
                     btnLancer.enabled = true
                     btnReset.enabled = true
-                    messageBox "Veuillez sélectionner un dossier de textures ET un dossier de rendu avant de lancer les rendus." title:"Erreur"
+                    messageBox "Veuillez sélectionner un dossier de maps ET un dossier de rendu avant de lancer les rendus." title:"Erreur"
                     return false
                 )
 
@@ -289,38 +289,38 @@ class MenuPlugin:
                 print "=== PROPRIÉTÉS DU MATÉRIAU ==="
                 showProperties targetMat
 
-                -- Lister les textures du dossier
-                local textureFiles = getFiles (textureFolderPath + "\\\\*.jpg") + getFiles (textureFolderPath + "\\\\*.png") + getFiles (textureFolderPath + "\\\\*.tga")
+                -- Lister les maps du dossier
+                local mapFiles = getFiles (mapFolderPath + "\\\\*.jpg") + getFiles (mapFolderPath + "\\\\*.png") + getFiles (mapFolderPath + "\\\\*.tga")
 
-                if textureFiles.count == 0 then
+                if mapFiles.count == 0 then
                 (
                     btnLancer.enabled = true
                     btnReset.enabled = true
-                    messageBox "Aucune texture trouvée dans le dossier sélectionné." title:"Erreur"
+                    messageBox "Aucune map trouvée dans le dossier sélectionné." title:"Erreur"
                     return false
                 )
 
-                print (textureFiles.count as string + " textures trouvées")
+                print (mapFiles.count as string + " maps trouvées")
 
                 -- Créer la structure de dossiers
-                local textureFolderName = filterString textureFolderPath "\\\\"
-                textureFolderName = textureFolderName[textureFolderName.count]
+                local mapFolderName = filterString mapFolderPath "\\\\"
+                mapFolderName = mapFolderName[mapFolderName.count]
 
-                -- Vérifier si le chemin de rendu ne se termine pas déjà par le nom du dossier textures
+                -- Vérifier si le chemin de rendu ne se termine pas déjà par le nom du dossier maps
                 local renderFolderParts = filterString renderFolderPath "\\\\"
                 local lastRenderFolderName = renderFolderParts[renderFolderParts.count]
 
                 local baseRenderPath = ""
-                if lastRenderFolderName == textureFolderName then
+                if lastRenderFolderName == mapFolderName then
                 (
-                    -- Le dossier rendu se termine déjà par le nom du dossier textures, ne pas dupliquer
+                    -- Le dossier rendu se termine déjà par le nom du dossier maps, ne pas dupliquer
                     baseRenderPath = renderFolderPath
                     print ("INFO - Utilisation directe du dossier rendu: " + baseRenderPath)
                 )
                 else
                 (
-                    -- Ajouter le nom du dossier textures au chemin de rendu
-                    baseRenderPath = renderFolderPath + "\\\\" + textureFolderName
+                    -- Ajouter le nom du dossier maps au chemin de rendu
+                    baseRenderPath = renderFolderPath + "\\\\" + mapFolderName
                     print ("INFO - Création sous-dossier: " + baseRenderPath)
                 )
 
@@ -367,7 +367,7 @@ class MenuPlugin:
                 local originalHeight = renderHeight
 
                 -- Compter le nombre total de rendus
-                local totalRendus = textureFiles.count * renderJobs.count
+                local totalRendus = mapFiles.count * renderJobs.count
                 local renduCourant = 0
 
                 -- Initialiser la barre de progression
@@ -393,15 +393,15 @@ class MenuPlugin:
                 -- Réinitialiser le flag stop au début
                 stopRendering = false
 
-                -- Sauvegarder la texture originale du matériau
-                local originalTexture = targetMat.base_color_map
-                if originalTexture != undefined then
-                    print (">>> Texture originale sauvegardée: " + originalTexture.filename)
+                -- Sauvegarder la map originale du matériau
+                local originalMap = targetMat.base_color_map
+                if originalMap != undefined then
+                    print (">>> Map originale sauvegardée: " + originalMap.filename)
                 else
-                    print ">>> Aucune texture originale dans le matériau"
+                    print ">>> Aucune map originale dans le matériau"
 
-                -- Boucle sur chaque texture
-                for textureFile in textureFiles do
+                -- Boucle sur chaque map
+                for mapFile in mapFiles do
                 (
                     -- Vérifier si l'arrêt a été demandé
                     if stopRendering then
@@ -414,17 +414,17 @@ class MenuPlugin:
                     for i = 1 to 3 do windows.processPostedMessages()
                     sleep 0.01
 
-                    local textureName = filenameFromPath textureFile
-                    local textureBaseName = getFilenameFile textureFile
+                    local mapName = filenameFromPath mapFile
+                    local mapBaseName = getFilenameFile mapFile
 
-                    print ("\n--- Texture: " + textureName + " ---")
-                    print ">>> UI refresh avant chargement texture"
+                    print ("\n--- Map: " + mapName + " ---")
+                    print ">>> UI refresh avant chargement map"
 
-                    -- Charger la texture dans le matériau (Arnold ou Physical)
+                    -- Charger la map dans le matériau (Arnold ou Physical)
                     try
                     (
-                        local newBitmap = Bitmaptexture fileName:textureFile
-                        local textureAssigned = false
+                        local newBitmap = Bitmaptexture fileName:mapFile
+                        local mapAssigned = false
                         local matType = classOf targetMat as string
 
                         -- Essayer Arnold Standard Surface
@@ -433,8 +433,8 @@ class MenuPlugin:
                             try
                             (
                                 targetMat.base_color_shader = newBitmap
-                                textureAssigned = true
-                                print ("Texture assignée à Arnold Standard Surface: " + textureName)
+                                mapAssigned = true
+                                print ("Map assignée à Arnold Standard Surface: " + mapName)
                             )
                             catch
                             (
@@ -447,16 +447,16 @@ class MenuPlugin:
                             try
                             (
                                 targetMat.base_color_map = newBitmap
-                                textureAssigned = true
-                                print ("Texture assignée à Physical Material: " + textureName)
+                                mapAssigned = true
+                                print ("Map assignée à Physical Material: " + mapName)
                             )
                             catch
                             (
                                 try
                                 (
                                     targetMat.base_weight_color_map = newBitmap
-                                    textureAssigned = true
-                                    print ("Texture assignée à Physical Material (base_weight): " + textureName)
+                                    mapAssigned = true
+                                    print ("Map assignée à Physical Material (base_weight): " + mapName)
                                 )
                                 catch
                                 (
@@ -469,20 +469,20 @@ class MenuPlugin:
                             print ("AVERTISSEMENT: Type de matériau non supporté: " + matType)
                         )
 
-                        if not textureAssigned then
+                        if not mapAssigned then
                         (
-                            print ("ERREUR: Impossible d'assigner la texture " + textureName)
+                            print ("ERREUR: Impossible d'assigner la map " + mapName)
                             continue
                         )
 
-                        -- IMPORTANT: Forcer le rafraîchissement de la scène pour que la nouvelle texture soit prise en compte
+                        -- IMPORTANT: Forcer le rafraîchissement de la scène pour que la nouvelle map soit prise en compte
                         completeRedraw()
                         gc light:true  -- Nettoyage léger de la mémoire pour forcer le rechargement
                         windows.processPostedMessages()  -- Mise à jour de l'interface
                     )
                     catch
                     (
-                        print ("ERREUR: Impossible de charger la texture " + textureName)
+                        print ("ERREUR: Impossible de charger la map " + mapName)
                         continue
                     )
 
@@ -512,7 +512,7 @@ class MenuPlugin:
                         -- Mettre à jour la barre de progression et les labels
                         local progressPercent = 100.0 * renduCourant / totalRendus
                         pbRender.value = progressPercent as integer
-                        lblCurrentRender.text = textureBaseName + " - " + jobName + " (" + renduCourant as string + "/" + totalRendus as string + ")"
+                        lblCurrentRender.text = mapBaseName + " - " + jobName + " (" + renduCourant as string + "/" + totalRendus as string + ")"
 
                         -- Forcer plusieurs rafraîchissements UI avant le rendu
                         for i = 1 to 5 do
@@ -542,7 +542,7 @@ class MenuPlugin:
                         )
 
                         -- Nom du fichier de sortie
-                        local outputFileName = "Rendu_" + jobName + "_" + textureBaseName + "." + jobFormat
+                        local outputFileName = "Rendu_" + jobName + "_" + mapBaseName + "." + jobFormat
                         local outputPath = jobFolder + "\\\\" + outputFileName
 
                         -- Lancer le rendu (vfb:off force le rendu sans fenêtre)
@@ -606,38 +606,38 @@ class MenuPlugin:
                         )
                     )
 
-                    -- Libérer la mémoire de la texture après tous ses rendus
+                    -- Libérer la mémoire de la map après tous ses rendus
                     try
                     (
                         targetMat.base_color_map = undefined
                         freeSceneBitmaps()
                         windows.processPostedMessages()
-                        print (">>> Texture libérée de la mémoire: " + textureBaseName)
+                        print (">>> Map libérée de la mémoire: " + mapBaseName)
                     )
                     catch
                     (
-                        print "Note: Impossible de libérer la texture de la mémoire"
+                        print "Note: Impossible de libérer la map de la mémoire"
                     )
                 )
 
-                -- Restaurer la texture originale du matériau
-                if originalTexture != undefined then
+                -- Restaurer la map originale du matériau
+                if originalMap != undefined then
                 (
                     try
                     (
-                        targetMat.base_color_map = originalTexture
+                        targetMat.base_color_map = originalMap
                         completeRedraw()
                         windows.processPostedMessages()
-                        print (">>> Texture originale restaurée: " + originalTexture.filename)
+                        print (">>> Map originale restaurée: " + originalMap.filename)
                     )
                     catch
                     (
-                        print "Note: Impossible de restaurer la texture originale"
+                        print "Note: Impossible de restaurer la map originale"
                     )
                 )
                 else
                 (
-                    print ">>> Aucune texture à restaurer (matériau était vide)"
+                    print ">>> Aucune map à restaurer (matériau était vide)"
                 )
 
                 -- Restaurer les paramètres originaux
@@ -688,7 +688,7 @@ class MenuPlugin:
                 (
                     -- Réinitialiser les chemins
                     sceneFolderPath = ""
-                    textureFolderPath = ""
+                    mapFolderPath = ""
                     renderFolderPath = ""
                     sceneFiles = #()
 
