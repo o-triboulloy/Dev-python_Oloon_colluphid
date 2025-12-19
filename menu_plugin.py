@@ -393,12 +393,17 @@ class MenuPlugin:
                 -- Réinitialiser le flag stop au début
                 stopRendering = false
 
-                -- Sauvegarder la map originale du matériau
-                local originalMap = targetMat.base_color_map
-                if originalMap != undefined then
-                    print (">>> Map originale sauvegardée: " + originalMap.filename)
+                -- Sauvegarder le CHEMIN de la map originale (pas la référence qui sera libérée)
+                local originalMapPath = undefined
+                if targetMat.base_color_map != undefined then
+                (
+                    originalMapPath = targetMat.base_color_map.filename
+                    print (">>> Chemin de la map originale sauvegardé: " + originalMapPath)
+                )
                 else
+                (
                     print ">>> Aucune map originale dans le matériau"
+                )
 
                 -- Boucle sur chaque map
                 for mapFile in mapFiles do
@@ -621,14 +626,16 @@ class MenuPlugin:
                 )
 
                 -- Restaurer la map originale du matériau
-                if originalMap != undefined then
+                if originalMapPath != undefined then
                 (
                     try
                     (
-                        targetMat.base_color_map = originalMap
+                        -- Recréer la bitmap à partir du chemin sauvegardé
+                        local restoredBitmap = Bitmaptexture fileName:originalMapPath
+                        targetMat.base_color_map = restoredBitmap
                         completeRedraw()
                         windows.processPostedMessages()
-                        print (">>> Map originale restaurée: " + originalMap.filename)
+                        print (">>> Map originale restaurée: " + originalMapPath)
                     )
                     catch
                     (
