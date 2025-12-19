@@ -482,7 +482,7 @@ class MenuPlugin:
 
                         -- IMPORTANT: Forcer le rafraîchissement de la scène pour que la nouvelle map soit prise en compte
                         completeRedraw()
-                        gc light:true  -- Nettoyage léger de la mémoire pour forcer le rechargement
+                        gc()  -- Garbage collection complet pour libérer la mémoire
                         windows.processPostedMessages()  -- Mise à jour de l'interface
                     )
                     catch
@@ -600,6 +600,9 @@ class MenuPlugin:
                             -- Rafraîchir l'UI après chaque rendu
                             for i = 1 to 3 do windows.processPostedMessages()
 
+                            -- Nettoyage mémoire après chaque rendu pour éviter l'accumulation
+                            gc()
+
                             print ("    OK: " + outputFileName + " (durée: " + timeText + ", taille: " + fileSize as string + " bytes)")
                             print (">>> Rendu " + renduCourant as string + "/" + totalRendus as string + " terminé, UI rafraîchie")
                         )
@@ -616,7 +619,10 @@ class MenuPlugin:
                     (
                         targetMat.base_color_map = undefined
                         freeSceneBitmaps()
+                        gc()  -- Garbage collection complet
+                        clearUndoBuffer()  -- Vider le buffer undo pour libérer la mémoire
                         windows.processPostedMessages()
+                        sleep 0.05  -- Petite pause pour laisser le temps à la mémoire de se libérer
                         print (">>> Map libérée de la mémoire: " + mapBaseName)
                     )
                     catch
