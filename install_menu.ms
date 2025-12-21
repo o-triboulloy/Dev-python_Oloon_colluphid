@@ -24,7 +24,19 @@ tooltip:"Ouvrir la fenêtre des outils personnalisés"
 -- Ajouter le menu à la barre de menu principale
 fn addCustomMenu =
 (
-    local mainMenuBar = menuMan.mainMenuBar
+    -- Compatibilité multi-versions (2023, 2024, 2025, 2026+)
+    local mainMenuBar = undefined
+    try
+    (
+        -- Essayer la nouvelle API (2024+)
+        mainMenuBar = menuMan.mainMenuBar
+    )
+    catch
+    (
+        -- Utiliser l'ancienne API (2023 et antérieurs)
+        mainMenuBar = menuMan.getMainMenuBar()
+    )
+
     local customMenu = menuMan.createMenu "Inostudio"
 
     local customAction = menuMan.createActionItem "OpenCustomTool" "Custom Tools"
