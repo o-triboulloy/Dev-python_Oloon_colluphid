@@ -24,6 +24,8 @@ tooltip:"Ouvrir la fenêtre des outils personnalisés"
 -- Ajouter le menu à la barre de menu principale
 fn addCustomMenu =
 (
+    global menuMan  -- Déclarer menuMan comme global
+
     -- Compatibilité multi-versions (2023, 2024, 2025, 2026+)
     local mainMenuBar = undefined
     try
