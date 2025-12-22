@@ -68,7 +68,7 @@ print "Le MacroScript 'UNIKALO RenderTool' a été créé avec succès!"
 print ""
 
 -- Tenter de créer la toolbar automatiquement
-local toolbarCreated = createToolbar()
+toolbarCreated = createToolbar()
 
 if toolbarCreated then
 (
