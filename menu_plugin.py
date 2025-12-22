@@ -558,7 +558,7 @@ class MenuPlugin:
                             local endTime = timestamp()
                             local renderDuration = (endTime - startTime) / 1000.0  -- Convertir en secondes
 
-                            -- Vérifier si le rendu a été annulé (fichier absent ou invalide)
+                            -- Vérifier si le rendu a été annulé (fichier absent)
                             if not (doesFileExist outputPath) then
                             (
                                 print "\n!!! RENDU ANNULÉ PAR L'UTILISATEUR (ESC) - Fichier absent !!!"
@@ -569,19 +569,8 @@ class MenuPlugin:
                                 exit
                             )
 
-                            -- Calculer le seuil minimum dynamique basé sur la résolution
-                            local minFileSize = (jobWidth * jobHeight) / 30  -- Seuil adaptatif selon résolution
+                            -- Récupérer la taille du fichier pour info
                             local fileSize = getFileSize outputPath
-                            if fileSize < minFileSize then
-                            (
-                                print "\n!!! RENDU ANNULÉ PAR L'UTILISATEUR (ESC) - Fichier invalide !!!"
-                                print ("Taille du fichier: " + fileSize as string + " bytes (trop petit, minimum " + minFileSize as string + " pour " + jobWidth as string + "x" + jobHeight as string + ")")
-                                print "Arrêt de toute la série de rendus..."
-                                lblCurrentRender.text = "Annulé par utilisateur"
-                                renduCourant -= 1  -- Ne pas compter ce rendu annulé
-                                stopRendering = true
-                                exit
-                            )
 
                             -- Afficher le temps de rendu
                             local timeText = ""
