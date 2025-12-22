@@ -1,4 +1,5 @@
 -- Script d'installation pour ajouter l'icône au menu de 3ds Max
+-- Compatible avec toutes les versions de 3ds Max (2023-2026+)
 -- À exécuter une seule fois dans 3ds Max
 
 macroScript OpenCustomTool
@@ -21,36 +22,28 @@ tooltip:"Ouvrir la fenêtre des outils personnalisés"
     )
 )
 
--- Ajouter le menu à la barre de menu principale
-fn addCustomMenu =
-(
-    global menuMan  -- Déclarer menuMan comme global
+-- Message d'installation réussie
+print "======================================================================"
+print "=== INSTALLATION RÉUSSIE ==="
+print "======================================================================"
+print ""
+print "Le MacroScript 'UNIKALO RenderTool' a été créé avec succès!"
+print ""
+print "COMMENT L'UTILISER :"
+print ""
+print "Méthode 1 - Ajouter à une barre d'outils :"
+print "  1. Allez dans : Customize > Customize User Interface (ou touche Y)"
+print "  2. Cliquez sur l'onglet 'Toolbars'"
+print "  3. Dans 'Category', sélectionnez 'Custom Tools'"
+print "  4. Trouvez 'UNIKALO RenderTool' dans la liste"
+print "  5. Glissez-déposez le sur votre barre d'outils principale"
+print ""
+print "Méthode 2 - Assigner un raccourci clavier :"
+print "  1. Allez dans : Customize > Customize User Interface (ou touche Y)"
+print "  2. Cliquez sur l'onglet 'Keyboard'"
+print "  3. Dans 'Category', sélectionnez 'Custom Tools'"
+print "  4. Trouvez 'UNIKALO RenderTool' et assignez un raccourci (ex: Ctrl+Shift+U)"
+print ""
+print "======================================================================"
+messageBox "Installation réussie!\n\nLe bouton 'UNIKALO RenderTool' est maintenant disponible.\n\nConsultez le Listener pour savoir comment l'ajouter à votre interface." title:"U-Rtool - Installation"
 
-    -- Compatibilité multi-versions (2023, 2024, 2025, 2026+)
-    local mainMenuBar = undefined
-    try
-    (
-        -- Essayer la nouvelle API (2024+)
-        mainMenuBar = menuMan.mainMenuBar
-    )
-    catch
-    (
-        -- Utiliser l'ancienne API (2023 et antérieurs)
-        mainMenuBar = menuMan.getMainMenuBar()
-    )
-
-    local customMenu = menuMan.createMenu "Inostudio"
-
-    local customAction = menuMan.createActionItem "OpenCustomTool" "Custom Tools"
-    customMenu.addItem customAction 0
-
-    local customSubMenu = menuMan.createSubMenuItem "Inostudio" customMenu
-    mainMenuBar.addItem customSubMenu -1
-
-    menuMan.updateMenuBar()
-
-    print "Menu 'Inostudio' ajouté avec succès!"
-)
-
--- Exécuter l'installation
-addCustomMenu()
