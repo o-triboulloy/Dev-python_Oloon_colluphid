@@ -23,13 +23,18 @@ class MenuPlugin:
 
         # Création du rollout (fenêtre) avec MaxScript
         rollout_code = """
-        rollout CustomToolWindow "U-Rtool" width:206 height:567
+        rollout CustomToolWindow "U-Rtool" width:206 height:750
         (
             -- Variables globales
             local sceneFolderPath = ""
             local sceneFiles = #()
             local mapFolderPath = ""
+            local mapFolderPathB = ""
+            local mapFolderPathC = ""
             local renderFolderPath = ""
+            local contrastValueA = 100
+            local contrastValueB = 100
+            local contrastValueC = 100
             local iniFile = getDir #userScripts + "\\\\U-Rtool_settings.ini"
             local isLoading = false  -- Flag pour éviter les conflits pendant le chargement
             local stopRendering = false  -- Flag pour arrêter les rendus en cours
@@ -39,34 +44,51 @@ class MenuPlugin:
 
             -- Boutons
             button btn1 "Dossier scènes" pos:[10,86] width:186 height:30
-            button btn2a "Dossier maps" pos:[10,121] width:186 height:30
-            button btn2b "Dossier Rendu" pos:[10,156] width:186 height:30
-            button btnReset "Reset" pos:[10,191] width:186 height:30
+            button btn2a "Dossier maps A" pos:[10,121] width:186 height:30
+
+            -- Slider Contraste A
+            label lblContrastA "Contraste A:" pos:[10,156] width:80
+            spinner spnContrastA "" pos:[90,156] width:106 height:16 range:[0,200,100] type:#integer scale:5 fieldWidth:40
+
+            button btn2b "Dossier Rendu" pos:[10,177] width:186 height:30
+            button btnReset "Reset" pos:[10,212] width:186 height:30
 
             -- Options Rendus
-            groupBox grpRendu "Options Rendus" pos:[10,226] width:186 height:145
-            checkbox chkRenduStd "Rendus standard" pos:[20,243] width:160
-            spinner spnWidthStd "Largeur:" pos:[30,258] width:145 height:16 range:[1,10000,1920] type:#integer fieldWidth:50
-            spinner spnHeightStd "Hauteur:" pos:[30,273] width:145 height:16 range:[1,10000,1080] type:#integer fieldWidth:50
-            checkbox chkRenduDet "Rendus détourés" pos:[20,293] width:160
-            checkbox chkRenduHD "Rendu HD" pos:[20,310] width:160
-            spinner spnWidthHD "Largeur:" pos:[30,325] width:145 height:16 range:[1,10000,3840] type:#integer fieldWidth:50
-            spinner spnHeightHD "Hauteur:" pos:[30,340] width:145 height:16 range:[1,10000,2160] type:#integer fieldWidth:50
-            checkbox chkRenduHDDet "Rendu HD détourés" pos:[20,360] width:160
+            groupBox grpRendu "Options Rendus" pos:[10,247] width:186 height:145
+            checkbox chkRenduStd "Rendus standard" pos:[20,264] width:160
+            spinner spnWidthStd "Largeur:" pos:[30,279] width:145 height:16 range:[1,10000,1920] type:#integer fieldWidth:50
+            spinner spnHeightStd "Hauteur:" pos:[30,294] width:145 height:16 range:[1,10000,1080] type:#integer fieldWidth:50
+            checkbox chkRenduDet "Rendus détourés" pos:[20,314] width:160
+            checkbox chkRenduHD "Rendu HD" pos:[20,331] width:160
+            spinner spnWidthHD "Largeur:" pos:[30,346] width:145 height:16 range:[1,10000,3840] type:#integer fieldWidth:50
+            spinner spnHeightHD "Hauteur:" pos:[30,361] width:145 height:16 range:[1,10000,2160] type:#integer fieldWidth:50
+            checkbox chkRenduHDDet "Rendu HD détourés" pos:[20,381] width:160
 
             -- Menu déroulant Scènes
-            label lblScenes "Scènes:" pos:[10,381] width:186
-            dropdownList ddScenes "" pos:[10,396] width:186 items:#()
+            label lblScenes "Scènes:" pos:[10,402] width:186
+            dropdownList ddScenes "" pos:[10,417] width:186 items:#()
 
             -- Section Lancer les rendus
-            groupBox grpLancer "" pos:[10,421] width:186 height:74
-            button btnLancer "Lancer les\nrendus" pos:[20,432] width:166 height:54
+            groupBox grpLancer "" pos:[10,442] width:186 height:74
+            button btnLancer "Lancer les\nrendus" pos:[20,453] width:166 height:54
 
             -- Section Progression
-            groupBox grpProgress "Progression totale" pos:[10,505] width:186 height:54
-            label lblCurrentRender "" pos:[15,520] width:176 height:14 align:#left
-            progressBar pbRender "" pos:[15,534] width:176 height:16 color:orange
-            label lblRenderTime "" pos:[15,550] width:176 height:14 align:#left
+            groupBox grpProgress "Progression totale" pos:[10,526] width:186 height:54
+            label lblCurrentRender "" pos:[15,541] width:176 height:14 align:#left
+            progressBar pbRender "" pos:[15,555] width:176 height:16 color:orange
+            label lblRenderTime "" pos:[15,571] width:176 height:14 align:#left
+
+            -- Composant B
+            groupBox grpComponentB "COMPOSANT B" pos:[10,590] width:186 height:70
+            button btn2aB "Dossier maps B" pos:[20,605] width:166 height:30
+            label lblContrastB "Contraste B:" pos:[20,640] width:80
+            spinner spnContrastB "" pos:[100,640] width:76 height:16 range:[0,200,100] type:#integer scale:5 fieldWidth:40
+
+            -- Composant C
+            groupBox grpComponentC "COMPOSANT C" pos:[10,670] width:186 height:70
+            button btn2aC "Dossier maps C" pos:[20,685] width:166 height:30
+            label lblContrastC "Contraste C:" pos:[20,720] width:80
+            spinner spnContrastC "" pos:[100,720] width:76 height:16 range:[0,200,100] type:#integer scale:5 fieldWidth:40
 
             -- Événement au chargement pour gérer les images et charger les paramètres
             on CustomToolWindow open do
@@ -98,8 +120,34 @@ class MenuPlugin:
                 loadedPath = getINISetting iniFile "Paths" "MapFolder"
                 if loadedPath != "" then mapFolderPath = loadedPath
 
+                loadedPath = getINISetting iniFile "Paths" "MapFolderB"
+                if loadedPath != "" then mapFolderPathB = loadedPath
+
+                loadedPath = getINISetting iniFile "Paths" "MapFolderC"
+                if loadedPath != "" then mapFolderPathC = loadedPath
+
                 loadedPath = getINISetting iniFile "Paths" "RenderFolder"
                 if loadedPath != "" then renderFolderPath = loadedPath
+
+                -- Charger les valeurs de contraste
+                local val = getINISetting iniFile "Contrast" "ValueA"
+                if val != "" then
+                (
+                    contrastValueA = val as integer
+                    spnContrastA.value = contrastValueA
+                )
+                val = getINISetting iniFile "Contrast" "ValueB"
+                if val != "" then
+                (
+                    contrastValueB = val as integer
+                    spnContrastB.value = contrastValueB
+                )
+                val = getINISetting iniFile "Contrast" "ValueC"
+                if val != "" then
+                (
+                    contrastValueC = val as integer
+                    spnContrastC.value = contrastValueC
+                )
 
                 -- Charger les options de rendu
                 local val = getINISetting iniFile "OptionsRendu" "RenduStandard"
@@ -160,14 +208,14 @@ class MenuPlugin:
                 )
             )
 
-            -- Bouton 2a: Choisir le dossier des maps
+            -- Bouton 2a: Choisir le dossier des maps A
             on btn2a pressed do
             (
-                local folderPath = getSavePath caption:"Choisir le dossier des maps" initialDir:mapFolderPath
+                local folderPath = getSavePath caption:"Choisir le dossier des maps A" initialDir:mapFolderPath
                 if folderPath != undefined then
                 (
                     mapFolderPath = folderPath
-                    print ("Dossier maps sélectionné: " + mapFolderPath)
+                    print ("Dossier maps A sélectionné: " + mapFolderPath)
 
                     -- Ajouter le dossier aux External File Paths pour cette session
                     try
@@ -180,6 +228,71 @@ class MenuPlugin:
                         print "Erreur lors de l'ajout du dossier aux External File Paths"
                     )
                 )
+            )
+
+            -- Spinner Contraste A
+            on spnContrastA changed val do
+            (
+                if not isLoading then
+                    contrastValueA = val
+            )
+
+            -- Bouton 2aB: Choisir le dossier des maps B
+            on btn2aB pressed do
+            (
+                local folderPath = getSavePath caption:"Choisir le dossier des maps B" initialDir:mapFolderPathB
+                if folderPath != undefined then
+                (
+                    mapFolderPathB = folderPath
+                    print ("Dossier maps B sélectionné: " + mapFolderPathB)
+
+                    -- Ajouter le dossier aux External File Paths pour cette session
+                    try
+                    (
+                        pathConfig.appendSessionPath #bitmap mapFolderPathB
+                        print "Dossier ajouté aux External File Paths (Bitmap) pour cette session"
+                    )
+                    catch
+                    (
+                        print "Erreur lors de l'ajout du dossier aux External File Paths"
+                    )
+                )
+            )
+
+            -- Spinner Contraste B
+            on spnContrastB changed val do
+            (
+                if not isLoading then
+                    contrastValueB = val
+            )
+
+            -- Bouton 2aC: Choisir le dossier des maps C
+            on btn2aC pressed do
+            (
+                local folderPath = getSavePath caption:"Choisir le dossier des maps C" initialDir:mapFolderPathC
+                if folderPath != undefined then
+                (
+                    mapFolderPathC = folderPath
+                    print ("Dossier maps C sélectionné: " + mapFolderPathC)
+
+                    -- Ajouter le dossier aux External File Paths pour cette session
+                    try
+                    (
+                        pathConfig.appendSessionPath #bitmap mapFolderPathC
+                        print "Dossier ajouté aux External File Paths (Bitmap) pour cette session"
+                    )
+                    catch
+                    (
+                        print "Erreur lors de l'ajout du dossier aux External File Paths"
+                    )
+                )
+            )
+
+            -- Spinner Contraste C
+            on spnContrastC changed val do
+            (
+                if not isLoading then
+                    contrastValueC = val
             )
 
             -- Bouton 2b: Choisir le dossier de rendu
@@ -202,7 +315,14 @@ class MenuPlugin:
                 -- Sauvegarder les chemins
                 setINISetting iniFile "Paths" "SceneFolder" sceneFolderPath
                 setINISetting iniFile "Paths" "MapFolder" mapFolderPath
+                setINISetting iniFile "Paths" "MapFolderB" mapFolderPathB
+                setINISetting iniFile "Paths" "MapFolderC" mapFolderPathC
                 setINISetting iniFile "Paths" "RenderFolder" renderFolderPath
+
+                -- Sauvegarder les valeurs de contraste
+                setINISetting iniFile "Contrast" "ValueA" (contrastValueA as string)
+                setINISetting iniFile "Contrast" "ValueB" (contrastValueB as string)
+                setINISetting iniFile "Contrast" "ValueC" (contrastValueC as string)
 
                 -- Sauvegarder les options de rendu
                 setINISetting iniFile "OptionsRendu" "RenduStandard" (if chkRenduStd.checked then "true" else "false")
@@ -691,8 +811,18 @@ class MenuPlugin:
                     -- Réinitialiser les chemins
                     sceneFolderPath = ""
                     mapFolderPath = ""
+                    mapFolderPathB = ""
+                    mapFolderPathC = ""
                     renderFolderPath = ""
                     sceneFiles = #()
+
+                    -- Réinitialiser les contrastes
+                    contrastValueA = 100
+                    contrastValueB = 100
+                    contrastValueC = 100
+                    spnContrastA.value = 100
+                    spnContrastB.value = 100
+                    spnContrastC.value = 100
 
                     -- Vider le menu déroulant
                     ddScenes.items = #()
