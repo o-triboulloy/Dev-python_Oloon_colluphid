@@ -212,31 +212,31 @@ class MenuPlugin:
                 val = getINISetting iniFile "Resolution" "HeightHD"
                 if val != "" then spnHeightHD.value = val as integer else spnHeightHD.value = 2160
 
-                -- Appliquer la valeur de contraste au Color_Correction node
+                -- Appliquer les valeurs de contraste aux Color_Correction nodes
                 try
                 (
-                    local targetMat = undefined
-
-                    -- Essayer d'abord le multi-matériau MULTIMAT_UNIKALO
-                    local multiMat = sceneMaterials["MULTIMAT_UNIKALO"]
-                    if multiMat != undefined and multiMat.materialList.count >= 2 then
+                    -- Composant A
+                    local targetMatA = findMaterialByName "MAT_UNIKALO"
+                    if targetMatA != undefined and classOf targetMatA.base_color_map == Color_Correction then
                     (
-                        targetMat = multiMat.materialList[1]
+                        targetMatA.base_color_map.contrast = contrastValueA
+                        print ("Contraste A initialisé: " + contrastValueA as string)
                     )
-                    else
+                    
+                    -- Composant B
+                    local targetMatB = findMaterialByName "MAT_UNIKALO_B"
+                    if targetMatB != undefined and classOf targetMatB.base_color_map == Color_Correction then
                     (
-                        -- Sinon chercher MAT_UNIKALO directement
-                        targetMat = sceneMaterials["MAT_UNIKALO"]
+                        targetMatB.base_color_map.contrast = contrastValueB
+                        print ("Contraste B initialisé: " + contrastValueB as string)
                     )
-
-                    if targetMat != undefined then
+                    
+                    -- Composant C
+                    local targetMatC = findMaterialByName "MAT_UNIKALO_C"
+                    if targetMatC != undefined and classOf targetMatC.base_color_map == Color_Correction then
                     (
-                        -- Vérifier si base_color_map est un Color_Correction
-                        if classOf targetMat.base_color_map == Color_Correction then
-                        (
-                            targetMat.base_color_map.contrast = contrastValueA
-                            print ("Contraste A initialisé au démarrage: " + contrastValueA as string)
-                        )
+                        targetMatC.base_color_map.contrast = contrastValueC
+                        print ("Contraste C initialisé: " + contrastValueC as string)
                     )
                 )
                 catch()
