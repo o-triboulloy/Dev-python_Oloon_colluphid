@@ -241,17 +241,48 @@ class MenuPlugin:
                     -- Mettre à jour le Color Correction node en temps réel
                     try
                     (
-                        local colorCorrect = getNodeByName "MAT_UNIKALO_A_Color_correction"
-                        if colorCorrect != undefined then
+                        -- Trouver le matériau MAT_UNIKALO
+                        local targetMat = undefined
+                        for mat in sceneMaterials do
                         (
-                            colorCorrect.contrast = val / 100.0
-                            completeRedraw()
-                            print ("Contraste A mis à jour: " + val as string + " (" + (val / 100.0) as string + ")")
+                            local trimmedName = trimLeft (trimRight mat.name)
+                            if trimmedName == "MAT_UNIKALO" then
+                            (
+                                targetMat = mat
+                                exit
+                            )
+                        )
+                        
+                        if targetMat != undefined then
+                        (
+                            local matType = classOf targetMat as string
+                            local colorCorrect = undefined
+                            
+                            -- Cas Arnold Standard Surface
+                            if matType == "ai_standard_surface" then
+                            (
+                                if targetMat.base_color_shader != undefined and classOf targetMat.base_color_shader == ai_color_correct then
+                                    colorCorrect = targetMat.base_color_shader
+                            )
+                            -- Cas Physical Material
+                            else if matType == "Physical_Material" or matType == "PhysicalMaterial" then
+                            (
+                                if targetMat.base_color_map != undefined and classOf targetMat.base_color_map == ai_color_correct then
+                                    colorCorrect = targetMat.base_color_map
+                            )
+                            
+                            -- Mettre à jour le contraste si Color Correction trouvé
+                            if colorCorrect != undefined then
+                            (
+                                colorCorrect.contrast = val / 100.0
+                                completeRedraw()
+                                print ("Contraste A mis à jour: " + val as string + " (" + (val / 100.0) as string + ")")
+                            )
                         )
                     )
                     catch
                     (
-                        -- Silencieux si le node n'existe pas encore
+                        -- Silencieux si erreur
                     )
                 )
             )
