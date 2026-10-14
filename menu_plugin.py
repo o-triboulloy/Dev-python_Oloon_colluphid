@@ -559,14 +559,14 @@ class MenuPlugin:
                 if targetMatC != undefined then print ("Matériau C trouvé: " + targetMatC.name)
 
                 -- Lister les maps des 3 dossiers
-                local mapFilesA = getFiles (mapFolderPath + "\\*.jpg") + getFiles (mapFolderPath + "\\*.png") + getFiles (mapFolderPath + "\\*.tga")
+                local mapFilesA = getFiles (mapFolderPath + "\\\\*.jpg") + getFiles (mapFolderPath + "\\\\*.png") + getFiles (mapFolderPath + "\\\\*.tga")
                 local mapFilesB = #()
                 local mapFilesC = #()
 
                 if mapFolderPathB != "" then
-                    mapFilesB = getFiles (mapFolderPathB + "\\*.jpg") + getFiles (mapFolderPathB + "\\*.png") + getFiles (mapFolderPathB + "\\*.tga")
+                    mapFilesB = getFiles (mapFolderPathB + "\\\\*.jpg") + getFiles (mapFolderPathB + "\\\\*.png") + getFiles (mapFolderPathB + "\\\\*.tga")
                 if mapFolderPathC != "" then
-                    mapFilesC = getFiles (mapFolderPathC + "\\*.jpg") + getFiles (mapFolderPathC + "\\*.png") + getFiles (mapFolderPathC + "\\*.tga")
+                    mapFilesC = getFiles (mapFolderPathC + "\\\\*.jpg") + getFiles (mapFolderPathC + "\\\\*.png") + getFiles (mapFolderPathC + "\\\\*.tga")
 
                 if mapFilesA.count == 0 then
                 (
@@ -593,10 +593,10 @@ class MenuPlugin:
                 print ("Nombre total de rendus à faire: " + (maxMaps * renderJobs.count) as string)
 
                 -- Créer la structure de dossiers (basée sur le nom du dossier A)
-                local mapFolderName = filterString mapFolderPath "\\"
+                local mapFolderName = filterString mapFolderPath "\\\\"
                 mapFolderName = mapFolderName[mapFolderName.count]
 
-                local renderFolderParts = filterString renderFolderPath "\\"
+                local renderFolderParts = filterString renderFolderPath "\\\\"
                 local lastRenderFolderName = renderFolderParts[renderFolderParts.count]
 
                 local baseRenderPath = ""
@@ -607,7 +607,7 @@ class MenuPlugin:
                 )
                 else
                 (
-                    baseRenderPath = renderFolderPath + "\\" + mapFolderName
+                    baseRenderPath = renderFolderPath + "\\\\" + mapFolderName
                     print ("INFO - Création sous-dossier: " + baseRenderPath)
                 )
 
@@ -789,7 +789,7 @@ class MenuPlugin:
                         )
 
                         local outputFileName = "Rendu_" + jobName + "_" + mapBaseName + "." + jobFormat
-                        local outputPath = jobFolder + "\\" + outputFileName
+                        local outputPath = jobFolder + "\\\\" + outputFileName
 
                         local startTime = timestamp()
                         try
