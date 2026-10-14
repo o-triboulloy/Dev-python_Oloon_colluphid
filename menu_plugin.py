@@ -205,6 +205,34 @@ class MenuPlugin:
             -- Événement à la fermeture
             on CustomToolWindow close do
             (
+                -- Sauvegarder tous les paramètres à la fermeture
+                print "=== SAUVEGARDE À LA FERMETURE ==="
+
+                -- Sauvegarder les chemins
+                setINISetting iniFile "Paths" "SceneFolder" sceneFolderPath
+                setINISetting iniFile "Paths" "MapFolder" mapFolderPath
+                setINISetting iniFile "Paths" "MapFolderB" mapFolderPathB
+                setINISetting iniFile "Paths" "MapFolderC" mapFolderPathC
+                setINISetting iniFile "Paths" "RenderFolder" renderFolderPath
+
+                -- Sauvegarder les valeurs de contraste
+                setINISetting iniFile "Contrast" "ValueA" (contrastValueA as string)
+                setINISetting iniFile "Contrast" "ValueB" (contrastValueB as string)
+                setINISetting iniFile "Contrast" "ValueC" (contrastValueC as string)
+
+                -- Sauvegarder les options de rendu
+                setINISetting iniFile "OptionsRendu" "RenduStandard" (if chkRenduStd.checked then "true" else "false")
+                setINISetting iniFile "OptionsRendu" "RenduDetoure" (if chkRenduDet.checked then "true" else "false")
+                setINISetting iniFile "OptionsRendu" "RenduHD" (if chkRenduHD.checked then "true" else "false")
+                setINISetting iniFile "OptionsRendu" "RenduHDDetoure" (if chkRenduHDDet.checked then "true" else "false")
+
+                -- Sauvegarder les résolutions
+                setINISetting iniFile "Resolution" "WidthStd" (spnWidthStd.value as string)
+                setINISetting iniFile "Resolution" "HeightStd" (spnHeightStd.value as string)
+                setINISetting iniFile "Resolution" "WidthHD" (spnWidthHD.value as string)
+                setINISetting iniFile "Resolution" "HeightHD" (spnHeightHD.value as string)
+
+                print "Paramètres sauvegardés"
                 print "Fermeture de l'interface"
             )
 
