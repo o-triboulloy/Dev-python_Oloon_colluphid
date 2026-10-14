@@ -23,7 +23,7 @@ class MenuPlugin:
 
         # Création du rollout (fenêtre) avec MaxScript
         rollout_code = """
-        rollout CustomToolWindow "U-Rtool" width:206 height:790
+        rollout CustomToolWindow "U-Rtool" width:206 height:780
         (
             -- Variables globales
             local sceneFolderPath = ""
@@ -46,50 +46,49 @@ class MenuPlugin:
             button btn1 "Dossier scènes" pos:[10,86] width:186 height:30
             button btn2b "Dossier Rendu" pos:[10,121] width:186 height:30
             button btnReset "Reset" pos:[10,156] width:186 height:30
-            button btn2a "Dossier maps A" pos:[10,191] width:186 height:30
 
-            -- Slider Contraste A
-            label lblContrastA "Contraste A:" pos:[10,226] width:80
-            spinner spnContrastA "" pos:[90,226] width:106 height:16 range:[0,100,100] type:#integer scale:5 fieldWidth:40
-
-            -- Options Rendus
-            groupBox grpRendu "Options Rendus" pos:[10,251] width:186 height:145
-            checkbox chkRenduStd "Rendus standard" pos:[20,268] width:160
-            spinner spnWidthStd "Largeur:" pos:[30,283] width:145 height:16 range:[1,10000,1920] type:#integer fieldWidth:50
-            spinner spnHeightStd "Hauteur:" pos:[30,298] width:145 height:16 range:[1,10000,1080] type:#integer fieldWidth:50
-            checkbox chkRenduDet "Rendus détourés" pos:[20,318] width:160
-            checkbox chkRenduHD "Rendu HD" pos:[20,335] width:160
-            spinner spnWidthHD "Largeur:" pos:[30,350] width:145 height:16 range:[1,10000,3840] type:#integer fieldWidth:50
-            spinner spnHeightHD "Hauteur:" pos:[30,365] width:145 height:16 range:[1,10000,2160] type:#integer fieldWidth:50
-            checkbox chkRenduHDDet "Rendu HD détourés" pos:[20,385] width:160
-
-            -- Menu déroulant Scènes
-            label lblScenes "Scènes:" pos:[10,406] width:186
-            dropdownList ddScenes "" pos:[10,421] width:186 items:#()
-
-            -- Section Lancer les rendus
-            groupBox grpLancer "" pos:[10,446] width:186 height:74
-            button btnLancer "Lancer les\nrendus" pos:[20,457] width:166 height:54
-
-            -- Section Progression
-            groupBox grpProgress "Progression totale" pos:[10,530] width:186 height:54
-            label lblCurrentRender "" pos:[15,545] width:176 height:14 align:#left
-            progressBar pbRender "" pos:[15,559] width:176 height:16 color:orange
-            label lblRenderTime "" pos:[15,575] width:176 height:14 align:#left
+            -- Composant A
+            groupBox grpComponentA "COMPOSANT A" pos:[10,196] width:186 height:70
+            button btn2a "Dossier maps A" pos:[20,211] width:166 height:30
+            label lblContrastA "Contraste A:" pos:[20,246] width:80
+            spinner spnContrastA "" pos:[100,246] width:76 height:16 range:[0,100,100] type:#integer scale:5 fieldWidth:40
 
             -- Composant B
-            checkbox chkEnableB "Activer COMPOSANT B" pos:[10,594] width:186
-            groupBox grpComponentB "COMPOSANT B" pos:[10,609] width:186 height:70
-            button btn2aB "Dossier maps B" pos:[20,624] width:166 height:30
-            label lblContrastB "Contraste B:" pos:[20,659] width:80
-            spinner spnContrastB "" pos:[100,659] width:76 height:16 range:[0,100,100] type:#integer scale:5 fieldWidth:40
+            groupBox grpComponentB "COMPOSANT B" pos:[10,276] width:186 height:70
+            button btn2aB "Dossier maps B" pos:[20,291] width:166 height:30
+            label lblContrastB "Contraste B:" pos:[20,326] width:80
+            spinner spnContrastB "" pos:[100,326] width:76 height:16 range:[0,100,100] type:#integer scale:5 fieldWidth:40
 
             -- Composant C
-            checkbox chkEnableC "Activer COMPOSANT C" pos:[10,689] width:186
-            groupBox grpComponentC "COMPOSANT C" pos:[10,704] width:186 height:70
-            button btn2aC "Dossier maps C" pos:[20,719] width:166 height:30
-            label lblContrastC "Contraste C:" pos:[20,754] width:80
-            spinner spnContrastC "" pos:[100,754] width:76 height:16 range:[0,100,100] type:#integer scale:5 fieldWidth:40
+            groupBox grpComponentC "COMPOSANT C" pos:[10,356] width:186 height:70
+            button btn2aC "Dossier maps C" pos:[20,371] width:166 height:30
+            label lblContrastC "Contraste C:" pos:[20,406] width:80
+            spinner spnContrastC "" pos:[100,406] width:76 height:16 range:[0,100,100] type:#integer scale:5 fieldWidth:40
+
+            -- Options Rendus
+            groupBox grpRendu "Options Rendus" pos:[10,436] width:186 height:145
+            checkbox chkRenduStd "Rendus standard" pos:[20,453] width:160
+            spinner spnWidthStd "Largeur:" pos:[30,468] width:145 height:16 range:[1,10000,1920] type:#integer fieldWidth:50
+            spinner spnHeightStd "Hauteur:" pos:[30,483] width:145 height:16 range:[1,10000,1080] type:#integer fieldWidth:50
+            checkbox chkRenduDet "Rendus détourés" pos:[20,503] width:160
+            checkbox chkRenduHD "Rendu HD" pos:[20,520] width:160
+            spinner spnWidthHD "Largeur:" pos:[30,535] width:145 height:16 range:[1,10000,3840] type:#integer fieldWidth:50
+            spinner spnHeightHD "Hauteur:" pos:[30,550] width:145 height:16 range:[1,10000,2160] type:#integer fieldWidth:50
+            checkbox chkRenduHDDet "Rendu HD détourés" pos:[20,570] width:160
+
+            -- Menu déroulant Scènes
+            label lblScenes "Scènes:" pos:[10,591] width:186
+            dropdownList ddScenes "" pos:[10,606] width:186 items:#()
+
+            -- Section Lancer les rendus
+            groupBox grpLancer "" pos:[10,631] width:186 height:74
+            button btnLancer "Lancer les\nrendus" pos:[20,642] width:166 height:54
+
+            -- Section Progression
+            groupBox grpProgress "Progression totale" pos:[10,715] width:186 height:54
+            label lblCurrentRender "" pos:[15,730] width:176 height:14 align:#left
+            progressBar pbRender "" pos:[15,744] width:176 height:16 color:orange
+            label lblRenderTime "" pos:[15,760] width:176 height:14 align:#left
 
             -- Événement au chargement pour gérer les images et charger les paramètres
             on CustomToolWindow open do
@@ -170,22 +169,6 @@ class MenuPlugin:
                 val = getINISetting iniFile "Resolution" "HeightHD"
                 if val != "" then spnHeightHD.value = val as integer else spnHeightHD.value = 2160
 
-                -- Charger l'état des composants B et C
-                val = getINISetting iniFile "Components" "EnableB"
-                chkEnableB.checked = (val == "true")
-                val = getINISetting iniFile "Components" "EnableC"
-                chkEnableC.checked = (val == "true")
-
-                -- Activer/désactiver les composants selon l'état des checkboxes
-                grpComponentB.enabled = chkEnableB.checked
-                btn2aB.enabled = chkEnableB.checked
-                lblContrastB.enabled = chkEnableB.checked
-                spnContrastB.enabled = chkEnableB.checked
-
-                grpComponentC.enabled = chkEnableC.checked
-                btn2aC.enabled = chkEnableC.checked
-                lblContrastC.enabled = chkEnableC.checked
-                spnContrastC.enabled = chkEnableC.checked
 
                 isLoading = false
                 print "=== CHARGEMENT TERMINÉ ==="
@@ -255,14 +238,6 @@ class MenuPlugin:
                     contrastValueA = val
             )
 
-            -- Checkbox Activer Composant B
-            on chkEnableB changed state do
-            (
-                grpComponentB.enabled = state
-                btn2aB.enabled = state
-                lblContrastB.enabled = state
-                spnContrastB.enabled = state
-            )
 
             -- Bouton 2aB: Choisir le dossier des maps B
             on btn2aB pressed do
@@ -322,14 +297,6 @@ class MenuPlugin:
                     contrastValueC = val
             )
 
-            -- Checkbox Activer Composant C
-            on chkEnableC changed state do
-            (
-                grpComponentC.enabled = state
-                btn2aC.enabled = state
-                lblContrastC.enabled = state
-                spnContrastC.enabled = state
-            )
 
             -- Bouton 2b: Choisir le dossier de rendu
             on btn2b pressed do
@@ -359,10 +326,6 @@ class MenuPlugin:
                 setINISetting iniFile "Contrast" "ValueA" (contrastValueA as string)
                 setINISetting iniFile "Contrast" "ValueB" (contrastValueB as string)
                 setINISetting iniFile "Contrast" "ValueC" (contrastValueC as string)
-
-                -- Sauvegarder l'état des composants
-                setINISetting iniFile "Components" "EnableB" (if chkEnableB.checked then "true" else "false")
-                setINISetting iniFile "Components" "EnableC" (if chkEnableC.checked then "true" else "false")
 
                 -- Sauvegarder les options de rendu
                 setINISetting iniFile "OptionsRendu" "RenduStandard" (if chkRenduStd.checked then "true" else "false")
