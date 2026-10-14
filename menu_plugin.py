@@ -584,18 +584,33 @@ class MenuPlugin:
                         (
                             try
                             (
-                                -- Créer un Color Correction node Arnold
-                                local colorCorrect = ai_color_correct()
-                                colorCorrect.name = "MAT_UNIKALO_Color_correction"
-
+                                -- Chercher le Color Correction node existant dans la scène
+                                local colorCorrect = undefined
+                                local ccNodeName = "MAT_UNIKALO_A_Color_correction"
+                                
+                                -- Chercher dans les textures/shaders (pas dans objects)
+                                colorCorrect = getNodeByName ccNodeName
+                                
+                                -- Si pas trouvé, créer un nouveau
+                                if colorCorrect == undefined then
+                                (
+                                    colorCorrect = ai_color_correct()
+                                    colorCorrect.name = ccNodeName
+                                    print ("Color Correction créé: " + ccNodeName)
+                                )
+                                else
+                                (
+                                    print ("Color Correction existant trouvé: " + ccNodeName)
+                                )
+                                
                                 -- Connecter la bitmap au Color Correction
                                 colorCorrect.input = newBitmap
-
+                                
                                 -- Appliquer la valeur de contraste (0-100 → 0.0-2.0)
                                 -- 100 = 1.0 (normal), 0 = 0.0 (gris), 200 = 2.0 (contraste max)
                                 local contrastNormalized = contrastValueA / 100.0
                                 colorCorrect.contrast = contrastNormalized
-
+                                
                                 -- Connecter le Color Correction au matériau
                                 targetMat.base_color_shader = colorCorrect
                                 mapAssigned = true
@@ -811,9 +826,13 @@ class MenuPlugin:
 
                         if matType == "ai_standard_surface" then
                         (
-                            -- Pour Arnold, recréer avec Color Correction
-                            local colorCorrect = ai_color_correct()
-                            colorCorrect.name = "MAT_UNIKALO_Color_correction"
+                            -- Pour Arnold, utiliser le Color Correction existant
+                            local colorCorrect = getNodeByName "MAT_UNIKALO_A_Color_correction"
+                            if colorCorrect == undefined then
+                            (
+                                colorCorrect = ai_color_correct()
+                                colorCorrect.name = "MAT_UNIKALO_A_Color_correction"
+                            )
                             colorCorrect.input = restoredBitmap
                             colorCorrect.contrast = contrastValueA / 100.0
                             targetMat.base_color_shader = colorCorrect
