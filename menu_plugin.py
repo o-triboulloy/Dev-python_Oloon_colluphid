@@ -541,149 +541,84 @@ class MenuPlugin:
                     print ("  - " + mat.name + " (" + (classOf mat as string) + ")")
                 )
 
-                -- Trouver le multi-matériau MULTIMAT_UNIKALO puis accéder au sous-matériau MAT_UNIKALO
-                local targetMat = undefined
-                local multiMat = undefined
+                -- Trouver les 3 matériaux avec la fonction générique
+                local targetMatA = findMaterialByName "MAT_UNIKALO"
+                local targetMatB = findMaterialByName "MAT_UNIKALO_B"
+                local targetMatC = findMaterialByName "MAT_UNIKALO_C"
 
-                for mat in sceneMaterials do
-                (
-                    local trimmedName = trimLeft (trimRight mat.name)
-                    if trimmedName == "MULTIMAT_UNIKALO" then
-                    (
-                        multiMat = mat
-                        print ("  >> Multi-matériau trouvé: '" + mat.name + "'")
-                        exit
-                    )
-                )
-
-                if multiMat != undefined then
-                (
-                    -- Accéder au sous-matériau à l'index 1
-                    if multiMat.materialList.count >= 2 then
-                    (
-                        targetMat = multiMat.materialList[1]
-                        print ("  >> Sous-matériau MAT_UNIKALO trouvé (index 1): '" + targetMat.name + "'")
-                    )
-                    else
-                    (
-                        print ("  ERREUR: Le multi-matériau n'a pas assez de sous-matériaux")
-                    )
-                )
-                
-                -- Si pas trouvé dans multi-matériau, chercher directement MAT_UNIKALO
-                if targetMat == undefined then
-                (
-                    print ("  >> Multi-matériau non trouvé, recherche directe de MAT_UNIKALO...")
-                    for mat in sceneMaterials do
-                    (
-                        local trimmedName = trimLeft (trimRight mat.name)
-                        if trimmedName == "MAT_UNIKALO" then
-                        (
-                            targetMat = mat
-                            print ("  >> Matériau MAT_UNIKALO trouvé directement: '" + mat.name + "'")
-                            exit
-                        )
-                    )
-                )
-
-                if targetMat == undefined then
+                if targetMatA == undefined then
                 (
                     btnLancer.enabled = true
                     btnReset.enabled = true
-                    local errorMsg = "Matériau 'MAT_UNIKALO' introuvable (ni dans multi-matériau ni directement).\n\n"
-                    errorMsg += "Matériaux disponibles:\n"
-                    for mat in sceneMaterials do
-                        errorMsg += "  - " + mat.name + "\n"
-                    messageBox errorMsg title:"Erreur"
+                    messageBox "Matériau 'MAT_UNIKALO' (composant A) introuvable." title:"Erreur"
                     return false
                 )
 
-                print ("Matériau trouvé: " + targetMat.name)
-                print ("Type de matériau: " + (classOf targetMat as string))
+                print ("Matériau A trouvé: " + targetMatA.name)
+                if targetMatB != undefined then print ("Matériau B trouvé: " + targetMatB.name)
+                if targetMatC != undefined then print ("Matériau C trouvé: " + targetMatC.name)
 
-                -- Afficher toutes les propriétés du matériau pour diagnostic
-                print "=== PROPRIÉTÉS DU MATÉRIAU ==="
-                showProperties targetMat
+                -- Lister les maps des 3 dossiers
+                local mapFilesA = getFiles (mapFolderPath + "\\*.jpg") + getFiles (mapFolderPath + "\\*.png") + getFiles (mapFolderPath + "\\*.tga")
+                local mapFilesB = #()
+                local mapFilesC = #()
 
-                -- Lister les maps du dossier
-                local mapFiles = getFiles (mapFolderPath + "\\\\*.jpg") + getFiles (mapFolderPath + "\\\\*.png") + getFiles (mapFolderPath + "\\\\*.tga")
+                if mapFolderPathB != "" then
+                    mapFilesB = getFiles (mapFolderPathB + "\\*.jpg") + getFiles (mapFolderPathB + "\\*.png") + getFiles (mapFolderPathB + "\\*.tga")
+                if mapFolderPathC != "" then
+                    mapFilesC = getFiles (mapFolderPathC + "\\*.jpg") + getFiles (mapFolderPathC + "\\*.png") + getFiles (mapFolderPathC + "\\*.tga")
 
-                if mapFiles.count == 0 then
+                if mapFilesA.count == 0 then
                 (
                     btnLancer.enabled = true
                     btnReset.enabled = true
-                    messageBox "Aucune map trouvée dans le dossier sélectionné." title:"Erreur"
+                    messageBox "Aucune map trouvée dans le dossier A." title:"Erreur"
                     return false
                 )
 
-                print (mapFiles.count as string + " maps trouvées")
+                -- Trier les listes par ordre alphabétique
+                sort mapFilesA
+                if mapFilesB.count > 0 then sort mapFilesB
+                if mapFilesC.count > 0 then sort mapFilesC
 
-                -- Créer la structure de dossiers
-                local mapFolderName = filterString mapFolderPath "\\\\"
+                print (mapFilesA.count as string + " maps dans dossier A")
+                if mapFilesB.count > 0 then print (mapFilesB.count as string + " maps dans dossier B")
+                if mapFilesC.count > 0 then print (mapFilesC.count as string + " maps dans dossier C")
+
+                -- Déterminer le nombre maximum de maps
+                local maxMaps = mapFilesA.count
+                if mapFilesB.count > maxMaps then maxMaps = mapFilesB.count
+                if mapFilesC.count > maxMaps then maxMaps = mapFilesC.count
+
+                print ("Nombre total de rendus à faire: " + (maxMaps * renderJobs.count) as string)
+
+                -- Créer la structure de dossiers (basée sur le nom du dossier A)
+                local mapFolderName = filterString mapFolderPath "\\"
                 mapFolderName = mapFolderName[mapFolderName.count]
 
-                -- Vérifier si le chemin de rendu ne se termine pas déjà par le nom du dossier maps
-                local renderFolderParts = filterString renderFolderPath "\\\\"
+                local renderFolderParts = filterString renderFolderPath "\\"
                 local lastRenderFolderName = renderFolderParts[renderFolderParts.count]
 
                 local baseRenderPath = ""
                 if lastRenderFolderName == mapFolderName then
                 (
-                    -- Le dossier rendu se termine déjà par le nom du dossier maps, ne pas dupliquer
                     baseRenderPath = renderFolderPath
                     print ("INFO - Utilisation directe du dossier rendu: " + baseRenderPath)
                 )
                 else
                 (
-                    -- Ajouter le nom du dossier maps au chemin de rendu
-                    baseRenderPath = renderFolderPath + "\\\\" + mapFolderName
+                    baseRenderPath = renderFolderPath + "\\" + mapFolderName
                     print ("INFO - Création sous-dossier: " + baseRenderPath)
                 )
 
-                -- Créer le dossier principal
                 makeDir baseRenderPath all:true
 
-                -- Créer les sous-dossiers selon les options cochées
-                local renderJobs = #()
-
-                if chkRenduStd.checked then
-                (
-                    local folderPath = baseRenderPath + "\\\\Rendus_standard"
-                    makeDir folderPath all:true
-                    append renderJobs #("standard", folderPath, spnWidthStd.value, spnHeightStd.value, "jpg", false)
-                    print ("Dossier créé: " + folderPath + " (Résolution: " + spnWidthStd.value as string + "x" + spnHeightStd.value as string + ")")
-                )
-
-                if chkRenduDet.checked then
-                (
-                    local folderPath = baseRenderPath + "\\\\Rendus_detoures"
-                    makeDir folderPath all:true
-                    append renderJobs #("detoure", folderPath, spnWidthStd.value, spnHeightStd.value, "png", true)
-                    print ("Dossier créé: " + folderPath + " (Résolution: " + spnWidthStd.value as string + "x" + spnHeightStd.value as string + ")")
-                )
-
-                if chkRenduHD.checked then
-                (
-                    local folderPath = baseRenderPath + "\\\\Rendus_HD"
-                    makeDir folderPath all:true
-                    append renderJobs #("HD", folderPath, spnWidthHD.value, spnHeightHD.value, "jpg", false)
-                    print ("Dossier créé: " + folderPath + " (Résolution: " + spnWidthHD.value as string + "x" + spnHeightHD.value as string + ")")
-                )
-
-                if chkRenduHDDet.checked then
-                (
-                    local folderPath = baseRenderPath + "\\\\Rendus_HD_detoures"
-                    makeDir folderPath all:true
-                    append renderJobs #("HD_detoure", folderPath, spnWidthHD.value, spnHeightHD.value, "png", true)
-                    print ("Dossier créé: " + folderPath + " (Résolution: " + spnWidthHD.value as string + "x" + spnHeightHD.value as string + ")")
-                )
-
-                -- Sauvegarder les paramètres de rendu actuels
+                -- Sauvegarder les paramètres de rendu
                 local originalWidth = renderWidth
                 local originalHeight = renderHeight
 
                 -- Compter le nombre total de rendus
-                local totalRendus = mapFiles.count * renderJobs.count
+                local totalRendus = maxMaps * renderJobs.count
                 local renduCourant = 0
 
                 -- Initialiser la barre de progression
@@ -693,12 +628,12 @@ class MenuPlugin:
 
                 print ("=== DÉBUT DES RENDUS (" + totalRendus as string + " rendus à effectuer) ===")
 
-                -- Désactiver toutes les fenêtres de rendu pour batch automatique
-                rendShowVFB = false  -- Désactiver le VFB 3ds Max
+                -- Désactiver les fenêtres de rendu
+                rendShowVFB = false
                 try
                 (
-                    renderers.current.enable_render_view = false  -- Désactiver Arnold Render View
-                    renderers.current.progressive_rendering = false  -- Désactiver le rendu progressif
+                    renderers.current.enable_render_view = false
+                    renderers.current.progressive_rendering = false
                     print "Fenêtres de rendu désactivées (mode batch automatique)"
                 )
                 catch
@@ -706,161 +641,116 @@ class MenuPlugin:
                     print "Note: Configuration Arnold appliquée avec certaines limitations"
                 )
 
-                -- Réinitialiser le flag stop au début
                 stopRendering = false
 
-                -- Sauvegarder la configuration originale du matériau
-                local originalMapPath = undefined
-                local originalShader = undefined
-                local matType = classOf targetMat as string
+                -- Variables pour garder les dernières maps chargées
+                local lastMapA = undefined
+                local lastMapB = undefined
+                local lastMapC = undefined
 
-                if matType == "ai_standard_surface" then
+                -- Boucle sur le nombre maximum de maps
+                for i = 1 to maxMaps do
                 (
-                    -- Pour Arnold, sauvegarder le shader (peut être bitmap, color correction, etc.)
-                    originalShader = targetMat.base_color_shader
-                    if originalShader != undefined then
-                    (
-                        -- Essayer de récupérer le chemin de la texture source
-                        try
-                        (
-                            if classOf originalShader == Bitmaptexture then
-                                originalMapPath = originalShader.filename
-                            else if classOf originalShader == ai_color_correct then
-                                if originalShader.input != undefined and classOf originalShader.input == Bitmaptexture then
-                                    originalMapPath = originalShader.input.filename
-                        )
-                        catch()
-                        print (">>> Configuration Arnold originale sauvegardée")
-                    )
-                )
-                else if matType == "Physical_Material" or matType == "PhysicalMaterial" then
-                (
-                    if targetMat.base_color_map != undefined then
-                    (
-                        -- Si c'est un Color_Correction, récupérer la bitmap source
-                        if classOf targetMat.base_color_map == Color_Correction then
-                        (
-                            if targetMat.base_color_map.Map != undefined and classOf targetMat.base_color_map.Map == Bitmaptexture then
-                            (
-                                originalMapPath = targetMat.base_color_map.Map.filename
-                                print (">>> Chemin de la map originale sauvegardé (via Color_Correction): " + originalMapPath)
-                            )
-                        )
-                        -- Sinon, c'est directement une bitmap
-                        else if classOf targetMat.base_color_map == Bitmaptexture then
-                        (
-                            originalMapPath = targetMat.base_color_map.filename
-                            print (">>> Chemin de la map originale sauvegardé: " + originalMapPath)
-                        )
-                    )
-                )
-
-                if originalMapPath == undefined and originalShader == undefined then
-                    print ">>> Aucune map originale dans le matériau"
-
-                -- Boucle sur chaque map
-                for mapFile in mapFiles do
-                (
-                    -- Vérifier si l'arrêt a été demandé
                     if stopRendering then
                     (
-                        print "\n!!! ARRÊT DES RENDUS DEMANDÉ !!!"
+                        print "
+!!! ARRÊT DES RENDUS DEMANDÉ !!!"
                         exit
                     )
 
-                    -- Mettre à jour l'interface pour la rendre responsive
-                    for i = 1 to 3 do windows.processPostedMessages()
+                    for k = 1 to 3 do windows.processPostedMessages()
                     sleep 0.01
 
-                    local mapName = filenameFromPath mapFile
-                    local mapBaseName = getFilenameFile mapFile
+                    -- Déterminer quelle map charger pour chaque composant
+                    local currentMapA = if i <= mapFilesA.count then mapFilesA[i] else lastMapA
+                    local currentMapB = if i <= mapFilesB.count then mapFilesB[i] else lastMapB
+                    local currentMapC = if i <= mapFilesC.count then mapFilesC[i] else lastMapC
 
-                    print ("\n--- Map: " + mapName + " ---")
-                    print ">>> UI refresh avant chargement map"
+                    local mapBaseName = getFilenameFile currentMapA
 
-                    -- Charger la map dans le matériau (Arnold ou Physical)
+                    print ("
+--- Itération " + i as string + "/" + maxMaps as string + " ---")
+                    print ("Map A: " + filenameFromPath currentMapA)
+                    if currentMapB != undefined then print ("Map B: " + filenameFromPath currentMapB)
+                    if currentMapC != undefined then print ("Map C: " + filenameFromPath currentMapC)
+
+                    -- Charger les maps dans les matériaux
                     try
                     (
-                        local newBitmap = Bitmaptexture fileName:mapFile
-                        local mapAssigned = false
-                        local matType = classOf targetMat as string
-
-                        -- Essayer Arnold Standard Surface
-                        if matType == "ai_standard_surface" then
+                        -- Composant A
+                        if currentMapA != undefined then
                         (
-                            try
-                            (
-                                targetMat.base_color_shader = newBitmap
-                                mapAssigned = true
-                                print ("Map assignée à Arnold Standard Surface: " + mapName)
-                            )
-                            catch
-                            (
-                                print ("ERREUR: Échec assignation Arnold")
-                            )
-                        )
-                        -- Essayer Physical Material
-                        else if matType == "Physical_Material" or matType == "PhysicalMaterial" then
-                        (
-                            try
-                            (
-                                -- Créer ou récupérer le Color_Correction
-                                local colorCorrect = undefined
+                            local newBitmapA = Bitmaptexture fileName:currentMapA
+                            local colorCorrectA = undefined
 
-                                -- Vérifier si base_color_map est déjà un Color_Correction
-                                if classOf targetMat.base_color_map == Color_Correction then
-                                    colorCorrect = targetMat.base_color_map
-                                else
-                                    colorCorrect = Color_Correction()
+                            if classOf targetMatA.base_color_map == Color_Correction then
+                                colorCorrectA = targetMatA.base_color_map
+                            else
+                                colorCorrectA = Color_Correction()
 
-                                -- Connecter la bitmap au Color_Correction
-                                colorCorrect.Map = newBitmap
-                                colorCorrect.contrast = contrastValueA
-
-                                -- Connecter le Color_Correction au matériau
-                                targetMat.base_color_map = colorCorrect
-                                mapAssigned = true
-                                print ("Map assignée avec Color_Correction (contraste: " + contrastValueA as string + "): " + mapName)
-                            )
-                            catch
-                            (
-                                print ("ERREUR: Échec assignation Physical Material avec Color_Correction")
-                            )
-                        )
-                        else
-                        (
-                            print ("AVERTISSEMENT: Type de matériau non supporté: " + matType)
+                            colorCorrectA.Map = newBitmapA
+                            colorCorrectA.contrast = contrastValueA
+                            targetMatA.base_color_map = colorCorrectA
+                            lastMapA = currentMapA
+                            print ("Map A chargée avec contraste: " + contrastValueA as string)
                         )
 
-                        if not mapAssigned then
+                        -- Composant B
+                        if targetMatB != undefined and currentMapB != undefined then
                         (
-                            print ("ERREUR: Impossible d'assigner la map " + mapName)
-                            continue
+                            local newBitmapB = Bitmaptexture fileName:currentMapB
+                            local colorCorrectB = undefined
+
+                            if classOf targetMatB.base_color_map == Color_Correction then
+                                colorCorrectB = targetMatB.base_color_map
+                            else
+                                colorCorrectB = Color_Correction()
+
+                            colorCorrectB.Map = newBitmapB
+                            colorCorrectB.contrast = contrastValueB
+                            targetMatB.base_color_map = colorCorrectB
+                            lastMapB = currentMapB
+                            print ("Map B chargée avec contraste: " + contrastValueB as string)
                         )
 
-                        -- IMPORTANT: Forcer le rafraîchissement de la scène pour que la nouvelle map soit prise en compte
+                        -- Composant C
+                        if targetMatC != undefined and currentMapC != undefined then
+                        (
+                            local newBitmapC = Bitmaptexture fileName:currentMapC
+                            local colorCorrectC = undefined
+
+                            if classOf targetMatC.base_color_map == Color_Correction then
+                                colorCorrectC = targetMatC.base_color_map
+                            else
+                                colorCorrectC = Color_Correction()
+
+                            colorCorrectC.Map = newBitmapC
+                            colorCorrectC.contrast = contrastValueC
+                            targetMatC.base_color_map = colorCorrectC
+                            lastMapC = currentMapC
+                            print ("Map C chargée avec contraste: " + contrastValueC as string)
+                        )
+
                         completeRedraw()
-                        gc()  -- Garbage collection complet pour libérer la mémoire
-                        windows.processPostedMessages()  -- Mise à jour de l'interface
+                        gc()
+                        windows.processPostedMessages()
                     )
                     catch
                     (
-                        print ("ERREUR: Impossible de charger la map " + mapName)
+                        print ("ERREUR: Impossible de charger les maps pour l'itération " + i as string)
                         continue
                     )
 
                     -- Boucle sur chaque type de rendu
                     for job in renderJobs do
                     (
-                        -- Vérifier si l'arrêt a été demandé
                         if stopRendering then
                         (
                             print "  >>> Arrêt demandé, sortie de la boucle de rendus"
                             exit
                         )
 
-                        -- Mettre à jour l'interface
-                        for i = 1 to 3 do windows.processPostedMessages()
+                        for k = 1 to 3 do windows.processPostedMessages()
 
                         local jobName = job[1]
                         local jobFolder = job[2]
@@ -872,13 +762,11 @@ class MenuPlugin:
                         renduCourant += 1
                         print ("  [" + renduCourant as string + "/" + totalRendus as string + "] Rendu " + jobName + "...")
 
-                        -- Mettre à jour la barre de progression et les labels
                         local progressPercent = 100.0 * renduCourant / totalRendus
                         pbRender.value = progressPercent as integer
                         lblCurrentRender.text = mapBaseName + " - " + jobName + " (" + renduCourant as string + "/" + totalRendus as string + ")"
 
-                        -- Forcer plusieurs rafraîchissements UI avant le rendu
-                        for i = 1 to 5 do
+                        for k = 1 to 5 do
                         (
                             windows.processPostedMessages()
                             sleep 0.01
@@ -886,51 +774,43 @@ class MenuPlugin:
                         completeRedraw()
                         print (">>> UI actualisée: " + lblCurrentRender.text)
 
-                        -- Configurer les paramètres de rendu
                         renderWidth = jobWidth
                         renderHeight = jobHeight
 
-                        -- Configurer la frame selon le type de rendu
                         if jobAlpha then
                         (
-                            -- Rendus détourés : frame 01 (avec matte shadow)
                             sliderTime = 1f
-                            print ("    Frame: 01 (rendu détouré avec matte shadow)")
+                            print ("    Frame: 01 (rendu détouré)")
                         )
                         else
                         (
-                            -- Rendus normaux : frame 00
                             sliderTime = 0f
                             print ("    Frame: 00 (rendu normal)")
                         )
 
-                        -- Nom du fichier de sortie
                         local outputFileName = "Rendu_" + jobName + "_" + mapBaseName + "." + jobFormat
-                        local outputPath = jobFolder + "\\\\" + outputFileName
+                        local outputPath = jobFolder + "\\" + outputFileName
 
-                        -- Lancer le rendu (vfb:off force le rendu sans fenêtre)
                         local startTime = timestamp()
                         try
                         (
                             local renderedImage = render outputfile:outputPath vfb:off
                             local endTime = timestamp()
-                            local renderDuration = (endTime - startTime) / 1000.0  -- Convertir en secondes
+                            local renderDuration = (endTime - startTime) / 1000.0
 
-                            -- Vérifier si le rendu a été annulé (fichier absent)
                             if not (doesFileExist outputPath) then
                             (
-                                print "\n!!! RENDU ANNULÉ PAR L'UTILISATEUR (ESC) - Fichier absent !!!"
+                                print "
+!!! RENDU ANNULÉ PAR L'UTILISATEUR (ESC) !!!"
                                 print "Arrêt de toute la série de rendus..."
                                 lblCurrentRender.text = "Annulé par utilisateur"
-                                renduCourant -= 1  -- Ne pas compter ce rendu annulé
+                                renduCourant -= 1
                                 stopRendering = true
                                 exit
                             )
 
-                            -- Récupérer la taille du fichier pour info
                             local fileSize = getFileSize outputPath
 
-                            -- Afficher le temps de rendu
                             local timeText = ""
                             if renderDuration >= 60 then
                             (
@@ -944,14 +824,11 @@ class MenuPlugin:
                             )
                             lblRenderTime.text = timeText
 
-                            -- Rafraîchir l'UI après chaque rendu
-                            for i = 1 to 3 do windows.processPostedMessages()
-
-                            -- Nettoyage mémoire après chaque rendu pour éviter l'accumulation
+                            for k = 1 to 3 do windows.processPostedMessages()
                             gc()
 
                             print ("    OK: " + outputFileName + " (durée: " + timeText + ", taille: " + fileSize as string + " bytes)")
-                            print (">>> Rendu " + renduCourant as string + "/" + totalRendus as string + " terminé, UI rafraîchie")
+                            print (">>> Rendu " + renduCourant as string + "/" + totalRendus as string + " terminé")
                         )
                         catch
                         (
@@ -961,87 +838,20 @@ class MenuPlugin:
                         )
                     )
 
-                    -- Libérer la mémoire de la map après tous ses rendus
+                    -- Nettoyage mémoire après chaque itération
                     try
                     (
-                        local matType = classOf targetMat as string
-                        if matType == "ai_standard_surface" then
-                            targetMat.base_color_shader = undefined
-                        else
-                            targetMat.base_color_map = undefined
-
                         freeSceneBitmaps()
-                        gc()  -- Garbage collection complet
-                        clearUndoBuffer()  -- Vider le buffer undo pour libérer la mémoire
+                        gc()
+                        clearUndoBuffer()
                         windows.processPostedMessages()
-                        sleep 0.05  -- Petite pause pour laisser le temps à la mémoire de se libérer
-                        print (">>> Map libérée de la mémoire: " + mapBaseName)
+                        sleep 0.05
+                        print (">>> Mémoire libérée après itération " + i as string)
                     )
                     catch
                     (
-                        print "Note: Impossible de libérer la map de la mémoire"
+                        print "Note: Impossible de libérer complètement la mémoire"
                     )
-                )
-
-                -- Restaurer la configuration originale du matériau
-                if originalShader != undefined then
-                (
-                    try
-                    (
-                        -- Restaurer le shader Arnold original (peut être bitmap ou color correction)
-                        targetMat.base_color_shader = originalShader
-                        completeRedraw()
-                        windows.processPostedMessages()
-                        print (">>> Shader Arnold original restauré")
-                    )
-                    catch
-                    (
-                        print "Note: Impossible de restaurer le shader original"
-                    )
-                )
-                else if originalMapPath != undefined then
-                (
-                    try
-                    (
-                        local matType = classOf targetMat as string
-                        -- Recréer la bitmap à partir du chemin sauvegardé
-                        local restoredBitmap = Bitmaptexture fileName:originalMapPath
-
-                        if matType == "ai_standard_surface" then
-                        (
-                            targetMat.base_color_shader = restoredBitmap
-                        )
-                        else if matType == "Physical_Material" or matType == "PhysicalMaterial" then
-                        (
-                            -- Pour Physical Material, restaurer via Color_Correction
-                            local colorCorrect = undefined
-
-                            -- Vérifier si base_color_map est déjà un Color_Correction
-                            if classOf targetMat.base_color_map == Color_Correction then
-                                colorCorrect = targetMat.base_color_map
-                            else
-                                colorCorrect = Color_Correction()
-
-                            -- Connecter la bitmap originale
-                            colorCorrect.Map = restoredBitmap
-                            colorCorrect.contrast = contrastValueA
-
-                            -- Connecter au matériau
-                            targetMat.base_color_map = colorCorrect
-                        )
-
-                        completeRedraw()
-                        windows.processPostedMessages()
-                        print (">>> Map originale restaurée: " + originalMapPath)
-                    )
-                    catch
-                    (
-                        print "Note: Impossible de restaurer la map originale"
-                    )
-                )
-                else
-                (
-                    print ">>> Aucune map à restaurer (matériau était vide)"
                 )
 
                 -- Restaurer les paramètres originaux
