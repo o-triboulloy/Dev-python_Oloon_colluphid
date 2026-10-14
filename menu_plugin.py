@@ -39,6 +39,49 @@ class MenuPlugin:
             local isLoading = false  -- Flag pour éviter les conflits pendant le chargement
             local stopRendering = false  -- Flag pour arrêter les rendus en cours
 
+            -- Fonction générique pour trouver un matériau par nom (dans sceneMaterials ou multi-matériaux)
+            fn findMaterialByName matName =
+            (
+                local foundMat = undefined
+
+                -- Chercher dans sceneMaterials directement
+                for mat in sceneMaterials do
+                (
+                    local trimmedName = trimLeft (trimRight mat.name)
+                    if trimmedName == matName then
+                    (
+                        foundMat = mat
+                        exit
+                    )
+                )
+
+                -- Si pas trouvé, chercher dans les sous-matériaux des multi-matériaux
+                if foundMat == undefined then
+                (
+                    for mat in sceneMaterials do
+                    (
+                        if classOf mat == multimaterial then
+                        (
+                            for subMat in mat.materialList do
+                            (
+                                if subMat != undefined then
+                                (
+                                    local trimmedName = trimLeft (trimRight subMat.name)
+                                    if trimmedName == matName then
+                                    (
+                                        foundMat = subMat
+                                        exit
+                                    )
+                                )
+                            )
+                            if foundMat != undefined then exit
+                        )
+                    )
+                )
+
+                return foundMat
+            )
+
             -- Image en haut (ImgTag pour éviter le liseré)
             ImgTag titleImage pos:[12,10] width:182 height:66 bitmap:(openBitMap (getDir #userScripts + "\\\\TITRE_interface.jpg"))
 
