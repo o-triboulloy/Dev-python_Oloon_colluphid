@@ -590,7 +590,6 @@ class MenuPlugin:
                 if mapFilesB.count > maxMaps then maxMaps = mapFilesB.count
                 if mapFilesC.count > maxMaps then maxMaps = mapFilesC.count
 
-                print ("Nombre total de rendus à faire: " + (maxMaps * renderJobs.count) as string)
 
                 -- Créer la structure de dossiers (basée sur le nom du dossier A)
                 local mapFolderName = filterString mapFolderPath "\\\\"
@@ -612,6 +611,41 @@ class MenuPlugin:
                 )
 
                 makeDir baseRenderPath all:true
+
+                -- Créer les sous-dossiers selon les options cochées
+                local renderJobs = #()
+
+                if chkRenduStd.checked then
+                (
+                    local folderPath = baseRenderPath + "\\\\Rendus_standard"
+                    makeDir folderPath all:true
+                    append renderJobs #("standard", folderPath, spnWidthStd.value, spnHeightStd.value, "jpg", false)
+                    print ("Dossier créé: " + folderPath + " (Résolution: " + spnWidthStd.value as string + "x" + spnHeightStd.value as string + ")")
+                )
+
+                if chkRenduDet.checked then
+                (
+                    local folderPath = baseRenderPath + "\\\\Rendus_detoures"
+                    makeDir folderPath all:true
+                    append renderJobs #("detoure", folderPath, spnWidthStd.value, spnHeightStd.value, "png", true)
+                    print ("Dossier créé: " + folderPath + " (Résolution: " + spnWidthStd.value as string + "x" + spnHeightStd.value as string + ")")
+                )
+
+                if chkRenduHD.checked then
+                (
+                    local folderPath = baseRenderPath + "\\\\Rendus_HD"
+                    makeDir folderPath all:true
+                    append renderJobs #("HD", folderPath, spnWidthHD.value, spnHeightHD.value, "jpg", false)
+                    print ("Dossier créé: " + folderPath + " (Résolution: " + spnWidthHD.value as string + "x" + spnHeightHD.value as string + ")")
+                )
+
+                if chkRenduHDDet.checked then
+                (
+                    local folderPath = baseRenderPath + "\\\\Rendus_HD_detoures"
+                    makeDir folderPath all:true
+                    append renderJobs #("HD_detoure", folderPath, spnWidthHD.value, spnHeightHD.value, "png", true)
+                    print ("Dossier créé: " + folderPath + " (Résolution: " + spnWidthHD.value as string + "x" + spnHeightHD.value as string + ")")
+                )
 
                 -- Sauvegarder les paramètres de rendu
                 local originalWidth = renderWidth
