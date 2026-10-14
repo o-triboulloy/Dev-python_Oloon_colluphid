@@ -396,7 +396,22 @@ class MenuPlugin:
             on spnContrastB changed val do
             (
                 if not isLoading then
+                (
                     contrastValueB = val
+
+                    -- Mettre à jour le Color_Correction en temps réel
+                    try
+                    (
+                        local targetMat = findMaterialByName "MAT_UNIKALO_B"
+                        if targetMat != undefined and classOf targetMat.base_color_map == Color_Correction then
+                        (
+                            targetMat.base_color_map.contrast = val
+                            completeRedraw()
+                            print ("Contraste B mis à jour: " + val as string)
+                        )
+                    )
+                    catch()
+                )
             )
 
             -- Bouton 2aC: Choisir le dossier des maps C
@@ -425,7 +440,22 @@ class MenuPlugin:
             on spnContrastC changed val do
             (
                 if not isLoading then
+                (
                     contrastValueC = val
+
+                    -- Mettre à jour le Color_Correction en temps réel
+                    try
+                    (
+                        local targetMat = findMaterialByName "MAT_UNIKALO_C"
+                        if targetMat != undefined and classOf targetMat.base_color_map == Color_Correction then
+                        (
+                            targetMat.base_color_map.contrast = val
+                            completeRedraw()
+                            print ("Contraste C mis à jour: " + val as string)
+                        )
+                    )
+                    catch()
+                )
             )
 
 
