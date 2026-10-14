@@ -235,54 +235,7 @@ class MenuPlugin:
             on spnContrastA changed val do
             (
                 if not isLoading then
-                (
                     contrastValueA = val
-
-                    -- Mettre à jour le Color Correction node en temps réel
-                    try
-                    (
-                        -- Trouver le matériau MAT_UNIKALO
-                        local targetMat = undefined
-                        for mat in sceneMaterials do
-                        (
-                            local trimmedName = trimLeft (trimRight mat.name)
-                            if trimmedName == "MAT_UNIKALO" then
-                            (
-                                targetMat = mat
-                                exit
-                            )
-                        )
-                        
-                        if targetMat != undefined then
-                        (
-                            -- Essayer de mettre à jour le contraste dans base_color_map
-                            try
-                            (
-                                if targetMat.base_color_map != undefined and targetMat.base_color_map.contrast != undefined then
-                                (
-                                    targetMat.base_color_map.contrast = val / 100.0
-                                    completeRedraw()
-                                    print ("Contraste A mis à jour: " + val as string)
-                                )
-                            )
-                            catch()
-                            
-                            -- Essayer aussi base_color_shader (Arnold)
-                            try
-                            (
-                                if targetMat.base_color_shader != undefined and targetMat.base_color_shader.contrast != undefined then
-                                (
-                                    targetMat.base_color_shader.contrast = val / 100.0
-                                    completeRedraw()
-                                    print ("Contraste A mis à jour: " + val as string)
-                                )
-                            )
-                            catch()
-                        )
-                    )
-                    catch()
-                    )
-                )
             )
 
 
@@ -631,41 +584,13 @@ class MenuPlugin:
                         (
                             try
                             (
-                                -- Chercher le Color Correction node existant dans la scène
-                                local colorCorrect = undefined
-                                local ccNodeName = "MAT_UNIKALO_A_Color_correction"
-                                
-                                -- Chercher dans les textures/shaders (pas dans objects)
-                                colorCorrect = getNodeByName ccNodeName
-                                
-                                -- Si pas trouvé, créer un nouveau
-                                if colorCorrect == undefined then
-                                (
-                                    colorCorrect = ai_color_correct()
-                                    colorCorrect.name = ccNodeName
-                                    print ("Color Correction créé: " + ccNodeName)
-                                )
-                                else
-                                (
-                                    print ("Color Correction existant trouvé: " + ccNodeName)
-                                )
-                                
-                                -- Connecter la bitmap au Color Correction
-                                colorCorrect.input = newBitmap
-                                
-                                -- Appliquer la valeur de contraste (0-100 → 0.0-2.0)
-                                -- 100 = 1.0 (normal), 0 = 0.0 (gris), 200 = 2.0 (contraste max)
-                                local contrastNormalized = contrastValueA / 100.0
-                                colorCorrect.contrast = contrastNormalized
-                                
-                                -- Connecter le Color Correction au matériau
-                                targetMat.base_color_shader = colorCorrect
+                                targetMat.base_color_shader = newBitmap
                                 mapAssigned = true
-                                print ("Map assignée avec Color Correction (contraste: " + contrastNormalized as string + "): " + mapName)
+                                print ("Map assignée à Arnold Standard Surface: " + mapName)
                             )
                             catch
                             (
-                                print ("ERREUR: Échec assignation Arnold avec Color Correction")
+                                print ("ERREUR: Échec assignation Arnold")
                             )
                         )
                         -- Essayer Physical Material
@@ -673,29 +598,9 @@ class MenuPlugin:
                         (
                             try
                             (
-                                -- Essayer d'utiliser le Color Correction s'il existe
-                                local useColorCorrect = false
-                                try
-                                (
-                                    if targetMat.base_color_map != undefined and targetMat.base_color_map.Map != undefined and targetMat.base_color_map.contrast != undefined then
-                                    (
-                                        -- Le Color Correction existe, mettre à jour
-                                        targetMat.base_color_map.Map = newBitmap
-                                        targetMat.base_color_map.contrast = contrastValueA / 100.0
-                                        useColorCorrect = true
-                                        mapAssigned = true
-                                        print ("Map assignée via Color Correction (contraste: " + (contrastValueA / 100.0) as string + "): " + mapName)
-                                    )
-                                )
-                                catch()
-                                
-                                -- Si pas de Color Correction, assigner directement
-                                if not useColorCorrect then
-                                (
-                                    targetMat.base_color_map = newBitmap
-                                    mapAssigned = true
-                                    print ("Map assignée directement à Physical Material: " + mapName)
-                                )
+                                targetMat.base_color_map = newBitmap
+                                mapAssigned = true
+                                print ("Map assignée à Physical Material: " + mapName)
                             )
                             catch
                             (
@@ -884,16 +789,7 @@ class MenuPlugin:
 
                         if matType == "ai_standard_surface" then
                         (
-                            -- Pour Arnold, utiliser le Color Correction existant
-                            local colorCorrect = getNodeByName "MAT_UNIKALO_A_Color_correction"
-                            if colorCorrect == undefined then
-                            (
-                                colorCorrect = ai_color_correct()
-                                colorCorrect.name = "MAT_UNIKALO_A_Color_correction"
-                            )
-                            colorCorrect.input = restoredBitmap
-                            colorCorrect.contrast = contrastValueA / 100.0
-                            targetMat.base_color_shader = colorCorrect
+                            targetMat.base_color_shader = restoredBitmap
                         )
                         else
                         (
