@@ -169,6 +169,34 @@ class MenuPlugin:
                 val = getINISetting iniFile "Resolution" "HeightHD"
                 if val != "" then spnHeightHD.value = val as integer else spnHeightHD.value = 2160
 
+                -- Appliquer la valeur de contraste au Color_Correction node
+                try
+                (
+                    local targetMat = undefined
+
+                    -- Essayer d'abord le multi-matériau MULTIMAT_UNIKALO
+                    local multiMat = sceneMaterials["MULTIMAT_UNIKALO"]
+                    if multiMat != undefined and multiMat.materialList.count >= 2 then
+                    (
+                        targetMat = multiMat.materialList[2]
+                    )
+                    else
+                    (
+                        -- Sinon chercher MAT_UNIKALO directement
+                        targetMat = sceneMaterials["MAT_UNIKALO"]
+                    )
+
+                    if targetMat != undefined then
+                    (
+                        -- Vérifier si base_color_map est un Color_Correction
+                        if classOf targetMat.base_color_map == Color_Correction then
+                        (
+                            targetMat.base_color_map.contrast = contrastValueA
+                            print ("Contraste A initialisé au démarrage: " + contrastValueA as string)
+                        )
+                    )
+                )
+                catch()
 
                 isLoading = false
                 print "=== CHARGEMENT TERMINÉ ==="
