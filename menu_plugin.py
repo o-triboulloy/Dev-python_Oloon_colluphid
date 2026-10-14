@@ -516,17 +516,41 @@ class MenuPlugin:
                 -- Réinitialiser le flag stop au début
                 stopRendering = false
 
-                -- Sauvegarder le CHEMIN de la map originale (pas la référence qui sera libérée)
+                -- Sauvegarder la configuration originale du matériau
                 local originalMapPath = undefined
-                if targetMat.base_color_map != undefined then
+                local originalShader = undefined
+                local matType = classOf targetMat as string
+
+                if matType == "ai_standard_surface" then
                 (
-                    originalMapPath = targetMat.base_color_map.filename
-                    print (">>> Chemin de la map originale sauvegardé: " + originalMapPath)
+                    -- Pour Arnold, sauvegarder le shader (peut être bitmap, color correction, etc.)
+                    originalShader = targetMat.base_color_shader
+                    if originalShader != undefined then
+                    (
+                        -- Essayer de récupérer le chemin de la texture source
+                        try
+                        (
+                            if classOf originalShader == Bitmaptexture then
+                                originalMapPath = originalShader.filename
+                            else if classOf originalShader == ai_color_correct then
+                                if originalShader.input != undefined and classOf originalShader.input == Bitmaptexture then
+                                    originalMapPath = originalShader.input.filename
+                        )
+                        catch()
+                        print (">>> Configuration Arnold originale sauvegardée")
+                    )
                 )
-                else
+                else if matType == "Physical_Material" or matType == "PhysicalMaterial" then
                 (
+                    if targetMat.base_color_map != undefined then
+                    (
+                        originalMapPath = targetMat.base_color_map.filename
+                        print (">>> Chemin de la map originale sauvegardé: " + originalMapPath)
+                    )
+                )
+
+                if originalMapPath == undefined and originalShader == undefined then
                     print ">>> Aucune map originale dans le matériau"
-                )
 
                 -- Boucle sur chaque map
                 for mapFile in mapFiles do
@@ -560,13 +584,26 @@ class MenuPlugin:
                         (
                             try
                             (
-                                targetMat.base_color_shader = newBitmap
+                                -- Créer un Color Correction node Arnold
+                                local colorCorrect = ai_color_correct()
+                                colorCorrect.name = "MAT_UNIKALO_Color_correction"
+
+                                -- Connecter la bitmap au Color Correction
+                                colorCorrect.input = newBitmap
+
+                                -- Appliquer la valeur de contraste (0-100 → 0.0-2.0)
+                                -- 100 = 1.0 (normal), 0 = 0.0 (gris), 200 = 2.0 (contraste max)
+                                local contrastNormalized = contrastValueA / 100.0
+                                colorCorrect.contrast = contrastNormalized
+
+                                -- Connecter le Color Correction au matériau
+                                targetMat.base_color_shader = colorCorrect
                                 mapAssigned = true
-                                print ("Map assignée à Arnold Standard Surface: " + mapName)
+                                print ("Map assignée avec Color Correction (contraste: " + contrastNormalized as string + "): " + mapName)
                             )
                             catch
                             (
-                                print ("ERREUR: Échec assignation Arnold")
+                                print ("ERREUR: Échec assignation Arnold avec Color Correction")
                             )
                         )
                         -- Essayer Physical Material
@@ -729,7 +766,12 @@ class MenuPlugin:
                     -- Libérer la mémoire de la map après tous ses rendus
                     try
                     (
-                        targetMat.base_color_map = undefined
+                        local matType = classOf targetMat as string
+                        if matType == "ai_standard_surface" then
+                            targetMat.base_color_shader = undefined
+                        else
+                            targetMat.base_color_map = undefined
+
                         freeSceneBitmaps()
                         gc()  -- Garbage collection complet
                         clearUndoBuffer()  -- Vider le buffer undo pour libérer la mémoire
@@ -743,14 +785,45 @@ class MenuPlugin:
                     )
                 )
 
-                -- Restaurer la map originale du matériau
-                if originalMapPath != undefined then
+                -- Restaurer la configuration originale du matériau
+                if originalShader != undefined then
                 (
                     try
                     (
+                        -- Restaurer le shader Arnold original (peut être bitmap ou color correction)
+                        targetMat.base_color_shader = originalShader
+                        completeRedraw()
+                        windows.processPostedMessages()
+                        print (">>> Shader Arnold original restauré")
+                    )
+                    catch
+                    (
+                        print "Note: Impossible de restaurer le shader original"
+                    )
+                )
+                else if originalMapPath != undefined then
+                (
+                    try
+                    (
+                        local matType = classOf targetMat as string
                         -- Recréer la bitmap à partir du chemin sauvegardé
                         local restoredBitmap = Bitmaptexture fileName:originalMapPath
-                        targetMat.base_color_map = restoredBitmap
+
+                        if matType == "ai_standard_surface" then
+                        (
+                            -- Pour Arnold, recréer avec Color Correction
+                            local colorCorrect = ai_color_correct()
+                            colorCorrect.name = "MAT_UNIKALO_Color_correction"
+                            colorCorrect.input = restoredBitmap
+                            colorCorrect.contrast = contrastValueA / 100.0
+                            targetMat.base_color_shader = colorCorrect
+                        )
+                        else
+                        (
+                            -- Pour Physical Material
+                            targetMat.base_color_map = restoredBitmap
+                        )
+
                         completeRedraw()
                         windows.processPostedMessages()
                         print (">>> Map originale restaurée: " + originalMapPath)
