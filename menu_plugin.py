@@ -32,9 +32,9 @@ class MenuPlugin:
             local mapFolderPathB = ""
             local mapFolderPathC = ""
             local renderFolderPath = ""
-            local contrastValueA = 100
-            local contrastValueB = 100
-            local contrastValueC = 100
+            local contrastValueA = 0
+            local contrastValueB = 0
+            local contrastValueC = 0
             local iniFile = getDir #userScripts + "\\\\U-Rtool_settings.ini"
             local isLoading = false  -- Flag pour éviter les conflits pendant le chargement
             local stopRendering = false  -- Flag pour arrêter les rendus en cours
@@ -51,19 +51,19 @@ class MenuPlugin:
             groupBox grpComponentA "COMPOSANT A" pos:[10,196] width:186 height:70
             button btn2a "Dossier maps A" pos:[20,211] width:166 height:30
             label lblContrastA "Contraste A:" pos:[20,246] width:80
-            spinner spnContrastA "" pos:[100,246] width:76 height:16 range:[0,100,100] type:#integer scale:5 fieldWidth:40
+            spinner spnContrastA "" pos:[100,246] width:76 height:16 range:[0,100,0] type:#integer scale:5 fieldWidth:40
 
             -- Composant B
             groupBox grpComponentB "COMPOSANT B" pos:[10,276] width:186 height:70
             button btn2aB "Dossier maps B" pos:[20,291] width:166 height:30
             label lblContrastB "Contraste B:" pos:[20,326] width:80
-            spinner spnContrastB "" pos:[100,326] width:76 height:16 range:[0,100,100] type:#integer scale:5 fieldWidth:40
+            spinner spnContrastB "" pos:[100,326] width:76 height:16 range:[0,100,0] type:#integer scale:5 fieldWidth:40
 
             -- Composant C
             groupBox grpComponentC "COMPOSANT C" pos:[10,356] width:186 height:70
             button btn2aC "Dossier maps C" pos:[20,371] width:166 height:30
             label lblContrastC "Contraste C:" pos:[20,406] width:80
-            spinner spnContrastC "" pos:[100,406] width:76 height:16 range:[0,100,100] type:#integer scale:5 fieldWidth:40
+            spinner spnContrastC "" pos:[100,406] width:76 height:16 range:[0,100,0] type:#integer scale:5 fieldWidth:40
 
             -- Options Rendus
             groupBox grpRendu "Options Rendus" pos:[10,436] width:186 height:145
@@ -912,12 +912,12 @@ class MenuPlugin:
                     sceneFiles = #()
 
                     -- Réinitialiser les contrastes
-                    contrastValueA = 100
-                    contrastValueB = 100
-                    contrastValueC = 100
-                    spnContrastA.value = 100
-                    spnContrastB.value = 100
-                    spnContrastC.value = 100
+                    contrastValueA = 0
+                    contrastValueB = 0
+                    contrastValueC = 0
+                    spnContrastA.value = 0
+                    spnContrastB.value = 0
+                    spnContrastC.value = 0
 
                     -- Vider le menu déroulant
                     ddScenes.items = #()
