@@ -255,35 +255,32 @@ class MenuPlugin:
                         
                         if targetMat != undefined then
                         (
-                            local matType = classOf targetMat as string
-                            local colorCorrect = undefined
+                            -- Essayer de mettre à jour le contraste dans base_color_map
+                            try
+                            (
+                                if targetMat.base_color_map != undefined and targetMat.base_color_map.contrast != undefined then
+                                (
+                                    targetMat.base_color_map.contrast = val / 100.0
+                                    completeRedraw()
+                                    print ("Contraste A mis à jour: " + val as string)
+                                )
+                            )
+                            catch()
                             
-                            -- Cas Arnold Standard Surface
-                            if matType == "ai_standard_surface" then
+                            -- Essayer aussi base_color_shader (Arnold)
+                            try
                             (
-                                if targetMat.base_color_shader != undefined and classOf targetMat.base_color_shader == Color_Correction then
-                                    colorCorrect = targetMat.base_color_shader
+                                if targetMat.base_color_shader != undefined and targetMat.base_color_shader.contrast != undefined then
+                                (
+                                    targetMat.base_color_shader.contrast = val / 100.0
+                                    completeRedraw()
+                                    print ("Contraste A mis à jour: " + val as string)
+                                )
                             )
-                            -- Cas Physical Material
-                            else if matType == "Physical_Material" or matType == "PhysicalMaterial" then
-                            (
-                                if targetMat.base_color_map != undefined and classOf targetMat.base_color_map == Color_Correction then
-                                    colorCorrect = targetMat.base_color_map
-                            )
-                            
-                            -- Mettre à jour le contraste si Color Correction trouvé
-                            if colorCorrect != undefined then
-                            (
-                                colorCorrect.contrast = val / 100.0
-                                completeRedraw()
-                                print ("Contraste A mis à jour: " + val as string + " (" + (val / 100.0) as string + ")")
-                            )
+                            catch()
                         )
                     )
-                    catch ex
-                    (
-                        print ("Erreur mise à jour contraste: " + ex as string)
-                    )
+                    catch()
                     )
                 )
             )
@@ -676,18 +673,25 @@ class MenuPlugin:
                         (
                             try
                             (
-                                -- Chercher le Color Correction existant
-                                if targetMat.base_color_map != undefined and classOf targetMat.base_color_map == Color_Correction then
+                                -- Essayer d'utiliser le Color Correction s'il existe
+                                local useColorCorrect = false
+                                try
                                 (
-                                    -- Le Color Correction existe déjà, mettre à jour son input
-                                    targetMat.base_color_map.Map = newBitmap
-                                    targetMat.base_color_map.contrast = contrastValueA / 100.0
-                                    mapAssigned = true
-                                    print ("Map assignée via Color Correction existant (contraste: " + (contrastValueA / 100.0) as string + "): " + mapName)
+                                    if targetMat.base_color_map != undefined and targetMat.base_color_map.Map != undefined and targetMat.base_color_map.contrast != undefined then
+                                    (
+                                        -- Le Color Correction existe, mettre à jour
+                                        targetMat.base_color_map.Map = newBitmap
+                                        targetMat.base_color_map.contrast = contrastValueA / 100.0
+                                        useColorCorrect = true
+                                        mapAssigned = true
+                                        print ("Map assignée via Color Correction (contraste: " + (contrastValueA / 100.0) as string + "): " + mapName)
+                                    )
                                 )
-                                else
+                                catch()
+                                
+                                -- Si pas de Color Correction, assigner directement
+                                if not useColorCorrect then
                                 (
-                                    -- Pas de Color Correction, assigner directement
                                     targetMat.base_color_map = newBitmap
                                     mapAssigned = true
                                     print ("Map assignée directement à Physical Material: " + mapName)
