@@ -241,21 +241,28 @@ class MenuPlugin:
                     -- Mettre à jour le Color_Correction en temps réel
                     try
                     (
-                        -- Trouver le multi-matériau MULTIMAT_UNIKALO
+                        local targetMat = undefined
+
+                        -- Essayer d'abord le multi-matériau MULTIMAT_UNIKALO
                         local multiMat = sceneMaterials["MULTIMAT_UNIKALO"]
                         if multiMat != undefined and multiMat.materialList.count >= 2 then
                         (
-                            -- Accéder au sous-matériau MAT_UNIKALO (index 2)
-                            local targetMat = multiMat.materialList[2]
-                            if targetMat != undefined then
+                            targetMat = multiMat.materialList[2]
+                        )
+                        else
+                        (
+                            -- Sinon chercher MAT_UNIKALO directement
+                            targetMat = sceneMaterials["MAT_UNIKALO"]
+                        )
+
+                        if targetMat != undefined then
+                        (
+                            -- Vérifier si base_color_map est un Color_Correction
+                            if classOf targetMat.base_color_map == Color_Correction then
                             (
-                                -- Vérifier si base_color_map est un Color_Correction
-                                if classOf targetMat.base_color_map == Color_Correction then
-                                (
-                                    targetMat.base_color_map.contrast = val
-                                    completeRedraw()
-                                    print ("Contraste A mis à jour: " + val as string)
-                                )
+                                targetMat.base_color_map.contrast = val
+                                completeRedraw()
+                                print ("Contraste A mis à jour: " + val as string)
                             )
                         )
                     )
@@ -433,12 +440,28 @@ class MenuPlugin:
                         print ("  ERREUR: Le multi-matériau n'a pas assez de sous-matériaux")
                     )
                 )
+                
+                -- Si pas trouvé dans multi-matériau, chercher directement MAT_UNIKALO
+                if targetMat == undefined then
+                (
+                    print ("  >> Multi-matériau non trouvé, recherche directe de MAT_UNIKALO...")
+                    for mat in sceneMaterials do
+                    (
+                        local trimmedName = trimLeft (trimRight mat.name)
+                        if trimmedName == "MAT_UNIKALO" then
+                        (
+                            targetMat = mat
+                            print ("  >> Matériau MAT_UNIKALO trouvé directement: '" + mat.name + "'")
+                            exit
+                        )
+                    )
+                )
 
                 if targetMat == undefined then
                 (
                     btnLancer.enabled = true
                     btnReset.enabled = true
-                    local errorMsg = "Multi-matériau 'MULTIMAT_UNIKALO' ou sous-matériau MAT_UNIKALO introuvable.\n\n"
+                    local errorMsg = "Matériau 'MAT_UNIKALO' introuvable (ni dans multi-matériau ni directement).\n\n"
                     errorMsg += "Matériaux disponibles:\n"
                     for mat in sceneMaterials do
                         errorMsg += "  - " + mat.name + "\n"
