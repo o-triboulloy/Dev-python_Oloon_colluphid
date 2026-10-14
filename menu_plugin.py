@@ -178,7 +178,7 @@ class MenuPlugin:
                     local multiMat = sceneMaterials["MULTIMAT_UNIKALO"]
                     if multiMat != undefined and multiMat.materialList.count >= 2 then
                     (
-                        targetMat = multiMat.materialList[2]
+                        targetMat = multiMat.materialList[1]
                     )
                     else
                     (
@@ -303,7 +303,7 @@ class MenuPlugin:
                         local multiMat = sceneMaterials["MULTIMAT_UNIKALO"]
                         if multiMat != undefined and multiMat.materialList.count >= 2 then
                         (
-                            targetMat = multiMat.materialList[2]
+                            targetMat = multiMat.materialList[1]
                         )
                         else
                         (
@@ -485,11 +485,11 @@ class MenuPlugin:
 
                 if multiMat != undefined then
                 (
-                    -- Accéder au sous-matériau à l'index 2
+                    -- Accéder au sous-matériau à l'index 1
                     if multiMat.materialList.count >= 2 then
                     (
-                        targetMat = multiMat.materialList[2]
-                        print ("  >> Sous-matériau MAT_UNIKALO trouvé (index 2): '" + targetMat.name + "'")
+                        targetMat = multiMat.materialList[1]
+                        print ("  >> Sous-matériau MAT_UNIKALO trouvé (index 1): '" + targetMat.name + "'")
                     )
                     else
                     (
