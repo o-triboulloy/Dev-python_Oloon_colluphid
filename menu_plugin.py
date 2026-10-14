@@ -235,7 +235,32 @@ class MenuPlugin:
             on spnContrastA changed val do
             (
                 if not isLoading then
+                (
                     contrastValueA = val
+
+                    -- Mettre à jour le Color_Correction en temps réel
+                    try
+                    (
+                        -- Trouver le multi-matériau MULTIMAT_UNIKALO
+                        local multiMat = sceneMaterials["MULTIMAT_UNIKALO"]
+                        if multiMat != undefined and multiMat.materialList.count >= 2 then
+                        (
+                            -- Accéder au sous-matériau MAT_UNIKALO (index 2)
+                            local targetMat = multiMat.materialList[2]
+                            if targetMat != undefined then
+                            (
+                                -- Vérifier si base_color_map est un Color_Correction
+                                if classOf targetMat.base_color_map == Color_Correction then
+                                (
+                                    targetMat.base_color_map.contrast = val
+                                    completeRedraw()
+                                    print ("Contraste A mis à jour: " + val as string)
+                                )
+                            )
+                        )
+                    )
+                    catch()
+                )
             )
 
 
@@ -380,16 +405,32 @@ class MenuPlugin:
                     print ("  - " + mat.name + " (" + (classOf mat as string) + ")")
                 )
 
-                -- Trouver le matériau MAT_UNIKALO (avec trim pour ignorer les espaces)
+                -- Trouver le multi-matériau MULTIMAT_UNIKALO puis accéder au sous-matériau MAT_UNIKALO
                 local targetMat = undefined
+                local multiMat = undefined
+
                 for mat in sceneMaterials do
                 (
                     local trimmedName = trimLeft (trimRight mat.name)
-                    if trimmedName == "MAT_UNIKALO" then
+                    if trimmedName == "MULTIMAT_UNIKALO" then
                     (
-                        targetMat = mat
-                        print ("  >> Matériau cible trouvé: '" + mat.name + "'")
+                        multiMat = mat
+                        print ("  >> Multi-matériau trouvé: '" + mat.name + "'")
                         exit
+                    )
+                )
+
+                if multiMat != undefined then
+                (
+                    -- Accéder au sous-matériau à l'index 2
+                    if multiMat.materialList.count >= 2 then
+                    (
+                        targetMat = multiMat.materialList[2]
+                        print ("  >> Sous-matériau MAT_UNIKALO trouvé (index 2): '" + targetMat.name + "'")
+                    )
+                    else
+                    (
+                        print ("  ERREUR: Le multi-matériau n'a pas assez de sous-matériaux")
                     )
                 )
 
@@ -397,7 +438,7 @@ class MenuPlugin:
                 (
                     btnLancer.enabled = true
                     btnReset.enabled = true
-                    local errorMsg = "Matériau 'MAT_UNIKALO' introuvable dans la scène.\n\n"
+                    local errorMsg = "Multi-matériau 'MULTIMAT_UNIKALO' ou sous-matériau MAT_UNIKALO introuvable.\n\n"
                     errorMsg += "Matériaux disponibles:\n"
                     for mat in sceneMaterials do
                         errorMsg += "  - " + mat.name + "\n"
@@ -544,8 +585,21 @@ class MenuPlugin:
                 (
                     if targetMat.base_color_map != undefined then
                     (
-                        originalMapPath = targetMat.base_color_map.filename
-                        print (">>> Chemin de la map originale sauvegardé: " + originalMapPath)
+                        -- Si c'est un Color_Correction, récupérer la bitmap source
+                        if classOf targetMat.base_color_map == Color_Correction then
+                        (
+                            if targetMat.base_color_map.Map != undefined and classOf targetMat.base_color_map.Map == Bitmaptexture then
+                            (
+                                originalMapPath = targetMat.base_color_map.Map.filename
+                                print (">>> Chemin de la map originale sauvegardé (via Color_Correction): " + originalMapPath)
+                            )
+                        )
+                        -- Sinon, c'est directement une bitmap
+                        else if classOf targetMat.base_color_map == Bitmaptexture then
+                        (
+                            originalMapPath = targetMat.base_color_map.filename
+                            print (">>> Chemin de la map originale sauvegardé: " + originalMapPath)
+                        )
                     )
                 )
 
@@ -598,13 +652,27 @@ class MenuPlugin:
                         (
                             try
                             (
-                                targetMat.base_color_map = newBitmap
+                                -- Créer ou récupérer le Color_Correction
+                                local colorCorrect = undefined
+
+                                -- Vérifier si base_color_map est déjà un Color_Correction
+                                if classOf targetMat.base_color_map == Color_Correction then
+                                    colorCorrect = targetMat.base_color_map
+                                else
+                                    colorCorrect = Color_Correction()
+
+                                -- Connecter la bitmap au Color_Correction
+                                colorCorrect.Map = newBitmap
+                                colorCorrect.contrast = contrastValueA
+
+                                -- Connecter le Color_Correction au matériau
+                                targetMat.base_color_map = colorCorrect
                                 mapAssigned = true
-                                print ("Map assignée à Physical Material: " + mapName)
+                                print ("Map assignée avec Color_Correction (contraste: " + contrastValueA as string + "): " + mapName)
                             )
                             catch
                             (
-                                print ("ERREUR: Échec assignation Physical Material")
+                                print ("ERREUR: Échec assignation Physical Material avec Color_Correction")
                             )
                         )
                         else
@@ -791,10 +859,23 @@ class MenuPlugin:
                         (
                             targetMat.base_color_shader = restoredBitmap
                         )
-                        else
+                        else if matType == "Physical_Material" or matType == "PhysicalMaterial" then
                         (
-                            -- Pour Physical Material
-                            targetMat.base_color_map = restoredBitmap
+                            -- Pour Physical Material, restaurer via Color_Correction
+                            local colorCorrect = undefined
+
+                            -- Vérifier si base_color_map est déjà un Color_Correction
+                            if classOf targetMat.base_color_map == Color_Correction then
+                                colorCorrect = targetMat.base_color_map
+                            else
+                                colorCorrect = Color_Correction()
+
+                            -- Connecter la bitmap originale
+                            colorCorrect.Map = restoredBitmap
+                            colorCorrect.contrast = contrastValueA
+
+                            -- Connecter au matériau
+                            targetMat.base_color_map = colorCorrect
                         )
 
                         completeRedraw()
