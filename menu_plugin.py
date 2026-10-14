@@ -558,6 +558,12 @@ class MenuPlugin:
                 if targetMatB != undefined then print ("Matériau B trouvé: " + targetMatB.name)
                 if targetMatC != undefined then print ("Matériau C trouvé: " + targetMatC.name)
 
+                -- Sauvegarder les maps originales
+                local originalMapA = if targetMatA != undefined then targetMatA.base_color_map else undefined
+                local originalMapB = if targetMatB != undefined then targetMatB.base_color_map else undefined
+                local originalMapC = if targetMatC != undefined then targetMatC.base_color_map else undefined
+                print (">>> Maps originales sauvegardées")
+
                 -- Lister les maps des 3 dossiers
                 local mapFilesA = getFiles (mapFolderPath + "\\\\*.jpg") + getFiles (mapFolderPath + "\\\\*.png") + getFiles (mapFolderPath + "\\\\*.tga")
                 local mapFilesB = #()
@@ -892,6 +898,32 @@ class MenuPlugin:
                 renderWidth = originalWidth
                 renderHeight = originalHeight
                 rendShowVFB = true  -- Réactiver le VFB pour les prochains rendus manuels
+
+                -- Restaurer les maps originales dans les matériaux
+                try
+                (
+                    if targetMatA != undefined and originalMapA != undefined then
+                    (
+                        targetMatA.base_color_map = originalMapA
+                        print (">>> Map originale A restaurée")
+                    )
+                    if targetMatB != undefined and originalMapB != undefined then
+                    (
+                        targetMatB.base_color_map = originalMapB
+                        print (">>> Map originale B restaurée")
+                    )
+                    if targetMatC != undefined and originalMapC != undefined then
+                    (
+                        targetMatC.base_color_map = originalMapC
+                        print (">>> Map originale C restaurée")
+                    )
+                    completeRedraw()
+                    windows.processPostedMessages()
+                )
+                catch
+                (
+                    print "Note: Impossible de restaurer toutes les maps originales"
+                )
 
                 print ("\n=== RENDUS TERMINÉS ===")
                 print (renduCourant as string + " rendus effectués")
