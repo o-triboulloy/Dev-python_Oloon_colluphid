@@ -235,7 +235,25 @@ class MenuPlugin:
             on spnContrastA changed val do
             (
                 if not isLoading then
+                (
                     contrastValueA = val
+
+                    -- Mettre à jour le Color Correction node en temps réel
+                    try
+                    (
+                        local colorCorrect = getNodeByName "MAT_UNIKALO_A_Color_correction"
+                        if colorCorrect != undefined then
+                        (
+                            colorCorrect.contrast = val / 100.0
+                            completeRedraw()
+                            print ("Contraste A mis à jour: " + val as string + " (" + (val / 100.0) as string + ")")
+                        )
+                    )
+                    catch
+                    (
+                        -- Silencieux si le node n'existe pas encore
+                    )
+                )
             )
 
 
