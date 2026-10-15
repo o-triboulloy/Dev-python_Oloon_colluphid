@@ -716,6 +716,54 @@ class MenuPlugin:
                 local lastMapB = undefined
                 local lastMapC = undefined
 
+                -- Créer/récupérer les Color_Correction nodes et Bitmaptexture UNE SEULE FOIS
+                local colorCorrectA = undefined
+                local bitmapTexA = undefined
+                if targetMatA != undefined then
+                (
+                    if classOf targetMatA.base_color_map == Color_Correction then
+                        colorCorrectA = targetMatA.base_color_map
+                    else
+                        colorCorrectA = Color_Correction()
+
+                    if classOf colorCorrectA.Map == Bitmaptexture then
+                        bitmapTexA = colorCorrectA.Map
+                    else
+                        bitmapTexA = Bitmaptexture()
+                )
+
+                local colorCorrectB = undefined
+                local bitmapTexB = undefined
+                if targetMatB != undefined then
+                (
+                    if classOf targetMatB.base_color_map == Color_Correction then
+                        colorCorrectB = targetMatB.base_color_map
+                    else
+                        colorCorrectB = Color_Correction()
+
+                    if classOf colorCorrectB.Map == Bitmaptexture then
+                        bitmapTexB = colorCorrectB.Map
+                    else
+                        bitmapTexB = Bitmaptexture()
+                )
+
+                local colorCorrectC = undefined
+                local bitmapTexC = undefined
+                if targetMatC != undefined then
+                (
+                    if classOf targetMatC.base_color_map == Color_Correction then
+                        colorCorrectC = targetMatC.base_color_map
+                    else
+                        colorCorrectC = Color_Correction()
+
+                    if classOf colorCorrectC.Map == Bitmaptexture then
+                        bitmapTexC = colorCorrectC.Map
+                    else
+                        bitmapTexC = Bitmaptexture()
+                )
+
+                print (">>> Color_Correction et Bitmaptexture nodes préparés")
+
                 -- Boucle sur le nombre maximum de maps
                 for i = 1 to maxMaps do
                 (
@@ -742,21 +790,14 @@ class MenuPlugin:
                     if currentMapB != undefined then print ("Map B: " + filenameFromPath currentMapB)
                     if currentMapC != undefined then print ("Map C: " + filenameFromPath currentMapC)
 
-                    -- Charger les maps dans les matériaux
+                    -- Charger les maps dans les matériaux (en réutilisant les nodes existants)
                     try
                     (
                         -- Composant A
-                        if currentMapA != undefined then
+                        if currentMapA != undefined and colorCorrectA != undefined and bitmapTexA != undefined then
                         (
-                            local newBitmapA = Bitmaptexture fileName:currentMapA
-                            local colorCorrectA = undefined
-
-                            if classOf targetMatA.base_color_map == Color_Correction then
-                                colorCorrectA = targetMatA.base_color_map
-                            else
-                                colorCorrectA = Color_Correction()
-
-                            colorCorrectA.Map = newBitmapA
+                            bitmapTexA.fileName = currentMapA
+                            colorCorrectA.Map = bitmapTexA
                             colorCorrectA.contrast = contrastValueA
                             colorCorrectA.brightness = brightnessValueA
                             targetMatA.base_color_map = colorCorrectA
@@ -765,17 +806,10 @@ class MenuPlugin:
                         )
 
                         -- Composant B
-                        if targetMatB != undefined and currentMapB != undefined then
+                        if targetMatB != undefined and currentMapB != undefined and colorCorrectB != undefined and bitmapTexB != undefined then
                         (
-                            local newBitmapB = Bitmaptexture fileName:currentMapB
-                            local colorCorrectB = undefined
-
-                            if classOf targetMatB.base_color_map == Color_Correction then
-                                colorCorrectB = targetMatB.base_color_map
-                            else
-                                colorCorrectB = Color_Correction()
-
-                            colorCorrectB.Map = newBitmapB
+                            bitmapTexB.fileName = currentMapB
+                            colorCorrectB.Map = bitmapTexB
                             colorCorrectB.contrast = contrastValueB
                             colorCorrectB.brightness = brightnessValueB
                             targetMatB.base_color_map = colorCorrectB
@@ -784,17 +818,10 @@ class MenuPlugin:
                         )
 
                         -- Composant C
-                        if targetMatC != undefined and currentMapC != undefined then
+                        if targetMatC != undefined and currentMapC != undefined and colorCorrectC != undefined and bitmapTexC != undefined then
                         (
-                            local newBitmapC = Bitmaptexture fileName:currentMapC
-                            local colorCorrectC = undefined
-
-                            if classOf targetMatC.base_color_map == Color_Correction then
-                                colorCorrectC = targetMatC.base_color_map
-                            else
-                                colorCorrectC = Color_Correction()
-
-                            colorCorrectC.Map = newBitmapC
+                            bitmapTexC.fileName = currentMapC
+                            colorCorrectC.Map = bitmapTexC
                             colorCorrectC.contrast = contrastValueC
                             colorCorrectC.brightness = brightnessValueC
                             targetMatC.base_color_map = colorCorrectC
