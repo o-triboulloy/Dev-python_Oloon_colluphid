@@ -23,7 +23,7 @@ class MenuPlugin:
 
         # Création du rollout (fenêtre) avec MaxScript
         rollout_code = """
-        rollout CustomToolWindow "U-Rtool" width:206 height:780
+        rollout CustomToolWindow "U-Rtool" width:206 height:855
         (
             -- Variables globales
             local sceneFolderPath = ""
@@ -35,6 +35,9 @@ class MenuPlugin:
             local contrastValueA = 0
             local contrastValueB = 0
             local contrastValueC = 0
+            local brightnessValueA = 0
+            local brightnessValueB = 0
+            local brightnessValueC = 0
             local iniFile = getDir #userScripts + "\\\\U-Rtool_settings.ini"
             local isLoading = false  -- Flag pour éviter les conflits pendant le chargement
             local stopRendering = false  -- Flag pour arrêter les rendus en cours
@@ -91,47 +94,53 @@ class MenuPlugin:
             button btnReset "Reset" pos:[10,156] width:186 height:30
 
             -- Composant A
-            groupBox grpComponentA "COMPOSANT A" pos:[10,196] width:186 height:70
+            groupBox grpComponentA "COMPOSANT A" pos:[10,196] width:186 height:95
             button btn2a "Dossier maps A" pos:[20,211] width:166 height:30
             label lblContrastA "Contraste A:" pos:[20,246] width:80
-            spinner spnContrastA "" pos:[100,246] width:76 height:16 range:[0,100,0] type:#integer scale:5 fieldWidth:40
+            spinner spnContrastA "" pos:[100,246] width:76 height:16 range:[-100,100,0] type:#integer scale:5 fieldWidth:40
+            label lblBrightnessA "Luminosité A:" pos:[20,266] width:80
+            spinner spnBrightnessA "" pos:[100,266] width:76 height:16 range:[-100,100,0] type:#integer scale:5 fieldWidth:40
 
             -- Composant B
-            groupBox grpComponentB "COMPOSANT B" pos:[10,276] width:186 height:70
-            button btn2aB "Dossier maps B" pos:[20,291] width:166 height:30
-            label lblContrastB "Contraste B:" pos:[20,326] width:80
-            spinner spnContrastB "" pos:[100,326] width:76 height:16 range:[0,100,0] type:#integer scale:5 fieldWidth:40
+            groupBox grpComponentB "COMPOSANT B" pos:[10,301] width:186 height:95
+            button btn2aB "Dossier maps B" pos:[20,316] width:166 height:30
+            label lblContrastB "Contraste B:" pos:[20,351] width:80
+            spinner spnContrastB "" pos:[100,351] width:76 height:16 range:[-100,100,0] type:#integer scale:5 fieldWidth:40
+            label lblBrightnessB "Luminosité B:" pos:[20,371] width:80
+            spinner spnBrightnessB "" pos:[100,371] width:76 height:16 range:[-100,100,0] type:#integer scale:5 fieldWidth:40
 
             -- Composant C
-            groupBox grpComponentC "COMPOSANT C" pos:[10,356] width:186 height:70
-            button btn2aC "Dossier maps C" pos:[20,371] width:166 height:30
-            label lblContrastC "Contraste C:" pos:[20,406] width:80
-            spinner spnContrastC "" pos:[100,406] width:76 height:16 range:[0,100,0] type:#integer scale:5 fieldWidth:40
+            groupBox grpComponentC "COMPOSANT C" pos:[10,406] width:186 height:95
+            button btn2aC "Dossier maps C" pos:[20,421] width:166 height:30
+            label lblContrastC "Contraste C:" pos:[20,456] width:80
+            spinner spnContrastC "" pos:[100,456] width:76 height:16 range:[-100,100,0] type:#integer scale:5 fieldWidth:40
+            label lblBrightnessC "Luminosité C:" pos:[20,476] width:80
+            spinner spnBrightnessC "" pos:[100,476] width:76 height:16 range:[-100,100,0] type:#integer scale:5 fieldWidth:40
 
             -- Options Rendus
-            groupBox grpRendu "Options Rendus" pos:[10,436] width:186 height:145
-            checkbox chkRenduStd "Rendus standard" pos:[20,453] width:160
-            spinner spnWidthStd "Largeur:" pos:[30,468] width:145 height:16 range:[1,10000,1920] type:#integer fieldWidth:50
-            spinner spnHeightStd "Hauteur:" pos:[30,483] width:145 height:16 range:[1,10000,1080] type:#integer fieldWidth:50
-            checkbox chkRenduDet "Rendus détourés" pos:[20,503] width:160
-            checkbox chkRenduHD "Rendu HD" pos:[20,520] width:160
-            spinner spnWidthHD "Largeur:" pos:[30,535] width:145 height:16 range:[1,10000,3840] type:#integer fieldWidth:50
-            spinner spnHeightHD "Hauteur:" pos:[30,550] width:145 height:16 range:[1,10000,2160] type:#integer fieldWidth:50
-            checkbox chkRenduHDDet "Rendu HD détourés" pos:[20,570] width:160
+            groupBox grpRendu "Options Rendus" pos:[10,511] width:186 height:145
+            checkbox chkRenduStd "Rendus standard" pos:[20,528] width:160
+            spinner spnWidthStd "Largeur:" pos:[30,543] width:145 height:16 range:[1,10000,1920] type:#integer fieldWidth:50
+            spinner spnHeightStd "Hauteur:" pos:[30,558] width:145 height:16 range:[1,10000,1080] type:#integer fieldWidth:50
+            checkbox chkRenduDet "Rendus détourés" pos:[20,578] width:160
+            checkbox chkRenduHD "Rendu HD" pos:[20,595] width:160
+            spinner spnWidthHD "Largeur:" pos:[30,610] width:145 height:16 range:[1,10000,3840] type:#integer fieldWidth:50
+            spinner spnHeightHD "Hauteur:" pos:[30,625] width:145 height:16 range:[1,10000,2160] type:#integer fieldWidth:50
+            checkbox chkRenduHDDet "Rendu HD détourés" pos:[20,645] width:160
 
             -- Menu déroulant Scènes
-            label lblScenes "Scènes:" pos:[10,591] width:186
-            dropdownList ddScenes "" pos:[10,606] width:186 items:#()
+            label lblScenes "Scènes:" pos:[10,666] width:186
+            dropdownList ddScenes "" pos:[10,681] width:186 items:#()
 
             -- Section Lancer les rendus
-            groupBox grpLancer "" pos:[10,631] width:186 height:74
+            groupBox grpLancer "" pos:[10,706] width:186 height:74
             button btnLancer "Lancer les\nrendus" pos:[20,642] width:166 height:54
 
             -- Section Progression
-            groupBox grpProgress "Progression totale" pos:[10,715] width:186 height:54
-            label lblCurrentRender "" pos:[15,730] width:176 height:14 align:#left
-            progressBar pbRender "" pos:[15,744] width:176 height:16 color:orange
-            label lblRenderTime "" pos:[15,760] width:176 height:14 align:#left
+            groupBox grpProgress "Progression totale" pos:[10,790] width:186 height:54
+            label lblCurrentRender "" pos:[15,805] width:176 height:14 align:#left
+            progressBar pbRender "" pos:[15,819] width:176 height:16 color:orange
+            label lblRenderTime "" pos:[15,835] width:176 height:14 align:#left
 
             -- Événement au chargement pour gérer les images et charger les paramètres
             on CustomToolWindow open do
@@ -172,25 +181,8 @@ class MenuPlugin:
                 loadedPath = getINISetting iniFile "Paths" "RenderFolder"
                 if loadedPath != "" then renderFolderPath = loadedPath
 
-                -- Charger les valeurs de contraste
-                local val = getINISetting iniFile "Contrast" "ValueA"
-                if val != "" then
-                (
-                    contrastValueA = val as integer
-                    spnContrastA.value = contrastValueA
-                )
-                val = getINISetting iniFile "Contrast" "ValueB"
-                if val != "" then
-                (
-                    contrastValueB = val as integer
-                    spnContrastB.value = contrastValueB
-                )
-                val = getINISetting iniFile "Contrast" "ValueC"
-                if val != "" then
-                (
-                    contrastValueC = val as integer
-                    spnContrastC.value = contrastValueC
-                )
+                -- Les valeurs de contraste et luminosité sont toujours initialisées à 0
+                -- (pas de chargement depuis INI)
 
                 -- Charger les options de rendu
                 local val = getINISetting iniFile "OptionsRendu" "RenduStandard"
@@ -257,13 +249,7 @@ class MenuPlugin:
                 setINISetting iniFile "Paths" "MapFolderB" mapFolderPathB
                 setINISetting iniFile "Paths" "MapFolderC" mapFolderPathC
                 setINISetting iniFile "Paths" "RenderFolder" renderFolderPath
-
-                -- Sauvegarder les valeurs de contraste
-                setINISetting iniFile "Contrast" "ValueA" (contrastValueA as string)
-                setINISetting iniFile "Contrast" "ValueB" (contrastValueB as string)
-                setINISetting iniFile "Contrast" "ValueC" (contrastValueC as string)
-
-                -- Sauvegarder les options de rendu
+-- Sauvegarder les options de rendu
                 setINISetting iniFile "OptionsRendu" "RenduStandard" (if chkRenduStd.checked then "true" else "false")
                 setINISetting iniFile "OptionsRendu" "RenduDetoure" (if chkRenduDet.checked then "true" else "false")
                 setINISetting iniFile "OptionsRendu" "RenduHD" (if chkRenduHD.checked then "true" else "false")
@@ -336,33 +322,36 @@ class MenuPlugin:
                 if not isLoading then
                 (
                     contrastValueA = val
-
-                    -- Mettre à jour le Color_Correction en temps réel
+                    
                     try
                     (
-                        local targetMat = undefined
-
-                        -- Essayer d'abord le multi-matériau MULTIMAT_UNIKALO
-                        local multiMat = sceneMaterials["MULTIMAT_UNIKALO"]
-                        if multiMat != undefined and multiMat.materialList.count >= 2 then
+                        local targetMat = findMaterialByName "MAT_UNIKALO"
+                        if targetMat != undefined and classOf targetMat.base_color_map == Color_Correction then
                         (
-                            targetMat = multiMat.materialList[1]
+                            targetMat.base_color_map.contrast = val
+                            completeRedraw()
+                            print ("Contraste A mis à jour: " + val as string)
                         )
-                        else
+                    )
+                    catch()
+                )
+            )
+            
+            -- Spinner Luminosité A
+            on spnBrightnessA changed val do
+            (
+                if not isLoading then
+                (
+                    brightnessValueA = val
+                    
+                    try
+                    (
+                        local targetMat = findMaterialByName "MAT_UNIKALO"
+                        if targetMat != undefined and classOf targetMat.base_color_map == Color_Correction then
                         (
-                            -- Sinon chercher MAT_UNIKALO directement
-                            targetMat = sceneMaterials["MAT_UNIKALO"]
-                        )
-
-                        if targetMat != undefined then
-                        (
-                            -- Vérifier si base_color_map est un Color_Correction
-                            if classOf targetMat.base_color_map == Color_Correction then
-                            (
-                                targetMat.base_color_map.contrast = val
-                                completeRedraw()
-                                print ("Contraste A mis à jour: " + val as string)
-                            )
+                            targetMat.base_color_map.brightness = val
+                            completeRedraw()
+                            print ("Luminosité A mise à jour: " + val as string)
                         )
                     )
                     catch()
@@ -413,6 +402,27 @@ class MenuPlugin:
                     catch()
                 )
             )
+            
+            -- Spinner Luminosité B
+            on spnBrightnessB changed val do
+            (
+                if not isLoading then
+                (
+                    brightnessValueB = val
+                    
+                    try
+                    (
+                        local targetMat = findMaterialByName "MAT_UNIKALO_B"
+                        if targetMat != undefined and classOf targetMat.base_color_map == Color_Correction then
+                        (
+                            targetMat.base_color_map.brightness = val
+                            completeRedraw()
+                            print ("Luminosité B mise à jour: " + val as string)
+                        )
+                    )
+                    catch()
+                )
+            )
 
             -- Bouton 2aC: Choisir le dossier des maps C
             on btn2aC pressed do
@@ -457,6 +467,27 @@ class MenuPlugin:
                     catch()
                 )
             )
+            
+            -- Spinner Luminosité C
+            on spnBrightnessC changed val do
+            (
+                if not isLoading then
+                (
+                    brightnessValueC = val
+                    
+                    try
+                    (
+                        local targetMat = findMaterialByName "MAT_UNIKALO_C"
+                        if targetMat != undefined and classOf targetMat.base_color_map == Color_Correction then
+                        (
+                            targetMat.base_color_map.brightness = val
+                            completeRedraw()
+                            print ("Luminosité C mise à jour: " + val as string)
+                        )
+                    )
+                    catch()
+                )
+            )
 
 
             -- Bouton 2b: Choisir le dossier de rendu
@@ -482,13 +513,7 @@ class MenuPlugin:
                 setINISetting iniFile "Paths" "MapFolderB" mapFolderPathB
                 setINISetting iniFile "Paths" "MapFolderC" mapFolderPathC
                 setINISetting iniFile "Paths" "RenderFolder" renderFolderPath
-
-                -- Sauvegarder les valeurs de contraste
-                setINISetting iniFile "Contrast" "ValueA" (contrastValueA as string)
-                setINISetting iniFile "Contrast" "ValueB" (contrastValueB as string)
-                setINISetting iniFile "Contrast" "ValueC" (contrastValueC as string)
-
-                -- Sauvegarder les options de rendu
+-- Sauvegarder les options de rendu
                 setINISetting iniFile "OptionsRendu" "RenduStandard" (if chkRenduStd.checked then "true" else "false")
                 setINISetting iniFile "OptionsRendu" "RenduDetoure" (if chkRenduDet.checked then "true" else "false")
                 setINISetting iniFile "OptionsRendu" "RenduHD" (if chkRenduHD.checked then "true" else "false")
