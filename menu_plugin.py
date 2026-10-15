@@ -134,7 +134,7 @@ class MenuPlugin:
 
             -- Section Lancer les rendus
             groupBox grpLancer "" pos:[10,726] width:186 height:74
-            button btnLancer "Lancer les\nrendus" pos:[20,642] width:166 height:54
+            button btnLancer "Lancer les\nrendus" pos:[20,737] width:166 height:54
 
             -- Section Progression
             groupBox grpProgress "Progression totale" pos:[10,810] width:186 height:54
