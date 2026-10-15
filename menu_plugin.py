@@ -204,7 +204,7 @@ class MenuPlugin:
                 val = getINISetting iniFile "Resolution" "HeightHD"
                 if val != "" then spnHeightHD.value = val as integer else spnHeightHD.value = 2160
 
-                -- Appliquer les valeurs de contraste aux Color_Correction nodes
+                -- Appliquer les valeurs de contraste et luminosité aux Color_Correction nodes (toujours 0)
                 try
                 (
                     -- Composant A
@@ -212,23 +212,26 @@ class MenuPlugin:
                     if targetMatA != undefined and classOf targetMatA.base_color_map == Color_Correction then
                     (
                         targetMatA.base_color_map.contrast = contrastValueA
-                        print ("Contraste A initialisé: " + contrastValueA as string)
+                        targetMatA.base_color_map.brightness = brightnessValueA
+                        print ("Contraste et luminosité A initialisés à 0")
                     )
-                    
+
                     -- Composant B
                     local targetMatB = findMaterialByName "MAT_UNIKALO_B"
                     if targetMatB != undefined and classOf targetMatB.base_color_map == Color_Correction then
                     (
                         targetMatB.base_color_map.contrast = contrastValueB
-                        print ("Contraste B initialisé: " + contrastValueB as string)
+                        targetMatB.base_color_map.brightness = brightnessValueB
+                        print ("Contraste et luminosité B initialisés à 0")
                     )
-                    
+
                     -- Composant C
                     local targetMatC = findMaterialByName "MAT_UNIKALO_C"
                     if targetMatC != undefined and classOf targetMatC.base_color_map == Color_Correction then
                     (
                         targetMatC.base_color_map.contrast = contrastValueC
-                        print ("Contraste C initialisé: " + contrastValueC as string)
+                        targetMatC.base_color_map.brightness = brightnessValueC
+                        print ("Contraste et luminosité C initialisés à 0")
                     )
                 )
                 catch()
@@ -755,9 +758,10 @@ class MenuPlugin:
 
                             colorCorrectA.Map = newBitmapA
                             colorCorrectA.contrast = contrastValueA
+                            colorCorrectA.brightness = brightnessValueA
                             targetMatA.base_color_map = colorCorrectA
                             lastMapA = currentMapA
-                            print ("Map A chargée avec contraste: " + contrastValueA as string)
+                            print ("Map A chargée (contraste: " + contrastValueA as string + ", luminosité: " + brightnessValueA as string + ")")
                         )
 
                         -- Composant B
@@ -773,9 +777,10 @@ class MenuPlugin:
 
                             colorCorrectB.Map = newBitmapB
                             colorCorrectB.contrast = contrastValueB
+                            colorCorrectB.brightness = brightnessValueB
                             targetMatB.base_color_map = colorCorrectB
                             lastMapB = currentMapB
-                            print ("Map B chargée avec contraste: " + contrastValueB as string)
+                            print ("Map B chargée (contraste: " + contrastValueB as string + ", luminosité: " + brightnessValueB as string + ")")
                         )
 
                         -- Composant C
@@ -791,9 +796,10 @@ class MenuPlugin:
 
                             colorCorrectC.Map = newBitmapC
                             colorCorrectC.contrast = contrastValueC
+                            colorCorrectC.brightness = brightnessValueC
                             targetMatC.base_color_map = colorCorrectC
                             lastMapC = currentMapC
-                            print ("Map C chargée avec contraste: " + contrastValueC as string)
+                            print ("Map C chargée (contraste: " + contrastValueC as string + ", luminosité: " + brightnessValueC as string + ")")
                         )
 
                         completeRedraw()
@@ -999,13 +1005,19 @@ class MenuPlugin:
                     renderFolderPath = ""
                     sceneFiles = #()
 
-                    -- Réinitialiser les contrastes
+                    -- Réinitialiser les contrastes et luminosités
                     contrastValueA = 0
                     contrastValueB = 0
                     contrastValueC = 0
+                    brightnessValueA = 0
+                    brightnessValueB = 0
+                    brightnessValueC = 0
                     spnContrastA.value = 0
                     spnContrastB.value = 0
                     spnContrastC.value = 0
+                    spnBrightnessA.value = 0
+                    spnBrightnessB.value = 0
+                    spnBrightnessC.value = 0
 
                     -- Vider le menu déroulant
                     ddScenes.items = #()
