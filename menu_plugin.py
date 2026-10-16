@@ -593,23 +593,23 @@ class MenuPlugin:
                 print (">>> Maps originales sauvegardées")
 
                 -- Fonction pour restaurer les maps originales
-                fn restoreOriginalMaps =
+                fn restoreOriginalMaps matA matB matC origMapA origMapB origMapC =
                 (
                     try
                     (
-                        if targetMatA != undefined and originalMapA != undefined then
+                        if matA != undefined and origMapA != undefined then
                         (
-                            targetMatA.base_color_map = originalMapA
+                            matA.base_color_map = origMapA
                             print (">>> Map originale A restaurée")
                         )
-                        if targetMatB != undefined and originalMapB != undefined then
+                        if matB != undefined and origMapB != undefined then
                         (
-                            targetMatB.base_color_map = originalMapB
+                            matB.base_color_map = origMapB
                             print (">>> Map originale B restaurée")
                         )
-                        if targetMatC != undefined and originalMapC != undefined then
+                        if matC != undefined and origMapC != undefined then
                         (
-                            targetMatC.base_color_map = originalMapC
+                            matC.base_color_map = origMapC
                             print (">>> Map originale C restaurée")
                         )
                         completeRedraw()
@@ -800,7 +800,7 @@ class MenuPlugin:
                     (
                         print "
 !!! ARRÊT DES RENDUS DEMANDÉ !!!"
-                        restoreOriginalMaps()
+                        restoreOriginalMaps targetMatA targetMatB targetMatC originalMapA originalMapB originalMapC
                         exit
                     )
 
@@ -875,7 +875,7 @@ class MenuPlugin:
                         if stopRendering then
                         (
                             print "  >>> Arrêt demandé, sortie de la boucle de rendus"
-                            restoreOriginalMaps()
+                            restoreOriginalMaps targetMatA targetMatB targetMatC originalMapA originalMapB originalMapC
                             exit
                         )
 
@@ -989,7 +989,7 @@ class MenuPlugin:
                 rendShowVFB = true  -- Réactiver le VFB pour les prochains rendus manuels
 
                 -- Restaurer les maps originales dans les matériaux
-                restoreOriginalMaps()
+                restoreOriginalMaps targetMatA targetMatB targetMatC originalMapA originalMapB originalMapC
 
                 print ("\n=== RENDUS TERMINÉS ===")
                 print (renduCourant as string + " rendus effectués")
