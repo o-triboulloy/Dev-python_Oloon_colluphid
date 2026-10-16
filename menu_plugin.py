@@ -592,6 +592,35 @@ class MenuPlugin:
                 local originalMapC = if targetMatC != undefined then targetMatC.base_color_map else undefined
                 print (">>> Maps originales sauvegardées")
 
+                -- Fonction pour restaurer les maps originales
+                fn restoreOriginalMaps =
+                (
+                    try
+                    (
+                        if targetMatA != undefined and originalMapA != undefined then
+                        (
+                            targetMatA.base_color_map = originalMapA
+                            print (">>> Map originale A restaurée")
+                        )
+                        if targetMatB != undefined and originalMapB != undefined then
+                        (
+                            targetMatB.base_color_map = originalMapB
+                            print (">>> Map originale B restaurée")
+                        )
+                        if targetMatC != undefined and originalMapC != undefined then
+                        (
+                            targetMatC.base_color_map = originalMapC
+                            print (">>> Map originale C restaurée")
+                        )
+                        completeRedraw()
+                        windows.processPostedMessages()
+                    )
+                    catch
+                    (
+                        print "Note: Impossible de restaurer toutes les maps originales"
+                    )
+                )
+
                 -- Lister les maps des 3 dossiers
                 local mapFilesA = getFiles (mapFolderPath + "\\\\*.jpg") + getFiles (mapFolderPath + "\\\\*.png") + getFiles (mapFolderPath + "\\\\*.tga")
                 local mapFilesB = #()
@@ -771,6 +800,7 @@ class MenuPlugin:
                     (
                         print "
 !!! ARRÊT DES RENDUS DEMANDÉ !!!"
+                        restoreOriginalMaps()
                         exit
                     )
 
@@ -845,6 +875,7 @@ class MenuPlugin:
                         if stopRendering then
                         (
                             print "  >>> Arrêt demandé, sortie de la boucle de rendus"
+                            restoreOriginalMaps()
                             exit
                         )
 
@@ -958,30 +989,7 @@ class MenuPlugin:
                 rendShowVFB = true  -- Réactiver le VFB pour les prochains rendus manuels
 
                 -- Restaurer les maps originales dans les matériaux
-                try
-                (
-                    if targetMatA != undefined and originalMapA != undefined then
-                    (
-                        targetMatA.base_color_map = originalMapA
-                        print (">>> Map originale A restaurée")
-                    )
-                    if targetMatB != undefined and originalMapB != undefined then
-                    (
-                        targetMatB.base_color_map = originalMapB
-                        print (">>> Map originale B restaurée")
-                    )
-                    if targetMatC != undefined and originalMapC != undefined then
-                    (
-                        targetMatC.base_color_map = originalMapC
-                        print (">>> Map originale C restaurée")
-                    )
-                    completeRedraw()
-                    windows.processPostedMessages()
-                )
-                catch
-                (
-                    print "Note: Impossible de restaurer toutes les maps originales"
-                )
+                restoreOriginalMaps()
 
                 print ("\n=== RENDUS TERMINÉS ===")
                 print (renduCourant as string + " rendus effectués")
@@ -1059,6 +1067,35 @@ class MenuPlugin:
                     pbRender.value = 0
                     lblCurrentRender.text = ""
                     lblRenderTime.text = ""
+
+                    -- Restaurer les maps par défaut et remettre contraste/luminosité à 0
+                    try
+                    (
+                        local matA = findMaterialByName "MAT_UNIKALO"
+                        if matA != undefined and classOf matA.base_color_map == Color_Correction then
+                        (
+                            matA.base_color_map.contrast = 0
+                            matA.base_color_map.brightness = 0
+                        )
+
+                        local matB = findMaterialByName "MAT_UNIKALO_B"
+                        if matB != undefined and classOf matB.base_color_map == Color_Correction then
+                        (
+                            matB.base_color_map.contrast = 0
+                            matB.base_color_map.brightness = 0
+                        )
+
+                        local matC = findMaterialByName "MAT_UNIKALO_C"
+                        if matC != undefined and classOf matC.base_color_map == Color_Correction then
+                        (
+                            matC.base_color_map.contrast = 0
+                            matC.base_color_map.brightness = 0
+                        )
+
+                        completeRedraw()
+                        print (">>> Contraste et luminosité réinitialisés dans les matériaux")
+                    )
+                    catch()
 
                     -- Supprimer le fichier INI
                     try
