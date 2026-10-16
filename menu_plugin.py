@@ -633,41 +633,50 @@ class MenuPlugin:
                     (
                         if matA != undefined and origFileA != undefined then
                         (
-                            local newBitmap = Bitmaptexture fileName:origFileA
                             if classOf matA.base_color_map == Color_Correction then
                             (
-                                matA.base_color_map.Map = newBitmap
+                                -- Réutiliser le Bitmaptexture existant si possible
+                                if classOf matA.base_color_map.Map == Bitmaptexture then
+                                    matA.base_color_map.Map.fileName = origFileA
+                                else
+                                    matA.base_color_map.Map = Bitmaptexture fileName:origFileA
                                 matA.base_color_map.contrast = 0
                                 matA.base_color_map.brightness = 0
                             )
                             else
-                                matA.base_color_map = newBitmap
+                                matA.base_color_map = Bitmaptexture fileName:origFileA
                             print (">>> Map originale A restaurée: " + (filenameFromPath origFileA))
                         )
                         if matB != undefined and origFileB != undefined then
                         (
-                            local newBitmap = Bitmaptexture fileName:origFileB
                             if classOf matB.base_color_map == Color_Correction then
                             (
-                                matB.base_color_map.Map = newBitmap
+                                -- Réutiliser le Bitmaptexture existant si possible
+                                if classOf matB.base_color_map.Map == Bitmaptexture then
+                                    matB.base_color_map.Map.fileName = origFileB
+                                else
+                                    matB.base_color_map.Map = Bitmaptexture fileName:origFileB
                                 matB.base_color_map.contrast = 0
                                 matB.base_color_map.brightness = 0
                             )
                             else
-                                matB.base_color_map = newBitmap
+                                matB.base_color_map = Bitmaptexture fileName:origFileB
                             print (">>> Map originale B restaurée: " + (filenameFromPath origFileB))
                         )
                         if matC != undefined and origFileC != undefined then
                         (
-                            local newBitmap = Bitmaptexture fileName:origFileC
                             if classOf matC.base_color_map == Color_Correction then
                             (
-                                matC.base_color_map.Map = newBitmap
+                                -- Réutiliser le Bitmaptexture existant si possible
+                                if classOf matC.base_color_map.Map == Bitmaptexture then
+                                    matC.base_color_map.Map.fileName = origFileC
+                                else
+                                    matC.base_color_map.Map = Bitmaptexture fileName:origFileC
                                 matC.base_color_map.contrast = 0
                                 matC.base_color_map.brightness = 0
                             )
                             else
-                                matC.base_color_map = newBitmap
+                                matC.base_color_map = Bitmaptexture fileName:origFileC
                             print (">>> Map originale C restaurée: " + (filenameFromPath origFileC))
                         )
                         completeRedraw()
