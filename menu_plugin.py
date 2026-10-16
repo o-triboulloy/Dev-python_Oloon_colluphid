@@ -586,10 +586,35 @@ class MenuPlugin:
                 if targetMatB != undefined then print ("Matériau B trouvé: " + targetMatB.name)
                 if targetMatC != undefined then print ("Matériau C trouvé: " + targetMatC.name)
 
-                -- Sauvegarder les maps originales
-                local originalMapA = if targetMatA != undefined then targetMatA.base_color_map else undefined
-                local originalMapB = if targetMatB != undefined then targetMatB.base_color_map else undefined
-                local originalMapC = if targetMatC != undefined then targetMatC.base_color_map else undefined
+                -- Sauvegarder les maps originales (ce qui est DANS le Color_Correction si c'en est un)
+                local originalMapA = undefined
+                local originalMapB = undefined
+                local originalMapC = undefined
+
+                if targetMatA != undefined then
+                (
+                    if classOf targetMatA.base_color_map == Color_Correction then
+                        originalMapA = targetMatA.base_color_map.Map
+                    else
+                        originalMapA = targetMatA.base_color_map
+                )
+
+                if targetMatB != undefined then
+                (
+                    if classOf targetMatB.base_color_map == Color_Correction then
+                        originalMapB = targetMatB.base_color_map.Map
+                    else
+                        originalMapB = targetMatB.base_color_map
+                )
+
+                if targetMatC != undefined then
+                (
+                    if classOf targetMatC.base_color_map == Color_Correction then
+                        originalMapC = targetMatC.base_color_map.Map
+                    else
+                        originalMapC = targetMatC.base_color_map
+                )
+
                 print (">>> Maps originales sauvegardées")
 
                 -- Fonction pour restaurer les maps originales
@@ -599,17 +624,38 @@ class MenuPlugin:
                     (
                         if matA != undefined and origMapA != undefined then
                         (
-                            matA.base_color_map = origMapA
+                            if classOf matA.base_color_map == Color_Correction then
+                            (
+                                matA.base_color_map.Map = origMapA
+                                matA.base_color_map.contrast = 0
+                                matA.base_color_map.brightness = 0
+                            )
+                            else
+                                matA.base_color_map = origMapA
                             print (">>> Map originale A restaurée")
                         )
                         if matB != undefined and origMapB != undefined then
                         (
-                            matB.base_color_map = origMapB
+                            if classOf matB.base_color_map == Color_Correction then
+                            (
+                                matB.base_color_map.Map = origMapB
+                                matB.base_color_map.contrast = 0
+                                matB.base_color_map.brightness = 0
+                            )
+                            else
+                                matB.base_color_map = origMapB
                             print (">>> Map originale B restaurée")
                         )
                         if matC != undefined and origMapC != undefined then
                         (
-                            matC.base_color_map = origMapC
+                            if classOf matC.base_color_map == Color_Correction then
+                            (
+                                matC.base_color_map.Map = origMapC
+                                matC.base_color_map.contrast = 0
+                                matC.base_color_map.brightness = 0
+                            )
+                            else
+                                matC.base_color_map = origMapC
                             print (">>> Map originale C restaurée")
                         )
                         completeRedraw()
