@@ -586,77 +586,89 @@ class MenuPlugin:
                 if targetMatB != undefined then print ("Matériau B trouvé: " + targetMatB.name)
                 if targetMatC != undefined then print ("Matériau C trouvé: " + targetMatC.name)
 
-                -- Sauvegarder les maps originales (ce qui est DANS le Color_Correction si c'en est un)
-                local originalMapA = undefined
-                local originalMapB = undefined
-                local originalMapC = undefined
+                -- Sauvegarder les chemins des fichiers originaux (pas les objets)
+                local originalFileA = undefined
+                local originalFileB = undefined
+                local originalFileC = undefined
 
                 if targetMatA != undefined then
                 (
                     if classOf targetMatA.base_color_map == Color_Correction then
-                        originalMapA = targetMatA.base_color_map.Map
-                    else
-                        originalMapA = targetMatA.base_color_map
+                    (
+                        if classOf targetMatA.base_color_map.Map == Bitmaptexture then
+                            originalFileA = targetMatA.base_color_map.Map.fileName
+                    )
+                    else if classOf targetMatA.base_color_map == Bitmaptexture then
+                        originalFileA = targetMatA.base_color_map.fileName
                 )
 
                 if targetMatB != undefined then
                 (
                     if classOf targetMatB.base_color_map == Color_Correction then
-                        originalMapB = targetMatB.base_color_map.Map
-                    else
-                        originalMapB = targetMatB.base_color_map
+                    (
+                        if classOf targetMatB.base_color_map.Map == Bitmaptexture then
+                            originalFileB = targetMatB.base_color_map.Map.fileName
+                    )
+                    else if classOf targetMatB.base_color_map == Bitmaptexture then
+                        originalFileB = targetMatB.base_color_map.fileName
                 )
 
                 if targetMatC != undefined then
                 (
                     if classOf targetMatC.base_color_map == Color_Correction then
-                        originalMapC = targetMatC.base_color_map.Map
-                    else
-                        originalMapC = targetMatC.base_color_map
+                    (
+                        if classOf targetMatC.base_color_map.Map == Bitmaptexture then
+                            originalFileC = targetMatC.base_color_map.Map.fileName
+                    )
+                    else if classOf targetMatC.base_color_map == Bitmaptexture then
+                        originalFileC = targetMatC.base_color_map.fileName
                 )
 
-                print (">>> Maps originales sauvegardées")
+                print (">>> Fichiers originaux sauvegardés:")
 
-                -- Fonction pour restaurer les maps originales
-                fn restoreOriginalMaps matA matB matC origMapA origMapB origMapC =
+                -- Fonction pour restaurer les maps originales à partir des chemins de fichiers
+                fn restoreOriginalMaps matA matB matC origFileA origFileB origFileC =
                 (
                     try
                     (
-                        if matA != undefined and origMapA != undefined then
+                        if matA != undefined and origFileA != undefined then
                         (
+                            local newBitmap = Bitmaptexture fileName:origFileA
                             if classOf matA.base_color_map == Color_Correction then
                             (
-                                matA.base_color_map.Map = origMapA
+                                matA.base_color_map.Map = newBitmap
                                 matA.base_color_map.contrast = 0
                                 matA.base_color_map.brightness = 0
                             )
                             else
-                                matA.base_color_map = origMapA
-                            print (">>> Map originale A restaurée")
+                                matA.base_color_map = newBitmap
+                            print (">>> Map originale A restaurée: " + (filenameFromPath origFileA))
                         )
-                        if matB != undefined and origMapB != undefined then
+                        if matB != undefined and origFileB != undefined then
                         (
+                            local newBitmap = Bitmaptexture fileName:origFileB
                             if classOf matB.base_color_map == Color_Correction then
                             (
-                                matB.base_color_map.Map = origMapB
+                                matB.base_color_map.Map = newBitmap
                                 matB.base_color_map.contrast = 0
                                 matB.base_color_map.brightness = 0
                             )
                             else
-                                matB.base_color_map = origMapB
-                            print (">>> Map originale B restaurée")
+                                matB.base_color_map = newBitmap
+                            print (">>> Map originale B restaurée: " + (filenameFromPath origFileB))
                         )
-                        if matC != undefined and origMapC != undefined then
+                        if matC != undefined and origFileC != undefined then
                         (
+                            local newBitmap = Bitmaptexture fileName:origFileC
                             if classOf matC.base_color_map == Color_Correction then
                             (
-                                matC.base_color_map.Map = origMapC
+                                matC.base_color_map.Map = newBitmap
                                 matC.base_color_map.contrast = 0
                                 matC.base_color_map.brightness = 0
                             )
                             else
-                                matC.base_color_map = origMapC
-                            print (">>> Map originale C restaurée")
+                                matC.base_color_map = newBitmap
+                            print (">>> Map originale C restaurée: " + (filenameFromPath origFileC))
                         )
                         completeRedraw()
                         windows.processPostedMessages()
@@ -846,7 +858,7 @@ class MenuPlugin:
                     (
                         print "
 !!! ARRÊT DES RENDUS DEMANDÉ !!!"
-                        restoreOriginalMaps targetMatA targetMatB targetMatC originalMapA originalMapB originalMapC
+                        restoreOriginalMaps targetMatA targetMatB targetMatC originalFileA originalFileB originalFileC
                         exit
                     )
 
@@ -921,7 +933,7 @@ class MenuPlugin:
                         if stopRendering then
                         (
                             print "  >>> Arrêt demandé, sortie de la boucle de rendus"
-                            restoreOriginalMaps targetMatA targetMatB targetMatC originalMapA originalMapB originalMapC
+                            restoreOriginalMaps targetMatA targetMatB targetMatC originalFileA originalFileB originalFileC
                             exit
                         )
 
@@ -1035,7 +1047,7 @@ class MenuPlugin:
                 rendShowVFB = true  -- Réactiver le VFB pour les prochains rendus manuels
 
                 -- Restaurer les maps originales dans les matériaux
-                restoreOriginalMaps targetMatA targetMatB targetMatC originalMapA originalMapB originalMapC
+                restoreOriginalMaps targetMatA targetMatB targetMatC originalFileA originalFileB originalFileC
 
                 print ("\n=== RENDUS TERMINÉS ===")
                 print (renduCourant as string + " rendus effectués")
