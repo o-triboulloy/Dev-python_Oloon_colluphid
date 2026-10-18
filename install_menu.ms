@@ -1,24 +1,38 @@
--- Script d'installation pour ajouter l'icône au menu de 3ds Max
+-- Script d'installation pour ajouter les icônes au menu de 3ds Max
 -- Compatible avec toutes les versions de 3ds Max (2023-2026+)
 -- À exécuter une seule fois dans 3ds Max
 
-macroScript OpenCustomTool
+-- MacroScript pour la version Simple (1 composant)
+macroScript OpenCustomToolSimple
 category:"Custom Tools"
-buttonText:"UNIKALO RenderTool"
-tooltip:"Ouvrir la fenêtre des outils personnalisés"
+buttonText:"UNIKALO RenderTool Simple"
+tooltip:"Version simple - 1 composant"
 (
-    -- Chemin vers le script Python
-    -- IMPORTANT: Modifier ce chemin selon l'emplacement de votre fichier
-    local scriptPath = (getDir #userScripts + "\\menu_plugin.py")
-
-    -- Vérifier si le fichier existe
+    local scriptPath = (getDir #userScripts + "\\menu_plugin_simple.py")
     if (doesFileExist scriptPath) then
     (
         python.executeFile scriptPath
     )
     else
     (
-        messageBox ("Fichier non trouvé: " + scriptPath + "\n\nAssurez-vous que menu_plugin.py est dans le dossier des scripts utilisateur.")
+        messageBox ("Fichier non trouvé: " + scriptPath + "\n\nAssurez-vous que menu_plugin_simple.py est dans le dossier des scripts utilisateur.")
+    )
+)
+
+-- MacroScript pour la version Multi (3 composants)
+macroScript OpenCustomToolMulti
+category:"Custom Tools"
+buttonText:"UNIKALO RenderTool Multi"
+tooltip:"Version multi-composants - A/B/C"
+(
+    local scriptPath = (getDir #userScripts + "\\menu_plugin_multi.py")
+    if (doesFileExist scriptPath) then
+    (
+        python.executeFile scriptPath
+    )
+    else
+    (
+        messageBox ("Fichier non trouvé: " + scriptPath + "\n\nAssurez-vous que menu_plugin_multi.py est dans le dossier des scripts utilisateur.")
     )
 )
 
@@ -30,19 +44,28 @@ fn createToolbar =
         -- Créer une toolbar flottante avec un floater
         local toolbarName = "UNIKALO Tools"
 
-        -- Créer un floater personnalisé qui contient le bouton
+        -- Créer un floater personnalisé qui contient les deux boutons
         rollout unikaloToolbar "UNIKALO Tools"
         (
-            button btnUnikalo "UNIKALO RenderTool" width:150 height:30
+            button btnSimple "Simple (1 composant)" width:150 height:30
+            button btnMulti "Multi (3 composants)" width:150 height:30
 
-            on btnUnikalo pressed do
+            on btnSimple pressed do
             (
-                -- Exécuter le macroScript
-                local scriptPath = (getDir #userScripts + "\\menu_plugin.py")
+                local scriptPath = (getDir #userScripts + "\\menu_plugin_simple.py")
                 if (doesFileExist scriptPath) then
                     python.executeFile scriptPath
                 else
-                    messageBox "Fichier menu_plugin.py introuvable" title:"Erreur"
+                    messageBox "Fichier menu_plugin_simple.py introuvable" title:"Erreur"
+            )
+
+            on btnMulti pressed do
+            (
+                local scriptPath = (getDir #userScripts + "\\menu_plugin_multi.py")
+                if (doesFileExist scriptPath) then
+                    python.executeFile scriptPath
+                else
+                    messageBox "Fichier menu_plugin_multi.py introuvable" title:"Erreur"
             )
         )
 
@@ -64,7 +87,9 @@ print "======================================================================"
 print "=== INSTALLATION RÉUSSIE ==="
 print "======================================================================"
 print ""
-print "Le MacroScript 'UNIKALO RenderTool' a été créé avec succès!"
+print "Deux MacroScripts ont été créés:"
+print "  - UNIKALO RenderTool Simple (1 composant)"
+print "  - UNIKALO RenderTool Multi (3 composants A/B/C)"
 print ""
 
 -- Tenter de créer la toolbar automatiquement
@@ -84,20 +109,20 @@ else
     print "  2. Cliquez sur l'onglet 'Toolbars'"
     print "  3. Cliquez sur 'New...' et nommez-la 'UNIKALO'"
     print "  4. Dans 'Category', sélectionnez 'Custom Tools'"
-    print "  5. Glissez 'Ouvrir la fenêtre des outils personnalisés' sur la nouvelle toolbar"
+    print "  5. Glissez 'UNIKALO RenderTool Simple' et 'UNIKALO RenderTool Multi' sur la toolbar"
     print ""
-    print "Méthode 2 - Assigner un raccourci clavier :"
+    print "Méthode 2 - Assigner des raccourcis clavier :"
     print "  1. Allez dans : Customize > Customize User Interface (ou touche Y)"
     print "  2. Cliquez sur l'onglet 'Keyboard'"
     print "  3. Dans 'Category', sélectionnez 'Custom Tools'"
-    print "  4. Assignez un raccourci (ex: Ctrl+Shift+U)"
+    print "  4. Assignez des raccourcis pour Simple et Multi (ex: Ctrl+Shift+U et Ctrl+Shift+M)"
 )
 
 print ""
 print "======================================================================"
 
 if toolbarCreated then
-    messageBox "Installation réussie!\n\nUne toolbar 'UNIKALO Tools' a été créée automatiquement.\n\nVous pouvez la déplacer où vous voulez." title:"U-Rtool - Installation"
+    messageBox "Installation réussie!\n\nUne toolbar 'UNIKALO Tools' a été créée automatiquement.\n\nElle contient 2 boutons:\n- Simple (1 composant)\n- Multi (3 composants)\n\nVous pouvez la déplacer où vous voulez." title:"U-Rtool - Installation"
 else
-    messageBox "Installation réussie!\n\nLe bouton 'UNIKALO RenderTool' est disponible.\n\nConsultez le Listener pour les instructions d'installation manuelle." title:"U-Rtool - Installation"
+    messageBox "Installation réussie!\n\nDeux boutons ont été créés:\n- UNIKALO RenderTool Simple\n- UNIKALO RenderTool Multi\n\nConsultez le Listener pour les instructions d'installation manuelle." title:"U-Rtool - Installation"
 
