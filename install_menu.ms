@@ -8,14 +8,14 @@ category:"inostudio"
 buttonText:"UNIKALO RenderTool"
 tooltip:"Version simple - 1 composant"
 (
-    local scriptPath = (getDir #userScripts + "\\menu_plugin_simple.py")
+    local scriptPath = (getDir #userScripts + "\\menu_plugin_multi.py")
     if (doesFileExist scriptPath) then
     (
         python.executeFile scriptPath
     )
     else
     (
-        messageBox ("Fichier non trouvé: " + scriptPath + "\n\nAssurez-vous que menu_plugin_simple.py est dans le dossier des scripts utilisateur.")
+        messageBox ("Fichier non trouvé: " + scriptPath + "\n\nAssurez-vous que menu_plugin_multi.py est dans le dossier des scripts utilisateur.")
     )
 )
 
@@ -25,14 +25,14 @@ category:"inostudio"
 buttonText:"UNIKALO Multi-composant"
 tooltip:"Version multi-composants - A/B/C"
 (
-    local scriptPath = (getDir #userScripts + "\\menu_plugin_multi.py")
+    local scriptPath = (getDir #userScripts + "\\menu_plugin_simple.py")
     if (doesFileExist scriptPath) then
     (
         python.executeFile scriptPath
     )
     else
     (
-        messageBox ("Fichier non trouvé: " + scriptPath + "\n\nAssurez-vous que menu_plugin_multi.py est dans le dossier des scripts utilisateur.")
+        messageBox ("Fichier non trouvé: " + scriptPath + "\n\nAssurez-vous que menu_plugin_simple.py est dans le dossier des scripts utilisateur.")
     )
 )
 
@@ -52,20 +52,20 @@ fn createToolbar =
 
             on btnSimple pressed do
             (
-                local scriptPath = (getDir #userScripts + "\\menu_plugin_simple.py")
-                if (doesFileExist scriptPath) then
-                    python.executeFile scriptPath
-                else
-                    messageBox "Fichier menu_plugin_simple.py introuvable" title:"Erreur"
-            )
-
-            on btnMulti pressed do
-            (
                 local scriptPath = (getDir #userScripts + "\\menu_plugin_multi.py")
                 if (doesFileExist scriptPath) then
                     python.executeFile scriptPath
                 else
                     messageBox "Fichier menu_plugin_multi.py introuvable" title:"Erreur"
+            )
+
+            on btnMulti pressed do
+            (
+                local scriptPath = (getDir #userScripts + "\\menu_plugin_simple.py")
+                if (doesFileExist scriptPath) then
+                    python.executeFile scriptPath
+                else
+                    messageBox "Fichier menu_plugin_simple.py introuvable" title:"Erreur"
             )
         )
 
