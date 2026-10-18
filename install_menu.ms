@@ -4,8 +4,8 @@
 
 -- MacroScript pour la version Simple (1 composant)
 macroScript OpenCustomToolSimple
-category:"Custom Tools"
-buttonText:"UNIKALO RenderTool Simple"
+category:"inostudio"
+buttonText:"UNIKALO RenderTool"
 tooltip:"Version simple - 1 composant"
 (
     local scriptPath = (getDir #userScripts + "\\menu_plugin_simple.py")
@@ -21,8 +21,8 @@ tooltip:"Version simple - 1 composant"
 
 -- MacroScript pour la version Multi (3 composants)
 macroScript OpenCustomToolMulti
-category:"Custom Tools"
-buttonText:"UNIKALO RenderTool Multi"
+category:"inostudio"
+buttonText:"UNIKALO Multi-composant"
 tooltip:"Version multi-composants - A/B/C"
 (
     local scriptPath = (getDir #userScripts + "\\menu_plugin_multi.py")
@@ -47,8 +47,8 @@ fn createToolbar =
         -- Créer un floater personnalisé qui contient les deux boutons
         rollout unikaloToolbar "UNIKALO Tools"
         (
-            button btnSimple "Simple (1 composant)" width:150 height:30
-            button btnMulti "Multi (3 composants)" width:150 height:30
+            button btnSimple "UNIKALO RenderTool" width:150 height:30
+            button btnMulti "UNIKALO Multi-composant" width:150 height:30
 
             on btnSimple pressed do
             (
@@ -87,9 +87,9 @@ print "======================================================================"
 print "=== INSTALLATION RÉUSSIE ==="
 print "======================================================================"
 print ""
-print "Deux MacroScripts ont été créés:"
-print "  - UNIKALO RenderTool Simple (1 composant)"
-print "  - UNIKALO RenderTool Multi (3 composants A/B/C)"
+print "Deux MacroScripts ont été créés dans la catégorie 'inostudio':"
+print "  - UNIKALO RenderTool (1 composant)"
+print "  - UNIKALO Multi-composant (3 composants A/B/C)"
 print ""
 
 -- Tenter de créer la toolbar automatiquement
@@ -108,21 +108,21 @@ else
     print "  1. Allez dans : Customize > Customize User Interface (ou touche Y)"
     print "  2. Cliquez sur l'onglet 'Toolbars'"
     print "  3. Cliquez sur 'New...' et nommez-la 'UNIKALO'"
-    print "  4. Dans 'Category', sélectionnez 'Custom Tools'"
-    print "  5. Glissez 'UNIKALO RenderTool Simple' et 'UNIKALO RenderTool Multi' sur la toolbar"
+    print "  4. Dans 'Category', sélectionnez 'inostudio'"
+    print "  5. Glissez 'UNIKALO RenderTool' et 'UNIKALO Multi-composant' sur la toolbar"
     print ""
     print "Méthode 2 - Assigner des raccourcis clavier :"
     print "  1. Allez dans : Customize > Customize User Interface (ou touche Y)"
     print "  2. Cliquez sur l'onglet 'Keyboard'"
-    print "  3. Dans 'Category', sélectionnez 'Custom Tools'"
-    print "  4. Assignez des raccourcis pour Simple et Multi (ex: Ctrl+Shift+U et Ctrl+Shift+M)"
+    print "  3. Dans 'Category', sélectionnez 'inostudio'"
+    print "  4. Assignez des raccourcis (ex: Ctrl+Shift+U et Ctrl+Shift+M)"
 )
 
 print ""
 print "======================================================================"
 
 if toolbarCreated then
-    messageBox "Installation réussie!\n\nUne toolbar 'UNIKALO Tools' a été créée automatiquement.\n\nElle contient 2 boutons:\n- Simple (1 composant)\n- Multi (3 composants)\n\nVous pouvez la déplacer où vous voulez." title:"U-Rtool - Installation"
+    messageBox "Installation réussie!\n\nUne toolbar 'UNIKALO Tools' a été créée automatiquement.\n\nElle contient 2 boutons:\n- UNIKALO RenderTool (simple)\n- UNIKALO Multi-composant\n\nVous pouvez la déplacer où vous voulez." title:"U-Rtool - Installation"
 else
-    messageBox "Installation réussie!\n\nDeux boutons ont été créés:\n- UNIKALO RenderTool Simple\n- UNIKALO RenderTool Multi\n\nConsultez le Listener pour les instructions d'installation manuelle." title:"U-Rtool - Installation"
+    messageBox "Installation réussie!\n\nDeux boutons ont été créés dans la catégorie 'inostudio':\n- UNIKALO RenderTool\n- UNIKALO Multi-composant\n\nConsultez le Listener pour les instructions d'installation manuelle." title:"U-Rtool - Installation"
 
