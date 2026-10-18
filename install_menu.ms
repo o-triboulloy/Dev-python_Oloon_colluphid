@@ -42,10 +42,10 @@ fn createToolbar =
     try
     (
         -- Créer une toolbar flottante avec un floater
-        local toolbarName = "UNIKALO Tools"
+        local toolbarName = "inostudio"
 
         -- Créer un floater personnalisé qui contient les deux boutons
-        rollout unikaloToolbar "UNIKALO Tools"
+        rollout unikaloToolbar "inostudio"
         (
             button btnSimple "UNIKALO RenderTool" width:150 height:30
             button btnMulti "UNIKALO Multi-composant" width:150 height:30
@@ -72,7 +72,7 @@ fn createToolbar =
         -- Créer le floater
         createDialog unikaloToolbar width:170 style:#(#style_toolwindow, #style_sysmenu, #style_resizing)
 
-        print "Toolbar 'UNIKALO Tools' créée avec succès!"
+        print "Toolbar 'inostudio' créée avec succès!"
         return true
     )
     catch
@@ -97,7 +97,7 @@ toolbarCreated = createToolbar()
 
 if toolbarCreated then
 (
-    print "Une toolbar flottante 'UNIKALO Tools' a été créée automatiquement!"
+    print "Une toolbar flottante 'inostudio' a été créée automatiquement!"
     print "Vous pouvez la déplacer où vous voulez dans l'interface."
 )
 else
@@ -122,7 +122,7 @@ print ""
 print "======================================================================"
 
 if toolbarCreated then
-    messageBox "Installation réussie!\n\nUne toolbar 'UNIKALO Tools' a été créée automatiquement.\n\nElle contient 2 boutons:\n- UNIKALO RenderTool (simple)\n- UNIKALO Multi-composant\n\nVous pouvez la déplacer où vous voulez." title:"U-Rtool - Installation"
+    messageBox "Installation réussie!\n\nUne toolbar 'inostudio' a été créée automatiquement.\n\nElle contient 2 boutons:\n- UNIKALO RenderTool (simple)\n- UNIKALO Multi-composant\n\nVous pouvez la déplacer où vous voulez." title:"U-Rtool - Installation"
 else
     messageBox "Installation réussie!\n\nDeux boutons ont été créés dans la catégorie 'inostudio':\n- UNIKALO RenderTool\n- UNIKALO Multi-composant\n\nConsultez le Listener pour les instructions d'installation manuelle." title:"U-Rtool - Installation"
 
