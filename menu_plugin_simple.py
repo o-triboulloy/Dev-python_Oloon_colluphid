@@ -467,16 +467,25 @@ class MenuPlugin:
                 local bitmapTex = undefined
 
                 if classOf targetMat.base_color_map == Color_Correction then
+                (
+                    -- Le matériau a déjà Color_Correction, le réutiliser
                     colorCorrect = targetMat.base_color_map
+                    if classOf colorCorrect.Map == Bitmaptexture then
+                        bitmapTex = colorCorrect.Map
+                    else
+                        bitmapTex = Bitmaptexture()
+                )
                 else
+                (
+                    -- Pas de Color_Correction, en créer un et réutiliser le Bitmaptexture existant si possible
                     colorCorrect = Color_Correction()
+                    if classOf targetMat.base_color_map == Bitmaptexture then
+                        bitmapTex = targetMat.base_color_map  -- Réutiliser l'existant !
+                    else
+                        bitmapTex = Bitmaptexture()
+                )
 
-                if classOf colorCorrect.Map == Bitmaptexture then
-                    bitmapTex = colorCorrect.Map
-                else
-                    bitmapTex = Bitmaptexture()
-
-                print (">>> Color_Correction et Bitmaptexture nodes préparés")
+                print (">>> Color_Correction et Bitmaptexture nodes préparés (réutilisation des nodes existants)")
 
                 -- Boucle sur chaque map
                 for mapFile in mapFiles do
