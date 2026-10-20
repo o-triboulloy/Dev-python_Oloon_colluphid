@@ -522,7 +522,6 @@ class MenuPlugin:
                     (
                         -- Réutiliser le Bitmaptexture existant en changeant juste son fileName
                         bitmapTex.fileName = mapFile
-                        bitmapTex.reload()  -- IMPORTANT: Forcer le rechargement de l'image
                         colorCorrect.Map = bitmapTex
                         colorCorrect.contrast = contrastValue
                         colorCorrect.brightness = brightnessValue
@@ -531,61 +530,10 @@ class MenuPlugin:
                         print ("Map chargée avec Color_Correction: " + mapName)
                         print ("  Contraste: " + contrastValue as string + ", Luminosité: " + brightnessValue as string)
 
-                        local mapAssigned = true
-                        local matType = classOf targetMat as string
-
-                        -- Note: La map est maintenant assignée via Color_Correction
-                        if false then  -- Code Arnold désactivé, on utilise Color_Correction
-                        (
-                            try
-                            (
-                                targetMat.base_color_shader = bitmapTex
-                                mapAssigned = true
-                                print ("Map assignée à Arnold Standard Surface: " + mapName)
-                            )
-                            catch
-                            (
-                                print ("ERREUR: Échec assignation Arnold")
-                            )
-                        )
-                        -- Essayer Physical Material
-                        else if matType == "Physical_Material" or matType == "PhysicalMaterial" then
-                        (
-                            try
-                            (
-                                targetMat.base_color_map = newBitmap
-                                mapAssigned = true
-                                print ("Map assignée à Physical Material: " + mapName)
-                            )
-                            catch
-                            (
-                                try
-                                (
-                                    targetMat.base_weight_color_map = newBitmap
-                                    mapAssigned = true
-                                    print ("Map assignée à Physical Material (base_weight): " + mapName)
-                                )
-                                catch
-                                (
-                                    print ("ERREUR: Échec assignation Physical Material")
-                                )
-                            )
-                        )
-                        else
-                        (
-                            print ("AVERTISSEMENT: Type de matériau non supporté: " + matType)
-                        )
-
-                        if not mapAssigned then
-                        (
-                            print ("ERREUR: Impossible d'assigner la map " + mapName)
-                            continue
-                        )
-
-                        -- IMPORTANT: Forcer le rafraîchissement de la scène pour que la nouvelle map soit prise en compte
+                        -- Forcer le rafraîchissement de la scène
                         completeRedraw()
-                        gc light:true  -- Nettoyage léger de la mémoire pour forcer le rechargement
-                        windows.processPostedMessages()  -- Mise à jour de l'interface
+                        gc()
+                        windows.processPostedMessages()
                     )
                     catch
                     (
