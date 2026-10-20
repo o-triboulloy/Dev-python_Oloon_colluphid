@@ -522,6 +522,7 @@ class MenuPlugin:
                     (
                         -- Réutiliser le Bitmaptexture existant en changeant juste son fileName
                         bitmapTex.fileName = mapFile
+                        bitmapTex.reload()  -- IMPORTANT: Forcer le rechargement de l'image
                         colorCorrect.Map = bitmapTex
                         colorCorrect.contrast = contrastValue
                         colorCorrect.brightness = brightnessValue
@@ -734,14 +735,15 @@ class MenuPlugin:
                     -- Libérer la mémoire de la map après tous ses rendus
                     try
                     (
-                        targetMat.base_color_map = undefined
+                        -- Ne pas supprimer le Color_Correction, juste libérer les bitmaps en cache
                         freeSceneBitmaps()
+                        gc light:true
                         windows.processPostedMessages()
-                        print (">>> Map libérée de la mémoire: " + mapBaseName)
+                        print (">>> Mémoire bitmap libérée: " + mapBaseName)
                     )
                     catch
                     (
-                        print "Note: Impossible de libérer la map de la mémoire"
+                        print "Note: Impossible de libérer la mémoire bitmap"
                     )
                 )
 
