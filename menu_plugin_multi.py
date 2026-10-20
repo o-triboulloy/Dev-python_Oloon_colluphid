@@ -818,14 +818,21 @@ class MenuPlugin:
                 if targetMatA != undefined then
                 (
                     if classOf targetMatA.base_color_map == Color_Correction then
+                    (
                         colorCorrectA = targetMatA.base_color_map
+                        if classOf colorCorrectA.Map == Bitmaptexture then
+                            bitmapTexA = colorCorrectA.Map
+                        else
+                            bitmapTexA = Bitmaptexture()
+                    )
                     else
+                    (
                         colorCorrectA = Color_Correction()
-
-                    if classOf colorCorrectA.Map == Bitmaptexture then
-                        bitmapTexA = colorCorrectA.Map
-                    else
-                        bitmapTexA = Bitmaptexture()
+                        if classOf targetMatA.base_color_map == Bitmaptexture then
+                            bitmapTexA = targetMatA.base_color_map  -- Réutiliser l'existant
+                        else
+                            bitmapTexA = Bitmaptexture()
+                    )
                 )
 
                 local colorCorrectB = undefined
@@ -833,14 +840,21 @@ class MenuPlugin:
                 if targetMatB != undefined then
                 (
                     if classOf targetMatB.base_color_map == Color_Correction then
+                    (
                         colorCorrectB = targetMatB.base_color_map
+                        if classOf colorCorrectB.Map == Bitmaptexture then
+                            bitmapTexB = colorCorrectB.Map
+                        else
+                            bitmapTexB = Bitmaptexture()
+                    )
                     else
+                    (
                         colorCorrectB = Color_Correction()
-
-                    if classOf colorCorrectB.Map == Bitmaptexture then
-                        bitmapTexB = colorCorrectB.Map
-                    else
-                        bitmapTexB = Bitmaptexture()
+                        if classOf targetMatB.base_color_map == Bitmaptexture then
+                            bitmapTexB = targetMatB.base_color_map  -- Réutiliser l'existant
+                        else
+                            bitmapTexB = Bitmaptexture()
+                    )
                 )
 
                 local colorCorrectC = undefined
@@ -848,17 +862,24 @@ class MenuPlugin:
                 if targetMatC != undefined then
                 (
                     if classOf targetMatC.base_color_map == Color_Correction then
+                    (
                         colorCorrectC = targetMatC.base_color_map
+                        if classOf colorCorrectC.Map == Bitmaptexture then
+                            bitmapTexC = colorCorrectC.Map
+                        else
+                            bitmapTexC = Bitmaptexture()
+                    )
                     else
+                    (
                         colorCorrectC = Color_Correction()
-
-                    if classOf colorCorrectC.Map == Bitmaptexture then
-                        bitmapTexC = colorCorrectC.Map
-                    else
-                        bitmapTexC = Bitmaptexture()
+                        if classOf targetMatC.base_color_map == Bitmaptexture then
+                            bitmapTexC = targetMatC.base_color_map  -- Réutiliser l'existant
+                        else
+                            bitmapTexC = Bitmaptexture()
+                    )
                 )
 
-                print (">>> Color_Correction et Bitmaptexture nodes préparés")
+                print (">>> Color_Correction et Bitmaptexture nodes préparés (réutilisation des nodes existants)")
 
                 -- Boucle sur le nombre maximum de maps
                 for i = 1 to maxMaps do
