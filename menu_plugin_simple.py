@@ -448,21 +448,18 @@ class MenuPlugin:
                 -- Réinitialiser le flag stop au début
                 stopRendering = false
 
-                -- Sauvegarder le CHEMIN du fichier original ET la structure
+                -- Sauvegarder le CHEMIN du fichier original
                 local originalFile = undefined
-                local hadColorCorrection = false
                 if targetMat.base_color_map != undefined then
                 (
                     if classOf targetMat.base_color_map == Color_Correction then
                     (
-                        hadColorCorrection = true
                         if classOf targetMat.base_color_map.Map == Bitmaptexture then
                             originalFile = targetMat.base_color_map.Map.fileName
                     )
                     else if classOf targetMat.base_color_map == Bitmaptexture then
                         originalFile = targetMat.base_color_map.fileName
                     print (">>> Fichier original sauvegardé: " + (filenameFromPath originalFile))
-                    print (">>> Structure originale: " + (if hadColorCorrection then "Color_Correction" else "Bitmaptexture direct"))
                 )
 
                 -- Créer/récupérer le Color_Correction node et le Bitmaptexture UNE SEULE FOIS
@@ -488,27 +485,22 @@ class MenuPlugin:
                     if stopRendering then
                     (
                         print "\n!!! ARRÊT DES RENDUS DEMANDÉ !!!"
-                        -- Restaurer la map originale avec la structure exacte
+                        -- Restaurer la map originale (garder le Color_Correction)
                         if originalFile != undefined and targetMat != undefined then
                         (
                             try
                             (
-                                if hadColorCorrection then
+                                if classOf targetMat.base_color_map == Color_Correction then
                                 (
-                                    if classOf targetMat.base_color_map == Color_Correction then
-                                    (
-                                        if classOf targetMat.base_color_map.Map == Bitmaptexture then
-                                            targetMat.base_color_map.Map.fileName = originalFile
-                                        else
-                                            targetMat.base_color_map.Map = Bitmaptexture fileName:originalFile
-                                        targetMat.base_color_map.contrast = 0
-                                        targetMat.base_color_map.brightness = 0
-                                    )
+                                    if classOf targetMat.base_color_map.Map == Bitmaptexture then
+                                        targetMat.base_color_map.Map.fileName = originalFile
+                                    else
+                                        targetMat.base_color_map.Map = Bitmaptexture fileName:originalFile
+                                    targetMat.base_color_map.contrast = 0
+                                    targetMat.base_color_map.brightness = 0
                                 )
-                                else
-                                    targetMat.base_color_map = Bitmaptexture fileName:originalFile
                                 completeRedraw()
-                                print (">>> Map originale restaurée")
+                                print (">>> Map originale restaurée (Color_Correction conservé)")
                             )
                             catch()
                         )
@@ -556,27 +548,22 @@ class MenuPlugin:
                         if stopRendering then
                         (
                             print "  >>> Arrêt demandé, sortie de la boucle de rendus"
-                            -- Restaurer la map originale avec la structure exacte
+                            -- Restaurer la map originale (garder le Color_Correction)
                             if originalFile != undefined and targetMat != undefined then
                             (
                                 try
                                 (
-                                    if hadColorCorrection then
+                                    if classOf targetMat.base_color_map == Color_Correction then
                                     (
-                                        if classOf targetMat.base_color_map == Color_Correction then
-                                        (
-                                            if classOf targetMat.base_color_map.Map == Bitmaptexture then
-                                                targetMat.base_color_map.Map.fileName = originalFile
-                                            else
-                                                targetMat.base_color_map.Map = Bitmaptexture fileName:originalFile
-                                            targetMat.base_color_map.contrast = 0
-                                            targetMat.base_color_map.brightness = 0
-                                        )
+                                        if classOf targetMat.base_color_map.Map == Bitmaptexture then
+                                            targetMat.base_color_map.Map.fileName = originalFile
+                                        else
+                                            targetMat.base_color_map.Map = Bitmaptexture fileName:originalFile
+                                        targetMat.base_color_map.contrast = 0
+                                        targetMat.base_color_map.brightness = 0
                                     )
-                                    else
-                                        targetMat.base_color_map = Bitmaptexture fileName:originalFile
                                     completeRedraw()
-                                    print (">>> Map originale restaurée")
+                                    print (">>> Map originale restaurée (Color_Correction conservé)")
                                 )
                                 catch()
                             )
@@ -708,30 +695,32 @@ class MenuPlugin:
                     )
                 )
 
-                -- Restaurer la map originale du matériau avec la structure exacte
+                -- Restaurer la map originale du matériau (garder le Color_Correction)
                 if originalFile != undefined then
                 (
                     try
                     (
-                        if hadColorCorrection then
+                        if classOf targetMat.base_color_map == Color_Correction then
                         (
-                            -- L'original avait Color_Correction, le garder et juste restaurer le fileName
-                            if classOf targetMat.base_color_map == Color_Correction then
-                            (
-                                if classOf targetMat.base_color_map.Map == Bitmaptexture then
-                                    targetMat.base_color_map.Map.fileName = originalFile
-                                else
-                                    targetMat.base_color_map.Map = Bitmaptexture fileName:originalFile
-                                targetMat.base_color_map.contrast = 0
-                                targetMat.base_color_map.brightness = 0
-                            )
-                            print (">>> Map originale restaurée (Color_Correction): " + (filenameFromPath originalFile))
+                            -- Restaurer le fileName dans le Color_Correction existant
+                            if classOf targetMat.base_color_map.Map == Bitmaptexture then
+                                targetMat.base_color_map.Map.fileName = originalFile
+                            else
+                                targetMat.base_color_map.Map = Bitmaptexture fileName:originalFile
+                            targetMat.base_color_map.contrast = 0
+                            targetMat.base_color_map.brightness = 0
+                            print (">>> Map originale restaurée (Color_Correction conservé): " + (filenameFromPath originalFile))
                         )
                         else
                         (
-                            -- L'original était un Bitmaptexture direct, le restaurer sans Color_Correction
-                            targetMat.base_color_map = Bitmaptexture fileName:originalFile
-                            print (">>> Map originale restaurée (Bitmaptexture direct): " + (filenameFromPath originalFile))
+                            -- Pas de Color_Correction, en créer un avec la map originale
+                            local newBitmapTex = Bitmaptexture fileName:originalFile
+                            local newColorCorrect = Color_Correction()
+                            newColorCorrect.Map = newBitmapTex
+                            newColorCorrect.contrast = 0
+                            newColorCorrect.brightness = 0
+                            targetMat.base_color_map = newColorCorrect
+                            print (">>> Map originale restaurée avec Color_Correction: " + (filenameFromPath originalFile))
                         )
 
                         completeRedraw()
